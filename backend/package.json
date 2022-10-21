@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon src/index.js",
-    "prettier": "prettier --config .prettierrc 'src/**/*.js' --write",
-    "lint": "eslint 'src/**/*.js'",
+    "prettier": "prettier --config .prettierrc src/**/*.js --write",
+    "lint": "eslint src/**/*.js",
     "alreqaba": "npm run prettier & npm run lint"
   },
   "keywords": [],
