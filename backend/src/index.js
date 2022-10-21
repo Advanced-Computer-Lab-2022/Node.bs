@@ -1,6 +1,10 @@
 //Imports
 require('dotenv').config();
 const express = require('express');
+const mongoose = require('mongoose');
+
+//Mongo URI
+const mongoURI = process.env.MONGO_URI;
 
 //create express app
 const app = express();
@@ -11,10 +15,14 @@ app.use(express.json());
 //port
 const port = process.env.PORT || '8000';
 
-//listen for requests
-app.listen(port, () => {
-  console.log('listening on port 4000');
-});
-
-//Mongo URI
-const MongoURI = process.env.MONGO_URI;
+//connect to db (promise <=> resolve=>then , reject=>catch)
+mongoose
+  .connect(mongoURI)
+  .then(() => {
+    //listen for requests
+    app.listen(port, () => {
+      console.log('db connection established!');
+      console.log('listening on port', port);
+    });
+  })
+  .catch((error) => console.log(error));
