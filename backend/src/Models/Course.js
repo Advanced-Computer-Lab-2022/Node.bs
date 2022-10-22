@@ -74,6 +74,6 @@ const CourseSchema = new schema({
   releaseDate: {
     type: Date,
   },
-});
+}, {timestamps: true});
 
 module.exports = mongoose.model('Course', CourseSchema);

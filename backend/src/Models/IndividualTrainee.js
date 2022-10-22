@@ -6,10 +6,10 @@ const IndividualTraineeSchema = new schema({
     type: String,
   },
   lastName: {
-    type: Number,
+    type: String,
   },
   email: {
-    type: Number,
+    type: String,
   },
   username: {
     type: String,
@@ -39,11 +39,11 @@ const IndividualTraineeSchema = new schema({
   pathToCertificate: {
     type: String,
   },
-  Notebook: [
+  notebook: [
     {
       type: String,
     },
   ],
-});
+}, {timestamps: true});
 
 module.exports = mongoose.model('IndividualTrainee', IndividualTraineeSchema);
