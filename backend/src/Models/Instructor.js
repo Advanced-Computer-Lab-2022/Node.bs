@@ -44,5 +44,5 @@ const InstructorSchema = new schema(
   },
   { timestamps: true }
 );
-console.log('test');
+
 module.exports = mongoose.model('Instructor', InstructorSchema);
