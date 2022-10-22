@@ -19,10 +19,10 @@ const InstructorSchema = new schema(
           ref: 'IndividualTrainee',
         },
         review: {
-          type: String
+          type: String,
         },
         rating: {
-          type: Number
+          type: Number,
         },
       },
     ],
@@ -33,10 +33,10 @@ const InstructorSchema = new schema(
           ref: 'CorporateTrainee',
         },
         review: {
-          type: String
+          type: String,
         },
         rating: {
-          type: Number
+          type: Number,
         },
       },
     ],
@@ -44,5 +44,5 @@ const InstructorSchema = new schema(
   },
   { timestamps: true }
 );
-
+console.log('test');
 module.exports = mongoose.model('Instructor', InstructorSchema);
