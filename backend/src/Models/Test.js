@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const schema = mongoose.schema;
 const TestSchema = new schema(
   {
-    excercises: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Exercise' }],
+    exercises: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Exercise' }],
     lesson: { type: mongoose.Schema.Types.ObjectId, ref: 'Lesson' },
   },
   { timestamps: true }

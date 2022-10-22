@@ -3,10 +3,17 @@ const schema = mongoose.schema;
 const ReportSchema = new schema(
   {
     course: { type: mongoose.Schema.Types.ObjectId, ref: 'Course' },
-    trainee: { type: mongoose.Schema.Types.ObjectId, ref: 'Trainee' },
+    individualTrainee: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'IndividualTrainee',
+    },
+    corporateTrainee: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'CorporateTrainee',
+    },
     type: { type: String },
-    Status: { type: String },
-    Seen: { type: Boolean },
+    status: { type: String },
+    seen: { type: Boolean },
   },
   { timestamps: true }
 );
