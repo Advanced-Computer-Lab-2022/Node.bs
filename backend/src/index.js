@@ -6,14 +6,14 @@ const mongoose = require('mongoose');
 //Mongo URI
 const mongoURI = process.env.MONGO_URI;
 
+//port
+const port = process.env.PORT || '8000';
+
 //create express app
 const app = express();
 
 //JSON body parser middleware
 app.use(express.json());
-
-//port
-const port = process.env.PORT || '8000';
 
 //connect to db (promise <=> resolve=>then , reject=>catch)
 mongoose
