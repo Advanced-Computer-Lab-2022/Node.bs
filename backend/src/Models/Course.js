@@ -1,79 +1,82 @@
 const mongoose = require('mongoose');
 const schema = mongoose.Schema;
 
-const CourseSchema = new schema({
-  title: {
-    type: String,
-  },
-  rating: {
-    type: Number,
-  },
-  totalHours: {
-    type: Number,
-  },
-  subject: {
-    type: String,
-  },
+const CourseSchema = new schema(
+  {
+    title: {
+      type: String,
+    },
+    rating: {
+      type: Number,
+    },
+    totalHours: {
+      type: Number,
+    },
+    subject: {
+      type: String,
+    },
 
-  price: {
-    type: Number,
-  },
-  instructors: [
-    {
-      type: schema.Types.ObjectId,
-      ref: 'Instructor',
+    price: {
+      type: Number,
     },
-  ],
-  description: {
-    type: String,
-  },
-  subtitles: [
-    {
-      type: schema.Types.ObjectId,
-      ref: 'Subtitle',
-    },
-  ],
-  currentDiscount: {
-    expiryDate: { type: Date },
-    percentage: { type: Number },
-  },
-  numberOfRegisteredTrainees: {
-    type: Number,
-  },
-  individualReviews: [
-    {
-      individualTrainee: {
+    instructors: [
+      {
         type: schema.Types.ObjectId,
-        ref: 'IndividualTrainee',
+        ref: 'Instructor',
       },
-      review: { type: String },
-      rating: { type: Number },
+    ],
+    description: {
+      type: String,
     },
-  ],
-
-  corporateReviews: [
-    {
-      corporateTrainee: {
+    subtitles: [
+      {
         type: schema.Types.ObjectId,
-        ref: 'CorporateTrainee',
+        ref: 'Subtitle',
       },
-      review: { type: String },
-      rating: { type: Number },
+    ],
+    currentDiscount: {
+      expiryDate: { type: Date },
+      percentage: { type: Number },
     },
-  ],
+    numberOfRegisteredTrainees: {
+      type: Number,
+    },
+    individualReviews: [
+      {
+        individualTrainee: {
+          type: schema.Types.ObjectId,
+          ref: 'IndividualTrainee',
+        },
+        review: { type: String },
+        rating: { type: Number },
+      },
+    ],
 
-  videoURL: {
-    type: String,
+    corporateReviews: [
+      {
+        corporateTrainee: {
+          type: schema.Types.ObjectId,
+          ref: 'CorporateTrainee',
+        },
+        review: { type: String },
+        rating: { type: Number },
+      },
+    ],
+
+    videoURL: {
+      type: String,
+    },
+    numberOfLearningResources: {
+      type: Number,
+    },
+    courseViews: {
+      type: Number,
+    },
+    releaseDate: {
+      type: Date,
+    },
   },
-  numberOfLearningResources: {
-    type: Number,
-  },
-  courseViews: {
-    type: Number,
-  },
-  releaseDate: {
-    type: Date,
-  },
-}, {timestamps: true});
+  { timestamps: true }
+);
 
 module.exports = mongoose.model('Course', CourseSchema);
