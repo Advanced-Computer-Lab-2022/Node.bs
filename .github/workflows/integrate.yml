@@ -10,8 +10,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
+        working-directory: ./backend
         with:
           node-version: 12
-      - run: cd backend
       - run: npm ci
       - run: npm run alreqaba
