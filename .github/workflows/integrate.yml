@@ -10,6 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
+      - name: lint code
         working-directory: ./backend
         with:
           node-version: 12
