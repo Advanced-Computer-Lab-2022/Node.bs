@@ -2,6 +2,8 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+const adminRoutes = require('./Routes/AdminRoutes');
+const courseRoutes = require('./Routes/CourseRoutes');
 
 //Mongo URI
 const mongoURI = process.env.MONGO_URI;
@@ -14,6 +16,10 @@ const app = express();
 
 //JSON body parser middleware
 app.use(express.json());
+
+//Register API Routes , need to protect endpoints later
+app.use('/course', courseRoutes);
+app.use('/admin', adminRoutes);
 
 //connect to db (promise <=> resolve=>then , reject=>catch)
 mongoose

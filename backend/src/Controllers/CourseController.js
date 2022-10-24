@@ -73,19 +73,18 @@ const searchCourses = async (req, res) => {
 //create Course
 const createCourse = async (req, res) => {
   try {
-    const result = await Course.create(req.body.course);
+    const result = await Course.create(req.body);
     res.status(203).json(result);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 
-
 module.exports = {
   oSearchCourses,
   oFilterCourses,
-   createCourse, 
-   searchCourses, 
-   getAllCourses, 
-   filterCourses
+  createCourse,
+  searchCourses,
+  getAllCourses,
+  filterCourses,
 };
