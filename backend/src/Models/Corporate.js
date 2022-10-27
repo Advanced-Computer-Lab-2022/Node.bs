@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const schema = mongoose.schema;
+const schema = mongoose.Schema;
 const CorporateSchema = new schema(
   {
     name: { type: String },
