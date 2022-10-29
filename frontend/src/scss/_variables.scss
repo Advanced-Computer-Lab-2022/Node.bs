@@ -1,15 +1,22 @@
 //fonts
-@import url("http://fonts.cdnfonts.com/css/gilroy-bold");
+@import url('http://fonts.cdnfonts.com/css/gilroy-bold');
+@import url('http://fonts.cdnfonts.com/css/lato');
 
-$Gilroy-Bold: "Gilroy-Bold", sans-serif;
-$Gilroy-Heavy: "Gilroy-Heavy", sans-serif;
-$Gilroy-Light: "Gilroy-Light", sans-serif;
-$Gilroy-Medium: "Gilroy-Medium", sans-serif;
-$Gilroy-Regular: "Gilroy-Regular", sans-serif;
+$Gilroy-Bold: 'Gilroy-Bold', sans-serif;
+$Gilroy-Heavy: 'Gilroy-Heavy', sans-serif;
+$Gilroy-Light: 'Gilroy-Light', sans-serif;
+$Gilroy-Medium: 'Gilroy-Medium', sans-serif;
+$Gilroy-Regular: 'Gilroy-Regular', sans-serif;
+$Lato: 'Lato', sans-serif;
 
 //color scheme
 $background: #f5f6f8;
 $primary: #151515;
-$secondary: #a9a9a9;
-$primary: #6aa5ff;
+$secondary: #545454;
+$accent: #6aa5ff;
+$accent-light: #fbfdff;
 
+//border radius
+$border-radius: 8px;
+
+//mixins
