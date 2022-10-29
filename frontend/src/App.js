@@ -1,15 +1,77 @@
-import "./app.scss";
+import './app.scss';
+import CourseGroup from './components/CourseGroup/CourseGroup';
+import CountryDropdown from './components/CountryDropdown/CountryDropdown';
 
 function App() {
+  let courses = [
+    {
+      title: 'Theory Of Computation',
+      subtitles: ['brobo', 'jidhwisd'],
+      instructors: [
+        { name: 'Haythem Ismail', id: 3 },
+        { name: 'Rami Younes', id: 1 },
+        { name: 'Slim Abbdennadher', id: 2 },
+      ],
+    },
+    {
+      title: 'Operating Systems',
+      subtitles: ['brobo', 'jidhwisd'],
+      instructors: [
+        { name: 'Haythem Ismail', id: 3 },
+        { name: 'Rami Younes', id: 1 },
+        { name: 'Slim Abbdennadher', id: 2 },
+      ],
+    },
+    {
+      title: 'Computer Architecture',
+      subtitles: ['brobo', 'jidhwisd'],
+      instructors: [
+        { name: 'Haythem Ismail', id: 3 },
+        { name: 'Rami Younes', id: 1 },
+        { name: 'Slim Abbdennadher', id: 2 },
+      ],
+    },
+    {
+      title: 'Computer Architecture',
+      subtitles: ['brobo', 'jidhwisd'],
+      instructors: [
+        { name: 'Haythem Ismail', id: 3 },
+        { name: 'Rami Younes', id: 1 },
+        { name: 'Slim Abbdennadher', id: 2 },
+      ],
+    },
+    {
+      title: 'Computer Architecture',
+      subtitles: ['brobo', 'jidhwisd'],
+      instructors: [
+        { name: 'Haythem Ismail', id: 3 },
+        { name: 'Rami Younes', id: 1 },
+        { name: 'Slim Abbdennadher', id: 2 },
+      ],
+    },
+    {
+      title: 'Computer Architecture',
+      subtitles: ['brobo', 'jidhwisd'],
+      instructors: [
+        { name: 'Haythem Ismail', id: 3 },
+        { name: 'Rami Younes', id: 1 },
+        { name: 'Slim Abbdennadher', id: 2 },
+      ],
+    },
+    {
+      title: 'Computer Architecture',
+      subtitles: ['brobo', 'jidhwisd'],
+      instructors: [
+        { name: 'Haythem Ismail', id: 3 },
+        { name: 'Rami Younes', id: 1 },
+        { name: 'Slim Abbdennadher', id: 2 },
+      ],
+    },
+  ];
   return (
     <div className="App">
-      <p>Edit and save to reload.</p>
-
-      <p className="a">dribbbble</p>
-
-      <p className="b">Edit and save to reload.</p>
-
-      <p className="c">Edit and save to reload.</p>
+      <CourseGroup courses={courses} />
+      <CountryDropdown />
     </div>
   );
 }

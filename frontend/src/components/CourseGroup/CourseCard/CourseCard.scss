@@ -1,0 +1,55 @@
+@use './../../../scss/_variables' as *;
+
+.card {
+  width: 14rem;
+  margin: auto;
+  background-color: $accent-light;
+  border-radius: $border-radius;
+  transition: 400ms;
+  // border: 0;
+  //   @include shadow;
+  &:hover {
+    transform: scale(1.06);
+  }
+}
+.card-img-top {
+  padding: 4%;
+  border-radius: $border-radius + 8;
+}
+.font {
+  //   font-family: $Gilroy-Medium; // may revert back to gilroy
+  font-family: $Lato;
+}
+
+.font-primary {
+  color: $primary;
+  font-size: 1.5em;
+}
+.font-secondary {
+  color: $secondary;
+}
+.btn-primary,
+.btn {
+  background-color: $accent;
+  border: 0;
+  border-radius: $border-radius;
+  transform: scale(0.9);
+
+  &:hover {
+    background-color: $accent;
+  }
+}
+.card-text {
+  font-size: 0.9em;
+}
+// * {
+//   border: 1px solid red;
+// }
+h2 {
+  text-align: left;
+}
+.item-wrapper {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+}
