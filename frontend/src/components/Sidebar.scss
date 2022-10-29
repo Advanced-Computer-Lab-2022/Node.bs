@@ -1,0 +1,24 @@
+@use "./../scss/variables" as *;
+
+.conatiners {
+  width: 20%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.column {
+  width: 20%;
+  position: fixed;
+  margin-left: 0px;
+  padding-left: 0px;
+  background-color: $background;
+}
+
+.brand {
+  margin-left: 12%;
+  margin-top: 12%;
+  margin-bottom: 20%;
+  font-size: smaller;
+  text-align: left;
+}

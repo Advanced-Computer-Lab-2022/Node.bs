@@ -1,0 +1,26 @@
+@use './scss/_variables.scss' as *;
+@import url("http://fonts.cdnfonts.com/css/gilroy-bold");
+
+p {
+  font-family: $Gilroy-Bold;
+}
+
+.a{
+    font-family: $Gilroy-Light;
+
+}
+
+.b{
+    font-family: $Gilroy-Light;
+
+}
+
+.c{
+    font-family: $Gilroy-Light;
+
+}
+
+*{
+    font-family: $Gilroy-Medium;
+
+}
