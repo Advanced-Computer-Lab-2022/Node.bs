@@ -1,5 +1,6 @@
 import './app.scss';
 import CourseGroup from './components/CourseGroup/CourseGroup';
+import CountryDropdown from './components/CountryDropdown/CountryDropdown';
 
 function App() {
   let courses = [
@@ -70,6 +71,7 @@ function App() {
   return (
     <div className="App">
       <CourseGroup courses={courses} />
+      <CountryDropdown />
     </div>
   );
 }
