@@ -9,7 +9,7 @@ const createAdmin = async (req, res) => {
     const existingUser = await Admin.find({
       $or: [{ username: req.body.username }, { email: req.body.email }],
     });
-    if (!existingUser) {
+    if (existingUser.length == 0) {
       const admin = await Admin.create(req.body);
       res.status(203).json(admin);
     } else {
@@ -27,7 +27,7 @@ const createInstructor = async (req, res) => {
     const existingUser = await Instructor.find({
       $or: [{ username: req.body.username }, { email: req.body.email }],
     });
-    if (!existingUser) {
+    if (existingUser.length == 0) {
       const instructor = await Instructor.create(req.body);
       res.status(203).json(instructor);
     } else {
@@ -45,7 +45,7 @@ const createCorporateTrainee = async (req, res) => {
     const existingUser = await CorporateTrainee.find({
       $or: [{ username: req.body.username }, { email: req.body.email }],
     });
-    if (!existingUser) {
+    if (existingUser.length == 0) {
       const corporateTrainee = await CorporateTrainee.create(req.body);
       res.status(203).json(corporateTrainee);
     } else {
