@@ -1,7 +1,7 @@
-import Searchbar from './../../components/Searchbar/Searchbar';
-import CourseGroup from './../../components/CourseGroup/CourseGroup';
-import ProfileCard from '../../components/ProfileCard/ProfileCard';
-import ProgressCard from '../../components/ProgressCard/ProgressCard';
+import Searchbar from './../Searchbar/Searchbar';
+import CourseGroup from './../CourseGroup/CourseGroup';
+import ProfileCard from '../ProfileCard/ProfileCard';
+import ProgressCard from '../ProgressCard/ProgressCard';
 const Dashboard = (props) => {
   let courses = [
     {

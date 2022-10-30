@@ -4,7 +4,7 @@
   max-height: 200px;
 }
 #dropdownMenuButton1 {
-  margin-left: 7.5%;
+  // margin-left: 7.5%;
   border: 0;
   background-color: transparent;
   &:hover {
@@ -20,4 +20,12 @@
 }
 .dropdown-menu {
   transition: 300ms;
+}
+.country-dropdown {
+  &:active {
+    background-color: $accent;
+  }
+  &:hover {
+    cursor: pointer;
+  }
 }

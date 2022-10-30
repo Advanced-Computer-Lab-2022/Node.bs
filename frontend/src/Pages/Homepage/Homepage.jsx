@@ -1,4 +1,4 @@
-import Dashboard from '../Dashboard/Dashboard';
+import Dashboard from './../../components/Dashboard/Dashboard';
 import Sidebar from './../../components/Sidebar/Sidebar';
 import './Homepage.scss';
 const Homepage = () => {

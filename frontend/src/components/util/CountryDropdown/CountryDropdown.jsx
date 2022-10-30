@@ -1,46 +1,13 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGlobe } from '@fortawesome/free-solid-svg-icons';
-import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { faGlobe, faCheck } from '@fortawesome/free-solid-svg-icons';
 import './CountryDropdown.scss';
+import { useSelector, useDispatch } from 'react-redux';
+import { setRegion } from '../../../redux/features/regionSlice';
 
-const timer = (ms) => new Promise((res) => setTimeout(res, ms));
 const CountryDropdown = () => {
-  const [countries, setCountries] = useState([]);
-
-  useEffect(() => {
-    const fetchCountries = async (offset) => {
-      const options = {
-        method: 'GET',
-        url:
-          'https://wft-geo-db.p.rapidapi.com/v1/geo/countries?offset=' +
-          offset +
-          '&limit=10',
-        headers: {
-          'X-RapidAPI-Key': process.env.REACT_APP_COUNTRY_API_KEY,
-          'X-RapidAPI-Host': 'wft-geo-db.p.rapidapi.com',
-        },
-      };
-
-      for (let i = 0; i <= 190; i += 10) {
-        offset = i;
-        let url =
-          'https://wft-geo-db.p.rapidapi.com/v1/geo/countries?offset=' +
-          offset +
-          '&limit=10';
-        options.url = url;
-        const response = await axios.request(options);
-        setCountries([...countries, response.data.data]);
-        await timer(1000);
-        if (i == 190) {
-          console.log(countries);
-        }
-      }
-    };
-
-    fetchCountries(0);
-  }, []);
-
+  const countries = useSelector((state) => state.region.allCountries);
+  const selectedRegion = useSelector((state) => state.region.selectedRegion);
+  const dispatch = useDispatch();
   return (
     <div className="dropdown">
       <button
@@ -56,9 +23,19 @@ const CountryDropdown = () => {
         {countries?.map((country) => {
           return (
             <li key={country.name}>
-              <a className="dropdown-item" href="abc">
-                {country.name} - {country.currencyCodes[0]}
-              </a>
+              <div
+                className="dropdown-item country-dropdown"
+                onClick={() => {
+                  dispatch(setRegion({ selectedRegion: country }));
+                }}
+              >
+                {country.name} - {country.currencyCodes[0]}{' '}
+                {country.name === selectedRegion.name ? (
+                  <FontAwesomeIcon icon={faCheck} />
+                ) : (
+                  <></>
+                )}
+              </div>
             </li>
           );
         })}

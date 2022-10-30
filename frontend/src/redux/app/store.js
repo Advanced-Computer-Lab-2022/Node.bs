@@ -1,11 +1,11 @@
-import { configureStore } from "@reduxjs/toolkit";
-import currencyReducer from "../features/currencySlice";
-import userReducer from "../features/userSlice";
-import resultReducer from "../features/resultSlice";
+import { configureStore } from '@reduxjs/toolkit';
+import regionReducer from '../features/regionSlice';
+import userReducer from '../features/userSlice';
+import resultReducer from '../features/resultSlice';
 
 export default configureStore({
   reducer: {
-    currency: currencyReducer,
+    region: regionReducer,
     user: userReducer,
     result: resultReducer,
   },
