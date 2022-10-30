@@ -1,7 +1,7 @@
 @use './../../../scss/_variables' as *;
 
 .card {
-  width: 14rem;
+  width: 12rem;
   margin: auto;
   background-color: $accent-light;
   border-radius: $border-radius;
@@ -10,6 +10,7 @@
   //   @include shadow;
   &:hover {
     transform: scale(1.06);
+    z-index: 20;
   }
 }
 .card-img-top {

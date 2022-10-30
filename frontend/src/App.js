@@ -1,9 +1,11 @@
 import './app.scss';
-import CourseGroup from './components/CourseGroup/CourseGroup';
-import CountryDropdown from './components/CountryDropdown/CountryDropdown';
-
+import Homepage from './Pages/Homepage/Homepage';
 function App() {
-  return <div className="App"></div>;
+  return (
+    <div className="App">
+      <Homepage />
+    </div>
+  );
 }
 
 export default App;

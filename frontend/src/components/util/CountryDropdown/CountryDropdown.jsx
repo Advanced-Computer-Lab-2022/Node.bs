@@ -44,7 +44,7 @@ const CountryDropdown = () => {
   return (
     <div className="dropdown">
       <button
-        className="btn btn-secondary dropdown-toggle"
+        className=" dropdown-toggle"
         type="button"
         id="dropdownMenuButton1"
         data-bs-toggle="dropdown"

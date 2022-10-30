@@ -1,0 +1,35 @@
+@use './../../scss/variables.scss' as *;
+
+.profile-picture {
+  border-radius: 50%;
+  width: 150px;
+  height: 150px;
+
+  margin: auto auto 3% auto;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    overflow: hidden;
+    border-radius: inherit;
+    margin: auto;
+  }
+}
+.user-details {
+  text-align: center;
+}
+
+.edit-icon-container {
+  width: 45px;
+  height: 45px;
+  background-color: $accent-light;
+  border-radius: 13px;
+  cursor: pointer;
+  box-shadow: 1px 1px rgba(106, 105, 105, 0.533);
+  transform: scale(0.8);
+}
+
+.edit-icon {
+  margin: 30%;
+}

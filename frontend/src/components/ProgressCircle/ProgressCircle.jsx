@@ -1,9 +1,9 @@
-import React from "react";
-import "./../components/ProgressCircle.scss"
+import React from 'react';
+import './../ProgressCircle/ProgressCircle.scss';
 function ProgressCircle() {
   return (
     <div>
-      {" "}
+      {' '}
       <div class="c100 p97 small">
         <span>97%</span>
         <div class="slice">
