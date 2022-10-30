@@ -1,12 +1,12 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
-import "./../components/ProgressCard.scss";
-import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import ProgressCircle from "./ProgressCircle";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React from 'react';
+import './../ProgressCard/ProgressCard.scss';
+import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import ProgressCircle from './../ProgressCircle/ProgressCircle';
 function ProgressCard() {
   return (
     <div>
-      <div class="card">
+      <div class="card" id="progress-card">
         <div class="card-body">
           <ProgressCircle />
           <div class="description">
@@ -18,7 +18,7 @@ function ProgressCard() {
           </p> */}
             <FontAwesomeIcon
               icon={faArrowRight}
-              style={{ right: "5%", bottom: "40%", position: "absolute" }}
+              style={{ right: '5%', bottom: '40%', position: 'absolute' }}
             />
           </div>
         </div>

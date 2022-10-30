@@ -1,4 +1,4 @@
-@use "./../scss/variables" as *;
+@use './../../scss/variables' as *;
 
 /****************************************************************
  *
@@ -299,7 +299,7 @@
   top: 0.08em;
   left: 0.08em;
   display: block;
-  content: " ";
+  content: ' ';
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
   -ms-border-radius: 50%;

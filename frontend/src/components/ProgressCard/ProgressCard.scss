@@ -1,10 +1,10 @@
-@use "./../scss/variables" as *;
+@use './../../scss/variables' as *;
 
-.card {
+#progress-card {
   padding-left: 0%;
-  width: 30%;
-  margin-bottom: 2%;
-  margin-top: 2%;
+  width: 100%;
+  margin-bottom: 1%;
+  margin-top: 10%;
   margin-left: 2%;
   bottom: 10px;
   right: 20px;

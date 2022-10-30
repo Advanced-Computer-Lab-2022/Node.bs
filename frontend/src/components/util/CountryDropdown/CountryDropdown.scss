@@ -1,0 +1,23 @@
+@use './../../../scss/variables' as *;
+.dropdown-menu {
+  overflow: scroll;
+  max-height: 200px;
+}
+#dropdownMenuButton1 {
+  margin-left: 7.5%;
+  border: 0;
+  background-color: transparent;
+  &:hover {
+    color: $secondary;
+    background-color: transparent;
+  }
+  &:focus {
+    background-color: transparent;
+    border: 0;
+    color: $secondary;
+    outline: 0;
+  }
+}
+.dropdown-menu {
+  transition: 300ms;
+}
