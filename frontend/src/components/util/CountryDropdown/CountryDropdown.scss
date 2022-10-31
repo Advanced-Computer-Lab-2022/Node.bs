@@ -1,7 +1,8 @@
-@use './../../../scss/variables' as *;
+@use "./../../../scss/variables" as *;
 .dropdown-menu {
   overflow: scroll;
   max-height: 200px;
+  border-radius: 13px;
 }
 #dropdownMenuButton1 {
   // margin-left: 7.5%;
@@ -21,7 +22,7 @@
 .dropdown-menu {
   transition: 300ms;
 }
-.country-dropdown {
+.country-dropdown + #filter-button {
   &:active {
     background-color: $accent;
   }

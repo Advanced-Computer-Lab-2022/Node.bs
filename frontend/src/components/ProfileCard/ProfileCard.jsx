@@ -4,10 +4,10 @@ import { faPencil } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 function ProfileCard() {
   return (
-    <div>
-      <div className="row">
+    <div id = "profile-card">
+      <div className="row" >
         <div className="col-9">
-          <h2>Profile</h2>
+          {/* <h2>Profile</h2> */}
         </div>
         <div className="col">
           <div className="edit-icon-container">
