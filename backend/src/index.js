@@ -29,6 +29,7 @@ app.use(express.json());
 //logger
 app.use((req, res, next) => {
   console.log(req.method, req.path);
+  console.log(req.body);
   next();
 });
 //Register API Routes , need to protect endpoints later

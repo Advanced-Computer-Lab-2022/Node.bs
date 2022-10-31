@@ -1,8 +1,4 @@
-
 import BaseAxios from '../Requester/BaseAxios';
-
-
-
 
 export const getAll = () => {
   return BaseAxios.get('/course');

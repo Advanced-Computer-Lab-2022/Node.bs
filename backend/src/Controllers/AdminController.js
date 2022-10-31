@@ -7,7 +7,7 @@ const CorporateTrainee = require('../Models/CorporateTrainee');
 const createAdmin = async (req, res) => {
   try {
     const existingUser = await Admin.find({
-      $or: [{ username: req.body.username }, { email: req.body.email }],
+      username: req.body.username,
     });
     if (existingUser.length == 0) {
       const admin = await Admin.create(req.body);
@@ -25,7 +25,7 @@ const createAdmin = async (req, res) => {
 const createInstructor = async (req, res) => {
   try {
     const existingUser = await Instructor.find({
-      $or: [{ username: req.body.username }, { email: req.body.email }],
+      $or: [{ username: req.body.username }],
     });
     if (existingUser.length == 0) {
       const instructor = await Instructor.create(req.body);
@@ -43,7 +43,7 @@ const createInstructor = async (req, res) => {
 const createCorporateTrainee = async (req, res) => {
   try {
     const existingUser = await CorporateTrainee.find({
-      $or: [{ username: req.body.username }, { email: req.body.email }],
+      username: req.body.username,
     });
     if (existingUser.length == 0) {
       const corporateTrainee = await CorporateTrainee.create(req.body);

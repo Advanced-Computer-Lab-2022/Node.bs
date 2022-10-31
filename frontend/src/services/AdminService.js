@@ -9,5 +9,5 @@ export const createCorporateTrainee = (trainee) => {
 };
 
 export const createInstructor = (instructor) => {
-  return BaseAxios.get('/admin/instructor', instructor);
+  return BaseAxios.post('/admin/instructor', instructor);
 };

@@ -2,9 +2,7 @@ import React from 'react';
 import './SidebarButton.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-function SidebarButton({ icon, label, primary, toBeAdded }) {
-
-
+function SidebarButton({ icon, label, primary, toBeAdded, click }) {
   return (
     <button
       type="button"
@@ -14,8 +12,8 @@ function SidebarButton({ icon, label, primary, toBeAdded }) {
       }
       id="sidebarButton"
       data-bs-toggle="modal"
-      data-bs-target={"#add" + toBeAdded + "Modal"}
-      
+      data-bs-target={'#add' + toBeAdded + 'Modal'}
+      onClick={click}
     >
       <span className="content">
         <FontAwesomeIcon icon={icon} className="icon" />

@@ -10,10 +10,12 @@ import { useDispatch } from 'react-redux';
 import {
   setFilteredCourses,
   setAction,
+  searchCourses,
 } from '../../redux/features/resultSlice';
 
 function Filter() {
   let allCourses = useSelector((state) => state.courses.all);
+  let filteredCourses = useSelector((state) => state.courses.results);
   let allSubjects = useSelector((state) => state.subjects.all);
   const [subjects, setSubjects] = useState([]);
   const [rating, setRating] = useState([]);
@@ -26,19 +28,49 @@ function Filter() {
   //change handlers
   const handleSubmit = (e) => {
     if (minPrice <= maxPrice) {
-      e.preventDefault();
-      const newFiltered = allCourses.filter((course) => {
-        return (
-          (rating.includes(course.rating.toString()) || rating.length === 0) &&
-          (subjects.length === 0 || subjects.includes(course.subject)) &&
-          ((course.price <= maxPrice && course.price >= minPrice) ||
-            (minPrice === 0 && maxPrice === 0))
+      if (userInfo.type !== 'instructor') {
+        e.preventDefault();
+        const newFiltered = allCourses.filter((course) => {
+          return (
+            (rating.includes(course.rating.toString()) ||
+              rating.length === 0) &&
+            (subjects.length === 0 || subjects.includes(course.subject)) &&
+            ((course.price <= maxPrice && course.price >= minPrice) ||
+              (minPrice === 0 && maxPrice === 0))
+          );
+        });
+        console.log(rating, subjects, maxPrice, minPrice);
+        console.log(newFiltered);
+        dispatch(setFilteredCourses(newFiltered));
+        dispatch(setAction('filter'));
+      } else {
+        dispatch(
+          searchCourses({
+            query: {
+              title: 'bhadsujbaoubobadohbdapsbdsidash',
+              subject: 'jkbiuvacasbvuocbvoisboiasbab',
+            },
+            extQuery: {
+              query: {
+                firstName: userInfo.user.firstName,
+                lastName: userInfo.user.lastName,
+              },
+            },
+          })
         );
-      });
-      console.log(rating, subjects, maxPrice, minPrice);
-      console.log(newFiltered);
-      dispatch(setFilteredCourses(newFiltered));
-      dispatch(setAction('filter'));
+        const newFiltered = filteredCourses.filter((course) => {
+          return (
+            (rating.includes(course.rating.toString()) ||
+              rating.length === 0) &&
+            (subjects.length === 0 || subjects.includes(course.subject)) &&
+            ((course.price <= maxPrice && course.price >= minPrice) ||
+              (minPrice === 0 && maxPrice === 0))
+          );
+        });
+
+        dispatch(setFilteredCourses(newFiltered));
+        dispatch(setAction('InstructorFilter'));
+      }
     }
   };
   //price will be min - max
