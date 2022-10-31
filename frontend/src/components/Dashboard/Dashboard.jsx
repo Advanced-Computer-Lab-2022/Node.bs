@@ -5,13 +5,31 @@ import ProgressCard from '../ProgressCard/ProgressCard';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { getAllCourses } from '../../redux/features/resultSlice';
+
 import AddForm from '../AddForm/CoursePreview';
+
+import Filter from '../Filter/Filter';
+
 const Dashboard = (props) => {
   const dispatch = useDispatch();
-  const courses = useSelector((state) => state.courses.all);
+  let all = useSelector((state) => state.courses.all);
+  let results = useSelector((state) => state.courses.results);
+  // let displayedCourses = all;
+  const lastAction = useSelector((state) => state.courses.lastActionDone);
   useEffect(() => {
     dispatch(getAllCourses());
   }, []);
+  let courses;
+  useEffect(() => {
+    courses = lastAction === 'getAll' ? all : results;
+  }, [lastAction, all, results]);
+  // const updateState = () => {
+  //   all = useSelector((state) => state.courses.all);
+  //   results = useSelector((state) => state.courses.results);
+  // };
+  // useEffect(() => {
+  //   displayedCourses = lastAction === 'getAll' ? all : results;
+  // }, [lastAction, all, results]);
   // let coursesClone = [
   //   {
   //     title: "Theory Of Computation",
@@ -93,10 +111,18 @@ const Dashboard = (props) => {
           </div>
         </div>
         <div className="row">
-          <div className="col-12">
-            <h4>Course Catalog</h4>
+          <div className="col-9">
+            {lastAction === 'getAll' ? (
+              <h4>Course Catalog</h4>
+            ) : (
+              <h4>Search Results</h4>
+            )}
           </div>
-          <CourseGroup courses={courses} />
+          <div className="col-3 text-end ">
+            <Filter />
+          </div>
+
+          <CourseGroup courses={lastAction === 'getAll' ? all : results} />
 
         </div>
       </div>
