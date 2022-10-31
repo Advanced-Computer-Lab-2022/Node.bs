@@ -1,4 +1,4 @@
-@use "./../../scss/variables" as *;
+@use './../../scss/variables' as *;
 
 // .form-outline {
 //   width: 40%;
@@ -38,3 +38,11 @@
 //   outline: 1px solid red;
 // }
 
+#searchButton {
+  border-color: $accent;
+  color: $accent;
+  border-radius: 25px;
+  &:hover {
+    background-color: $accent-light;
+  }
+}
