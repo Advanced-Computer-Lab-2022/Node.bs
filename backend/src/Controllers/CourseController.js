@@ -36,7 +36,7 @@ const oFilterCourses = async (req, res) => {
 
 //get all Courses
 const getAllCourses = async (req, res) => {
-  const result = await Course.find();
+  const result = await Course.find().populate('instructors');
 
   if (result) {
     return res.status(200).json(result);
@@ -47,7 +47,7 @@ const getAllCourses = async (req, res) => {
 
 //filter courses
 const filterCourses = async (req, res) => {
-  const result = await Course.find(req.body.query);
+  const result = await Course.find({}).populate('instructors');
 
   if (result) {
     return res.status(200).json(result);
@@ -58,10 +58,35 @@ const filterCourses = async (req, res) => {
 
 //seach courses
 const searchCourses = async (req, res) => {
-  const result = await Course.find(req.body.query).populate({
-    path: req.body.extQuery.toBePopulated,
-    match: req.body.extQuery.query,
+  console.log(req.body);
+  const { title, subject } = req.body.query;
+  const { firstName, lastName } = req.body.extQuery.query;
+  let result1 = await Course.find({
+    $or: [
+      { title: { $regex: '(?i)' + title + '(?-i)' } },
+      { subject: { $regex: '(?i)' + subject + '(?-i)' } },
+    ],
+  }).populate('instructors');
+
+  console.log(result1);
+
+  let result2 = await Course.find().populate({
+    path: 'instructors',
+    match: {
+      $or: [
+        { firstName: { $regex: '(?i)' + firstName + '(?-i)' } },
+        { lastName: { $regex: '(?i)' + lastName + '(?-i)' } },
+      ],
+    },
   });
+  console.log(result2);
+
+  result2 = result2.filter((entry) => entry.instructors.length !== 0);
+
+  result1 = result1.filter(function (val) {
+    return result2.indexOf(val) == -1;
+  });
+  const result = result1.concat(result2);
 
   if (result) {
     return res.status(200).json(result);

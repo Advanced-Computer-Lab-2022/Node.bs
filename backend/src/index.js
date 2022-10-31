@@ -4,6 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const adminRoutes = require('./Routes/AdminRoutes');
 const courseRoutes = require('./Routes/CourseRoutes');
+const cors = require('cors');
 
 //Mongo URI
 const mongoURI = process.env.MONGO_URI;
@@ -13,10 +14,23 @@ const port = process.env.PORT || '8000';
 
 //create express app
 const app = express();
+app.use(cors());
+app.options('*', cors());
+//cors error handler
+// app.use((req, res, next) => {
+//   res.header('Access-Control-Allow-Origin', '*');
+//   res.header('Access-Control-Allow-Headers', '*');
+//   next();
+// });
 
 //JSON body parser middleware
 app.use(express.json());
 
+//logger
+app.use((req, res, next) => {
+  console.log(req.method, req.path);
+  next();
+});
 //Register API Routes , need to protect endpoints later
 app.use('/course', courseRoutes);
 app.use('/admin', adminRoutes);
