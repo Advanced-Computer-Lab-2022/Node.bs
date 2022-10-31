@@ -5,6 +5,7 @@ import ProgressCard from '../ProgressCard/ProgressCard';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { getAllCourses } from '../../redux/features/resultSlice';
+import AddForm from '../AddForm/CoursePreview';
 const Dashboard = (props) => {
   const dispatch = useDispatch();
   const courses = useSelector((state) => state.courses.all);
@@ -96,6 +97,7 @@ const Dashboard = (props) => {
             <h4>Course Catalog</h4>
           </div>
           <CourseGroup courses={courses} />
+
         </div>
       </div>
       <div className="col-4">

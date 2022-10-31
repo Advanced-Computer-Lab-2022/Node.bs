@@ -1,9 +1,13 @@
 @use './../../scss/variables' as *;
 
 * {
-  //   outline: 1px solid red;
+    // outline: 1px solid red;
 }
 .logo {
   margin-bottom: 52%;
   padding-left: 3%;
+}
+
+#subtitleAccordion{
+  width: 50%;
 }
