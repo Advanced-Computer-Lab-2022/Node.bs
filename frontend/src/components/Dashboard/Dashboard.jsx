@@ -5,7 +5,11 @@ import ProgressCard from '../ProgressCard/ProgressCard';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { getAllCourses } from '../../redux/features/resultSlice';
+
+import AddForm from '../AddForm/CoursePreview';
+
 import Filter from '../Filter/Filter';
+
 const Dashboard = (props) => {
   const dispatch = useDispatch();
   let all = useSelector((state) => state.courses.all);
@@ -117,7 +121,9 @@ const Dashboard = (props) => {
           <div className="col-3 text-end ">
             <Filter />
           </div>
+
           <CourseGroup courses={lastAction === 'getAll' ? all : results} />
+
         </div>
       </div>
       <div className="col-4">

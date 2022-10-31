@@ -1,4 +1,4 @@
-import BaseAxios from '../requester/BaseAxios';
+import BaseAxios from '../Requester/BaseAxios';
 
 export const createAdmin = (admin) => {
   return BaseAxios.post('/admin', admin);

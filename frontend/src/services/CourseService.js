@@ -1,5 +1,8 @@
-import BaseAxios from '../requester/BaseAxios';
-import { stringify } from 'qs';
+
+import BaseAxios from '../Requester/BaseAxios';
+
+
+
 
 export const getAll = () => {
   return BaseAxios.get('/course');

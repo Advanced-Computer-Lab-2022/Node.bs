@@ -1,11 +1,11 @@
-import './CourseCard.scss';
-import AvatarGrouping from '../../util/AvatarGroup/AvatarGroup';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { useSelector } from 'react-redux';
-import Rating from 'react-rating';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import "./CourseCard.scss";
+import AvatarGrouping from "../../util/AvatarGroup/AvatarGroup";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { useSelector } from "react-redux";
+import Rating from "react-rating";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 const CourseCard = ({ course }) => {
   const userInfo = useSelector((state) => state.user);
@@ -15,16 +15,16 @@ const CourseCard = ({ course }) => {
   const [exRate, setExRate] = useState(1);
 
   useEffect(() => {
-    if (currency !== 'USD') {
+    if (currency !== "USD") {
       const options = {
-        method: 'GET',
-        url: 'https://currency-conversion-and-exchange-rates.p.rapidapi.com/latest',
-        params: { from: 'USD', to: currency },
+        method: "GET",
+        url: "https://currency-conversion-and-exchange-rates.p.rapidapi.com/latest",
+        params: { from: "USD", to: currency },
         headers: {
-          'X-RapidAPI-Key':
-            'f72163360cmsh09ef48913e0dc1ep173f30jsn2d648e344719',
-          'X-RapidAPI-Host':
-            'currency-conversion-and-exchange-rates.p.rapidapi.com',
+          "X-RapidAPI-Key":
+            "f72163360cmsh09ef48913e0dc1ep173f30jsn2d648e344719",
+          "X-RapidAPI-Host":
+            "currency-conversion-and-exchange-rates.p.rapidapi.com",
         },
       };
       axios
@@ -58,7 +58,7 @@ const CourseCard = ({ course }) => {
               {course.totalHours} Hours
             </p>
           </div>
-          {userInfo.type !== 'corporate' ? (
+          {userInfo.type !== "corporate" ? (
             <div className="col-6 text-end p-0">
               <p id="currency">
                 {course.currentDiscount &&
@@ -70,7 +70,7 @@ const CourseCard = ({ course }) => {
                       exRate
                     ).toFixed(2)
                   : (course.price * exRate).toFixed(2)}
-                {' ' + currency}
+                {" " + currency}
               </p>
             </div>
           ) : (
@@ -86,9 +86,119 @@ const CourseCard = ({ course }) => {
             <AvatarGrouping instructors={course.instructors} />
           </div>
           <div className="arrow text-end col-md-3 ">
-            <button className="btn btn-primary" id="card-button">
+            <button
+              className="btn btn-primary"
+              id="card-button"
+              data-bs-toggle="modal"
+              data-bs-target= "coursePreviewModal"
+            >
               <FontAwesomeIcon icon={faChevronRight} />
             </button>
+            <div
+              class="modal fade modal-fullscreen"
+              id="coursePreviewModal"
+              data-bs-backdrop="static"
+              data-bs-keyboard="false"
+              tabindex="-1"
+              aria-labelledby="staticBackdropLabel"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog modal-fullscreen">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">
+                      Course Preview
+                    </h5>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <div class="modal-body">
+                    <div className="row">
+                      <div className="col-6">
+                        <img
+                          src="https://cdn3.iconfinder.com/data/icons/logos-and-brands-adobe/512/267_Python-512.png"
+                          style={{ width: "150px", height: "150px" }}
+                        />
+                        <div className="row mb-3">
+                          <div className="col-6">
+                            <h1>{course.title}</h1>
+                          </div>
+                          <div className="col-6 text-end">
+                            <h3>
+                              {course.price} {currency}
+                            </h3>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="col-6 text-end">
+                        <iframe
+                          width="560"
+                          height="315"
+                          src={course.videoURL}
+                          title="YouTube video player"
+                          frameborder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowfullscreen
+                        ></iframe>
+                      </div>
+                    </div>
+
+                    <div className="row mb-3">
+                      <p style={{ width: "50%" }}>{course.description}</p>
+                    </div>
+                    <div className="row mb-3">
+                      <h6 style={{ color: "#cccc" }}>{course.totalHours}</h6>
+                    </div>
+                    <div className="row">
+                      <div class="accordion" id="subtitleAccordion">
+                        {course.subtitles.map((subtitle) => {
+                          <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingOne">
+                              <button
+                                class="accordion-button"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#collapseOne"
+                                aria-expanded="true"
+                                aria-controls="collapseOne"
+                              >
+                                {subtitle.name}
+                              </button>
+                            </h2>
+                            <div
+                              id="collapseOne"
+                              class="accordion-collapse collapse show"
+                              aria-labelledby="headingOne"
+                              data-bs-parent="#accordionExample"
+                            >
+                              <div class="accordion-body">
+                                <ul>
+                                  {course.subtitle.lesson.map((lesson) => {
+                                    <div className="row">
+                                      <div className="col-6">
+                                        <li>{lesson.name}</li>
+                                      </div>
+                                      <div className="col-6 text-end">
+                                        {lesson.hours}
+                                      </div>
+                                    </div>;
+                                  })}
+                                </ul>
+                              </div>
+                            </div>
+                          </div>;
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
