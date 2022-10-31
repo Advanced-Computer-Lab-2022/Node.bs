@@ -2,7 +2,9 @@ import AvatarGroup from 'react-avatar-group';
 const AvatarGrouping = ({ instructors }) => {
   return (
     <AvatarGroup
-      avatars={instructors.map((instructor) => instructor.name)}
+      avatars={instructors.map(
+        (instructor) => instructor.firstName + ' ' + instructor.lasttName
+      )}
       initialCharacters={1}
       max={2}
       size={26}

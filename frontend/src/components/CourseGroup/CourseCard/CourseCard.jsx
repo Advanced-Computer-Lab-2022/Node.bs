@@ -1,11 +1,11 @@
-import "./CourseCard.scss";
-import AvatarGrouping from "../../util/AvatarGroup/AvatarGroup";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
-import { useSelector } from "react-redux";
-import Rating from "react-rating";
-import axios from "axios";
-import { useEffect, useState } from "react";
+import './CourseCard.scss';
+import AvatarGrouping from '../../util/AvatarGroup/AvatarGroup';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { useSelector } from 'react-redux';
+import Rating from 'react-rating';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 const CourseCard = ({ course }) => {
   const userInfo = useSelector((state) => state.user);
@@ -15,16 +15,16 @@ const CourseCard = ({ course }) => {
   const [exRate, setExRate] = useState(1);
 
   useEffect(() => {
-    if (currency !== "USD") {
+    if (currency !== 'USD') {
       const options = {
-        method: "GET",
-        url: "https://currency-conversion-and-exchange-rates.p.rapidapi.com/latest",
-        params: { from: "USD", to: currency },
+        method: 'GET',
+        url: 'https://currency-conversion-and-exchange-rates.p.rapidapi.com/latest',
+        params: { from: 'USD', to: currency },
         headers: {
-          "X-RapidAPI-Key":
-            "f72163360cmsh09ef48913e0dc1ep173f30jsn2d648e344719",
-          "X-RapidAPI-Host":
-            "currency-conversion-and-exchange-rates.p.rapidapi.com",
+          'X-RapidAPI-Key':
+            'f72163360cmsh09ef48913e0dc1ep173f30jsn2d648e344719',
+          'X-RapidAPI-Host':
+            'currency-conversion-and-exchange-rates.p.rapidapi.com',
         },
       };
       axios
@@ -58,11 +58,11 @@ const CourseCard = ({ course }) => {
               {course.totalHours} Hours
             </p>
           </div>
-          {userInfo.type !== "corporate" ? (
+          {userInfo.type !== 'corporate' ? (
             <div className="col-6 text-end p-0">
               <p id="currency">
                 {course.currentDiscount &&
-                course.currentDiscount?.expiryDate.getTime() >
+                new Date(course.currentDiscount?.expiryDate) >
                   new Date().getTime()
                   ? (
                       course.price *
@@ -70,7 +70,7 @@ const CourseCard = ({ course }) => {
                       exRate
                     ).toFixed(2)
                   : (course.price * exRate).toFixed(2)}
-                {" " + currency}
+                {' ' + currency}
               </p>
             </div>
           ) : (
