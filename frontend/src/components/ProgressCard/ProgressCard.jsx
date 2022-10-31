@@ -6,6 +6,7 @@ import ProgressCircle from './../ProgressCircle/ProgressCircle';
 function ProgressCard() {
   return (
     <div>
+      {/* <h2>My Courses</h2> */}
       <div class="card" id="progress-card">
         <div class="card-body">
           <ProgressCircle />

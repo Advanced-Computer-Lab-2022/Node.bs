@@ -31,12 +31,17 @@ export const createCourse = createAsyncThunk(
 );
 
 export const resultSlice = createSlice({
-  name: "results",
+  name: "courses",
   initialState: {
     results: [],
     all: [],
+    lastActionDone: "getAll",
   },
-  reducers: {},
+  reducers: {
+    setAction: (state, action) => {
+      state.lastActionDone = action.payload;
+    },
+  },
   extraReducers: {
     [getAllCourses.fulfilled]: (state, action) => {
       state.all = [...action.payload];
@@ -54,6 +59,6 @@ export const resultSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-// export const {} = searchResultSlice.actions;
+export const { setAction } = resultSlice.actions;
 
 export default resultSlice.reducer;

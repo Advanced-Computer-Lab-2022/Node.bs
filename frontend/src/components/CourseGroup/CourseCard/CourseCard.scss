@@ -1,4 +1,4 @@
-@use './../../../scss/_variables' as *;
+@use "./../../../scss/_variables" as *;
 
 .card {
   width: 12rem;
@@ -29,8 +29,11 @@
 .font-secondary {
   color: $secondary;
 }
-.btn-primary,
-.btn {
+#currency {
+  color: rgb(7, 189, 7);
+  font-weight: 600;
+}
+#card-button {
   background-color: $accent;
   border: 0;
   border-radius: $border-radius;

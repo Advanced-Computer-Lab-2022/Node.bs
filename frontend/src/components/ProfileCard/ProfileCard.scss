@@ -1,5 +1,9 @@
 @use './../../scss/variables.scss' as *;
 
+#profile-card{
+  margin-bottom: 5%;
+}
+
 .profile-picture {
   border-radius: 50%;
   width: 150px;
