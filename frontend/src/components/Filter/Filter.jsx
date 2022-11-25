@@ -6,73 +6,73 @@ import './Filter.scss';
 import { useState } from 'react';
 import { Multiselect } from 'multiselect-react-dropdown';
 import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
-import {
-  setFilteredCourses,
-  setAction,
-  searchCourses,
-} from '../../redux/features/resultSlice';
 
-function Filter() {
-  let allCourses = useSelector((state) => state.courses.all);
-  let filteredCourses = useSelector((state) => state.courses.results);
-  let allSubjects = useSelector((state) => state.subjects.all);
+function Filter({ type, changeHandler }) {
+  // let allCourses = useSelector((state) => state.courses.all);
+  // let filteredCourses = useSelector((state) => state.courses.results);
+  const [allSubjects, setAllSubjects] = useState([
+    'Computer Science',
+    'Language',
+    'Economics',
+    'Accounting',
+    'Mathematics',
+    'Programming',
+  ]);
   const [subjects, setSubjects] = useState([]);
   const [rating, setRating] = useState([]);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(0);
-  const userInfo = useSelector((state) => state.user);
-  const dispatch = useDispatch();
+
   // results;
 
   //change handlers
-  const handleSubmit = (e) => {
-    if (minPrice <= maxPrice) {
-      if (userInfo.type !== 'instructor') {
-        e.preventDefault();
-        const newFiltered = allCourses.filter((course) => {
-          return (
-            (rating.includes(course.rating.toString()) ||
-              rating.length === 0) &&
-            (subjects.length === 0 || subjects.includes(course.subject)) &&
-            ((course.price <= maxPrice && course.price >= minPrice) ||
-              (minPrice === 0 && maxPrice === 0))
-          );
-        });
-        console.log(rating, subjects, maxPrice, minPrice);
-        console.log(newFiltered);
-        dispatch(setFilteredCourses(newFiltered));
-        dispatch(setAction('filter'));
-      } else {
-        dispatch(
-          searchCourses({
-            query: {
-              title: 'bhadsujbaoubobadohbdapsbdsidash',
-              subject: 'jkbiuvacasbvuocbvoisboiasbab',
-            },
-            extQuery: {
-              query: {
-                firstName: userInfo.user.firstName,
-                lastName: userInfo.user.lastName,
-              },
-            },
-          })
-        );
-        const newFiltered = filteredCourses.filter((course) => {
-          return (
-            (rating.includes(course.rating.toString()) ||
-              rating.length === 0) &&
-            (subjects.length === 0 || subjects.includes(course.subject)) &&
-            ((course.price <= maxPrice && course.price >= minPrice) ||
-              (minPrice === 0 && maxPrice === 0))
-          );
-        });
+  // const handleSubmit = (e) => {
+  //   if (minPrice <= maxPrice) {
+  //     if (type !== 'instructor') {
+  //       e.preventDefault();
+  //       const newFiltered = allCourses.filter((course) => {
+  //         return (
+  //           (rating.includes(course.rating.toString()) ||
+  //             rating.length === 0) &&
+  //           (subjects.length === 0 || subjects.includes(course.subject)) &&
+  //           ((course.price <= maxPrice && course.price >= minPrice) ||
+  //             (minPrice === 0 && maxPrice === 0))
+  //         );
+  //       });
+  //       console.log(rating, subjects, maxPrice, minPrice);
+  //       console.log(newFiltered);
+  //       dispatch(setFilteredCourses(newFiltered));
+  //       dispatch(setAction('filter'));
+  //     } else {
+  //       dispatch(
+  //         searchCourses({
+  //           query: {
+  //             title: 'bhadsujbaoubobadohbdapsbdsidash',
+  //             subject: 'jkbiuvacasbvuocbvoisboiasbab',
+  //           },
+  //           extQuery: {
+  //             query: {
+  //               firstName: userInfo.user.firstName,
+  //               lastName: userInfo.user.lastName,
+  //             },
+  //           },
+  //         })
+  //       );
+  //       const newFiltered = filteredCourses.filter((course) => {
+  //         return (
+  //           (rating.includes(course.rating.toString()) ||
+  //             rating.length === 0) &&
+  //           (subjects.length === 0 || subjects.includes(course.subject)) &&
+  //           ((course.price <= maxPrice && course.price >= minPrice) ||
+  //             (minPrice === 0 && maxPrice === 0))
+  //         );
+  //       });
 
-        dispatch(setFilteredCourses(newFiltered));
-        dispatch(setAction('InstructorFilter'));
-      }
-    }
-  };
+  //       dispatch(setFilteredCourses(newFiltered));
+  //       dispatch(setAction('InstructorFilter'));
+  //     }
+  //   }
+  // };
   //price will be min - max
 
   return (
@@ -130,7 +130,7 @@ function Filter() {
             />
           </div>
         </li>
-        {userInfo.type !== 'corporate' ? (
+        {type !== 'corporate' ? (
           <li>
             <div className="filter-item">
               <h6>Price</h6>
@@ -166,7 +166,9 @@ function Filter() {
             <button
               className="btn btn-primary col-12"
               style={{ marginTop: '3%' }}
-              onClick={handleSubmit}
+              onClick={() =>
+                changeHandler(rating, subjects, maxPrice, minPrice)
+              }
             >
               Apply Filters
             </button>

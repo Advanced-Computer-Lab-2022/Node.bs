@@ -4,38 +4,17 @@ import './../ProfileCard/ProfileCard.scss';
 import './../util/CountryDropdown/CountryDropdown.scss';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { searchCourses, setAction } from '../../redux/features/resultSlice';
 
-function Searchbar() {
+const Searchbar = ({ searchHandler }) => {
   const [searchText, setSearchText] = useState('');
   const inputHandler = (e) => {
     setSearchText(e.target.value.toLowerCase());
   };
-  const dispatch = useDispatch();
+
   useEffect(() => {
     console.log(searchText);
   }, [searchText]);
 
-  const handleSearch = () => {
-    if (searchText !== '') {
-      dispatch(
-        searchCourses({
-          query: {
-            title: searchText,
-            subject: searchText,
-          },
-          extQuery: {
-            query: {
-              firstName: searchText,
-              lastName: searchText,
-            },
-          },
-        })
-      );
-      dispatch(setAction('search'));
-    }
-  };
   return (
     <div className="form-outline row ">
       <div className="col-9">
@@ -52,13 +31,29 @@ function Searchbar() {
         <button
           className="btn btn-outline-secondary"
           id="searchButton"
-          onClick={handleSearch}
+          onClick={(e) => {
+            e.preventDefault();
+            if (searchText !== '') {
+              searchHandler({
+                query: {
+                  title: searchText,
+                  subject: searchText,
+                },
+                extQuery: {
+                  query: {
+                    firstName: searchText,
+                    lastName: searchText,
+                  },
+                },
+              });
+            }
+          }}
         >
           Search
         </button>
       </div>
     </div>
   );
-}
+};
 
 export default Searchbar;

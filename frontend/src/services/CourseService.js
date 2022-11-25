@@ -4,8 +4,8 @@ export const getAll = () => {
   return BaseAxios.get('/course');
 };
 
-export const filter = (query) => {
-  return BaseAxios.post('/course/filter', query);
+export const filter = (instructorId) => {
+  return BaseAxios.post('/course/filter?instructorId=' + instructorId);
 };
 
 export const search = (query) => {

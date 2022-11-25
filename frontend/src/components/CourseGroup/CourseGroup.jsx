@@ -2,13 +2,15 @@ import CourseCard from './CourseCard/CourseCard';
 import './CourseGroup.scss';
 import { useSelector } from 'react-redux';
 
-const CourseGroup = ({ courses }) => {
+const CourseGroup = ({ courses, loading }) => {
   const currency = useSelector(
     (state) => state.region.selectedRegion.currencyCodes[0]
   );
   return (
     <div className="container">
       <div className="row">
+        {!loading && courses.length === 0 && <h3>No results found.</h3>}
+        {loading && <h3>Loading...</h3>}
         {courses.map((course) => {
           return (
             <>
@@ -62,9 +64,9 @@ const CourseGroup = ({ courses }) => {
                             height="315"
                             src={course.videoURL}
                             title="YouTube video player"
-                            frameborder="0"
+                            frameBorder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen
+                            allowFullScreen
                           ></iframe>
                         </div>
                       </div>
