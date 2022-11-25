@@ -1,4 +1,31 @@
+import { useRef } from 'react';
+
 const AddForm = ({ toBeAdded, handleSubmit }) => {
+  const usernameRef = useRef();
+  const passwordRef = useRef();
+  const confirmPasswordRef = useRef();
+
+  const submitForm = async () => {
+    if (
+      passwordRef.current.value === confirmPasswordRef.current.value &&
+      !/^ *$/.test(usernameRef.current.value) &&
+      !/^ *$/.test(passwordRef.current.value)
+    ) {
+      const data = {
+        username: usernameRef.current.value,
+        password: passwordRef.current.value,
+      };
+      await handleSubmit(data);
+      usernameRef.current.value = '';
+      passwordRef.current.value = '';
+      confirmPasswordRef.current.value = '';
+      alert('Insert was a success!');
+    } else {
+      //warn for non matching passwords
+      alert('Please insert valid data');
+    }
+  };
+
   return (
     <div
       class="modal fade"
@@ -29,9 +56,11 @@ const AddForm = ({ toBeAdded, handleSubmit }) => {
                   Username
                 </label>
                 <input
+                  ref={usernameRef}
                   type="text"
                   class="form-control"
                   id={'inputUsername' + toBeAdded}
+                  required
                 />
               </div>
             </div>
@@ -41,9 +70,11 @@ const AddForm = ({ toBeAdded, handleSubmit }) => {
                   Password
                 </label>
                 <input
+                  ref={passwordRef}
                   type="password"
                   class="form-control"
                   id={'inputPassword' + toBeAdded}
+                  required
                 />
               </div>
             </div>
@@ -53,15 +84,19 @@ const AddForm = ({ toBeAdded, handleSubmit }) => {
                   Confirm Password
                 </label>
                 <input
+                  ref={confirmPasswordRef}
                   type="password"
                   class="form-control"
                   id={'inputConfirmationPassword' + toBeAdded}
+                  required
                 />
               </div>
             </div>
-            <button class="btn btn-primary" onClick={handleSubmit}>
-              Submit
-            </button>
+            <div className="">
+              <button className="btn btn-primary " onClick={submitForm}>
+                Add
+              </button>
+            </div>
           </div>
         </div>
       </div>

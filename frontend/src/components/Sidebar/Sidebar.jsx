@@ -58,57 +58,6 @@ function Sidebar() {
   const currency = useSelector(
     (state) => state.region.selectedRegion.currencyCodes[0]
   );
-  const addCorporateTrainee = async () => {
-    try {
-      const response = await createCorporateTrainee({
-        username: document.getElementById('inputUsernameCorporateTrainee')
-          .value,
-        password: document.getElementById('inputPasswordCorporateTrainee')
-          .value,
-      });
-      setSuccess(true);
-      setTimeout(() => setSuccess(false), 3000);
-      document.getElementById('inputUsernameCorporateTrainee').value = '';
-      document.getElementById('inputPasswordCorporateTrainee').value = '';
-      document.getElementById(
-        'inputConfirmationPasswordCorporateTrainee'
-      ).value = '';
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const addInstructor = async () => {
-    try {
-      const response = await createInstructor({
-        username: document.getElementById('inputUsernameInstructor').value,
-        password: document.getElementById('inputPasswordInstructor').value,
-      });
-      setSuccess(true);
-      setTimeout(() => setSuccess(false), 3000);
-      document.getElementById('inputUsernameInstructor').value = '';
-      document.getElementById('inputPasswordInstructor').value = '';
-      document.getElementById('inputConfirmationPasswordInstructor').value = '';
-    } catch (e) {
-      console.log(e);
-    }
-  };
-  const addAdminstrator = async () => {
-    try {
-      const response = await createAdmin({
-        username: document.getElementById('inputUsernameAdminstrator').value,
-        password: document.getElementById('inputPasswordAdminstrator').value,
-      });
-      setSuccess(true);
-      setTimeout(() => setSuccess(false), 3000);
-      document.getElementById('inputUsernameAdminstrator').value = '';
-      document.getElementById('inputPasswordAdminstrator').value = '';
-      document.getElementById('inputConfirmationPasswordAdminstrator').value =
-        '';
-    } catch (e) {
-      console.log(e.response);
-    }
-  };
 
   return (
     <div class="container-fluid">
@@ -123,34 +72,6 @@ function Sidebar() {
         <SidebarButton icon={faClipboard} label="Tests" />
         <SidebarButton icon={faCog} label="Settings" />
 
-        {userInfo.type === 'admin' ? (
-          <>
-            {' '}
-            <SidebarButton
-              icon={faChalkboardTeacher}
-              label="Add Instructor"
-              toBeAdded="Instructor"
-            />
-            <AddForm toBeAdded="Instructor" handleSubmit={addInstructor} />
-            <SidebarButton
-              icon={faGraduationCap}
-              label="Add Corporate Trainee"
-              toBeAdded="CorporateTrainee"
-            />
-            <AddForm
-              toBeAdded="CorporateTrainee"
-              handleSubmit={addCorporateTrainee}
-            />
-            <SidebarButton
-              icon={faKey}
-              label="Add Adminstrator"
-              toBeAdded="Adminstrator"
-            />
-            <AddForm toBeAdded="Adminstrator" handleSubmit={addAdminstrator} />
-          </>
-        ) : (
-          <></>
-        )}
         {userInfo.type === 'instructor' ? (
           <>
             <SidebarButton

@@ -1,4 +1,5 @@
 const Course = require('./../Models/Course');
+const mongoose = require('mongoose');
 
 //optimized with extra projection parameter to reduce response size
 const oSearchCourses = async (req, res) => {
@@ -47,7 +48,10 @@ const getAllCourses = async (req, res) => {
 
 //filter courses
 const filterCourses = async (req, res) => {
-  const result = await Course.find({}).populate('instructors');
+  const instructorId = req.query.instructorId;
+  const result = await Course.find({
+    instructors: { $in: [mongoose.Types.ObjectId(instructorId)] },
+  }).populate('instructors');
 
   if (result) {
     return res.status(200).json(result);
@@ -104,6 +108,8 @@ const createCourse = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+//get course by ID
 
 module.exports = {
   oSearchCourses,
