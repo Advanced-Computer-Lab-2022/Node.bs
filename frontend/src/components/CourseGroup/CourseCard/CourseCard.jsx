@@ -3,10 +3,12 @@ import AvatarGrouping from '../../util/AvatarGroup/AvatarGroup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { useSelector } from 'react-redux';
-import Rating from 'react-rating';
+// import Rating from 'react-rating';
+import Rating from 'react-star-rating-lite';
+
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import CourseModal from '../../CourseModal/CourseModal';
+// import CourseModal from '../../CourseModal/CourseModal';
 
 const CourseCard = ({ course }) => {
   const userInfo = useSelector((state) => state.user);
@@ -40,7 +42,7 @@ const CourseCard = ({ course }) => {
     } else {
       setExRate(1);
     }
-  }, [currency]);
+  }, [currency, exRate]);
 
   // https://picsum.photos/160/100/
   return (
@@ -82,7 +84,7 @@ const CourseCard = ({ course }) => {
             <></>
           )}
           <div className="col-12 text-center">
-            <Rating start={0} stop={5} readonly initialRating={course.rating} />
+            <Rating readonly value={course.rating} weight={'22'} />
           </div>
         </div>
         {/* <br /> */}
@@ -95,8 +97,8 @@ const CourseCard = ({ course }) => {
               type="button"
               className="btn btn-primary"
               id="card-button"
-              data-bs-toggle="modal"
-              data-bs-target={'#' + course.title.split(' ').join('')}
+              // data-bs-toggle="modal"
+              // data-bs-target={'#' + course.title.split(' ').join('')}
             >
               <FontAwesomeIcon icon={faChevronRight} />
             </button>

@@ -2,10 +2,46 @@ import Multiselect from 'multiselect-react-dropdown';
 import React from 'react';
 import { useRef } from 'react';
 import { useState } from 'react';
-import { create as createCourse } from '../../services/CourseService';
+import { create as createCourse } from '../../../services/CourseService';
+import alert from 'sweetalert2';
 
 const AddCourse = ({ InstructorId }) => {
-  const [allSubjects, setAllSubjects] = useState([
+  const handleCourseSubmit = async () => {
+    try {
+      const course = {
+        title: courseTitleRef.current.value,
+        totalHours: courseHoursRef.current.value,
+        subject: courseSubject,
+        subtitles: courseSubtitlesRef.current.value?.split(','),
+        price: coursePriceRef.current.value,
+        description: courseDescriptionRef.current.value,
+        instructors: [InstructorId],
+      };
+      if (
+        course.title === '' ||
+        course.totalHours === '' ||
+        course.subject === undefined ||
+        course.subtitles[0] === '' ||
+        course.price === '' ||
+        course.description === ''
+      ) {
+        alert.fire(
+          'Bad Input!',
+          `Please don't leave any blank fields`,
+          'warning'
+        );
+      } else {
+        await createCourse(course);
+        alert.fire('Added Course', '', 'success');
+        closeButton.current.click();
+      }
+    } catch (e) {
+      console.log(e);
+      alert.fire('Unexpected error has occured!', e.message, 'error');
+      closeButton.current.click();
+    }
+  };
+  const [allSubjects] = useState([
     'Computer Science',
     'Language',
     'Economics',
@@ -13,12 +49,13 @@ const AddCourse = ({ InstructorId }) => {
     'Mathematics',
     'Programming',
   ]);
-  const courseTitleRef = useRef();
-  const courseHoursRef = useRef();
-  const courseSubjectsRef = useRef();
-  const coursePriceRef = useRef();
-  const courseSubtitlesRef = useRef();
-  const courseDescriptionRef = useRef();
+  const courseTitleRef = useRef(null);
+  const courseHoursRef = useRef(null);
+  const [courseSubject, setCourseSubject] = useState('');
+  const coursePriceRef = useRef(null);
+  const courseSubtitlesRef = useRef(null);
+  const courseDescriptionRef = useRef(null);
+  const closeButton = useRef(null);
   return (
     <div
       class="modal fade"
@@ -36,6 +73,7 @@ const AddCourse = ({ InstructorId }) => {
               Add Course
             </h5>
             <button
+              ref={closeButton}
               type="button"
               class="btn-close"
               data-bs-dismiss="modal"
@@ -75,13 +113,14 @@ const AddCourse = ({ InstructorId }) => {
                 </label>
                 <Multiselect
                   id="inputSubjects"
-                  ref={courseSubjectsRef}
                   displayValue=""
                   isObject={false}
                   onKeyPressFn={function noRefCheck() {}}
                   onRemove={function noRefCheck() {}}
                   onSearch={function noRefCheck() {}}
-                  onSelect={function noRefCheck() {}}
+                  onSelect={(list, item) => {
+                    setCourseSubject(item);
+                  }}
                   options={allSubjects}
                   placeholder="select subject(s)"
                   selectedValues={{}}
@@ -124,29 +163,15 @@ const AddCourse = ({ InstructorId }) => {
                   type="text"
                   class="form-control"
                   id="inputDescription"
+                  required
                 />
               </div>
             </div>
 
             <button
               class="btn btn-primary"
-              onClick={async () => {
-                await createCourse({
-                  title: document.getElementById('inputCourseTitle').value,
-                  hours: document.getElementById('inputHours').value,
-                  subjects:
-                    document.getElementById('inputSubjects').selectedValues,
-                  subtitles: [
-                    ...document
-                      .getElementById('inputSubtitles')
-                      .value.split(','),
-                  ],
-                  price: document.getElementById('inputPrice').value,
-                  description:
-                    document.getElementById('inputDescription').value,
-                  instructors: [InstructorId],
-                });
-              }}
+              type="submit"
+              onClick={async () => handleCourseSubmit()}
             >
               Submit
             </button>

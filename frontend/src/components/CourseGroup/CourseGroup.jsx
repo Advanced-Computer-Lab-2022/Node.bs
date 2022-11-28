@@ -1,25 +1,30 @@
 import CourseCard from './CourseCard/CourseCard';
 import './CourseGroup.scss';
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
+import ReactLoading from 'react-loading';
 
 const CourseGroup = ({ courses, loading }) => {
-  const currency = useSelector(
-    (state) => state.region.selectedRegion.currencyCodes[0]
-  );
+  // const currency = useSelector(
+  //   (state) => state.region.selectedRegion.currencyCodes[0]
+  // );
   return (
-    <div className="container">
-      <div className="row">
+    <div className="container" id="courseGroup">
+      <div className="row" id="courseGroup">
         {!loading && courses.length === 0 && <h3>No results found.</h3>}
-        {loading && <h3>Loading...</h3>}
+        {loading && (
+          <h3>
+            <ReactLoading color="black" type="spin" />
+          </h3>
+        )}
         {courses.map((course) => {
           return (
             <>
               <div className=" col-md-4 col-sm-12 col-xs-12">
                 <CourseCard course={course} />
               </div>
-              <div
+              {/* <div
                 class="modal fade modal-fullscreen"
-                id={course.title.split(' ').join('')}
+                // id={course.title.split(' ').join('')}
                 data-bs-backdrop="static"
                 data-bs-keyboard="false"
                 tabindex="-1"
@@ -121,7 +126,7 @@ const CourseGroup = ({ courses, loading }) => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </>
           );
         })}

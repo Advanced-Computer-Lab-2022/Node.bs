@@ -5,12 +5,11 @@ import './../util/CountryDropdown/CountryDropdown.scss';
 import './Filter.scss';
 import { useState } from 'react';
 import { Multiselect } from 'multiselect-react-dropdown';
-import { useSelector } from 'react-redux';
 
 function Filter({ type, changeHandler }) {
   // let allCourses = useSelector((state) => state.courses.all);
   // let filteredCourses = useSelector((state) => state.courses.results);
-  const [allSubjects, setAllSubjects] = useState([
+  const [allSubjects] = useState([
     'Computer Science',
     'Language',
     'Economics',
@@ -162,13 +161,15 @@ function Filter({ type, changeHandler }) {
           <></>
         )}
         <li>
-          <div className="filter-item row ">
+          <div className="filter-item row justify-content-center">
             <button
-              className="btn btn-primary col-12"
+              className="btn btn-primary col-8"
               style={{ marginTop: '3%' }}
-              onClick={() =>
-                changeHandler(rating, subjects, maxPrice, minPrice)
-              }
+              onClick={() => {
+                if (type !== 'corporate')
+                  changeHandler(rating, subjects, maxPrice, minPrice);
+                else changeHandler(rating, subjects, 0, 0);
+              }}
             >
               Apply Filters
             </button>

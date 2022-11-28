@@ -9,13 +9,13 @@ import {
   faDoorOpen,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import SidebarButton from './../../components/Sidebar/SidebarButton/SidebarButton';
-import AddForm from './../../components/AddForm/AddForm';
+import SidebarButton from '../../Sidebar/SidebarButton/SidebarButton';
+import AddForm from '../../AddForm/AddForm';
 import {
   createCorporateTrainee,
   createInstructor,
   createAdmin,
-} from '../../services/AdminService';
+} from '../../../services/AdminService';
 import './AdminSidebar.scss';
 
 const AdminSidebar = () => {
@@ -30,7 +30,7 @@ const AdminSidebar = () => {
   };
 
   return (
-    <div class="container-fluid" id="adminSidebarContainer">
+    <div class="container-fluid sidebar-container">
       <div class="logo">
         <h6 className="brand">
           <FontAwesomeIcon icon={faDoorOpen} /> CourseIndoors
