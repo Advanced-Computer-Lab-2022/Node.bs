@@ -1,4 +1,4 @@
-@use "./../../scss/variables" as *;
+@use './../../scss/variables' as *;
 #filter-icon {
   margin: auto;
 }
@@ -8,6 +8,7 @@
 }
 .filter-item {
   margin: 2% 2% 3% 2%;
+  // border: 2px solid red;
 }
 
 .filter-input {
@@ -18,7 +19,7 @@
 
 .dropdown-menu {
   width: 600px;
-  min-height: 400px;
+  min-height: 350px;
   overflow: scroll;
 }
 * {

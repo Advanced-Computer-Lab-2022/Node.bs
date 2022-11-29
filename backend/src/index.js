@@ -23,6 +23,9 @@ app.options('*', cors());
 //   res.header('Access-Control-Allow-Headers', '*');
 //   next();
 // });
+//register deep populate plugin
+// var deepPopulate = require('mongoose-deep-populate')(mongoose);
+// PostSchema.plugin(deepPopulate, {} /* more on options below */);
 
 //JSON body parser middleware
 app.use(express.json());

@@ -3,6 +3,7 @@ import { faGlobe, faCheck } from '@fortawesome/free-solid-svg-icons';
 import './CountryDropdown.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { setRegion } from '../../../redux/features/regionSlice';
+import alert from 'sweetalert2';
 
 const CountryDropdown = () => {
   const countries = useSelector((state) => state.region.allCountries);
@@ -27,6 +28,11 @@ const CountryDropdown = () => {
                 className="dropdown-item country-dropdown"
                 onClick={() => {
                   dispatch(setRegion({ selectedRegion: country }));
+                  alert.fire({
+                    title: 'Country changed successfully!',
+                    icon: 'success',
+                    confirmButtonColor: '#6aa5ff',
+                  });
                 }}
               >
                 {country.name} - {country.currencyCodes[0]}{' '}

@@ -1,8 +1,8 @@
-import { configureStore } from "@reduxjs/toolkit";
-import regionReducer from "../features/regionSlice";
-import userReducer from "../features/userSlice";
-import resultReducer from "../features/resultSlice";
-import subjectsReducer from "../features/subjectsSlice";
+import { configureStore } from '@reduxjs/toolkit';
+import regionReducer from '../features/regionSlice';
+import userReducer from '../features/userSlice';
+import resultReducer from '../features/resultSlice';
+import subjectsReducer from '../features/subjectsSlice';
 
 export default configureStore({
   reducer: {

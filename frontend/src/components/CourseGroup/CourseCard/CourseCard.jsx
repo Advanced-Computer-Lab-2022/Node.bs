@@ -3,17 +3,18 @@ import AvatarGrouping from '../../util/AvatarGroup/AvatarGroup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { useSelector } from 'react-redux';
-import Rating from 'react-rating';
+import Rating from 'react-star-rating-lite';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import CourseModal from '../../CourseModal/CourseModal';
+import CoursePreview from '../../CoursePreview/CoursePreview';
 
-const CourseCard = ({ course }) => {
+const CourseCard = ({ course, editable }) => {
   const userInfo = useSelector((state) => state.user);
   const currency = useSelector(
     (state) => state.region.selectedRegion.currencyCodes[0]
   );
   const [exRate, setExRate] = useState(1);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     if (currency !== 'USD') {
@@ -40,11 +41,11 @@ const CourseCard = ({ course }) => {
     } else {
       setExRate(1);
     }
-  }, [currency]);
+  }, [currency, exRate]);
 
   // https://picsum.photos/160/100/
   return (
-    <div className="card my-2">
+    <div className="card my-1" id="course-card">
       <img
         src="https://img.freepik.com/free-psd/3d-rendering-ui-icon_23-2149182280.jpg?w=1380&t=st=1666956873~exp=1666957473~hmac=d6871289272b36f6fb1d1d99fa2195bf8599b686ed7e2d86419e8bf371d03147"
         className="card-img-top"
@@ -56,13 +57,13 @@ const CourseCard = ({ course }) => {
           <h3 className="card-title font font-primary mb-0 ">
             {course?.title}
           </h3>
-          <div className="col-6 p-0 px-2">
+          <div className="col-5 p-0 px-2">
             <p className="card-text font font-secondary m-0">
               {course?.totalHours} Hours
             </p>
           </div>
           {userInfo.type !== 'corporate' ? (
-            <div className="col-6 text-end p-0">
+            <div className="col-7 text-end p-0">
               <p id="currency">
                 {course.price === 0
                   ? 'FREE'
@@ -82,7 +83,7 @@ const CourseCard = ({ course }) => {
             <></>
           )}
           <div className="col-12 text-center">
-            <Rating start={0} stop={5} readonly initialRating={course.rating} />
+            <Rating readonly value={course.rating} weight={'22'} />
           </div>
         </div>
         {/* <br /> */}
@@ -95,14 +96,23 @@ const CourseCard = ({ course }) => {
               type="button"
               className="btn btn-primary"
               id="card-button"
-              data-bs-toggle="modal"
-              data-bs-target={'#' + course.title?.split(' ').join('')}
+              onClick={() => setIsOpen(true)}
+              // data-bs-toggle="modal"
+              // data-bs-target={'#' + course.title.split(' ').join('')}
             >
               <FontAwesomeIcon icon={faChevronRight} />
             </button>
           </div>
         </div>
       </div>
+      <CoursePreview
+        isOpen={isOpen}
+        onRequestClose={() => setIsOpen(false)}
+        course={course}
+        currency={currency}
+        exRate={exRate}
+        editable={editable}
+      />
     </div>
   );
 };

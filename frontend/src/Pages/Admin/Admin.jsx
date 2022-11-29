@@ -1,5 +1,5 @@
 // import Dashboard from './../../components/Dashboard/Dashboard';
-import AdminSidebar from '../../new components/AdminSidebar/AdminSidebar';
+import AdminSidebar from '../../components/AdminSpecific/AdminSidebar/AdminSidebar';
 import './Admin.scss';
 // import './Homepage.scss';
 
