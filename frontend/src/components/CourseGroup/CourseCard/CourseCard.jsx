@@ -96,7 +96,7 @@ const CourseCard = ({ course }) => {
               className="btn btn-primary"
               id="card-button"
               data-bs-toggle="modal"
-              data-bs-target={'#' + course.title.split(' ').join('')}
+              data-bs-target={'#' + course.title?.split(' ').join('')}
             >
               <FontAwesomeIcon icon={faChevronRight} />
             </button>

@@ -33,6 +33,9 @@ const InstructorDashboard = ({
           </div>
 
           <CourseGroup courses={viewedCourses} loading={loading} />
+          {console.log(viewedCourses.map(course => {
+            console.log(course)
+          }))}
         </div>
       </div>
       <div className="col-4">

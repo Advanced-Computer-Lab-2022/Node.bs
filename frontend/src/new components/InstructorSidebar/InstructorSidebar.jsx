@@ -1,5 +1,5 @@
-import React from 'react';
-import SidebarButton from './../../components/Sidebar/SidebarButton/SidebarButton';
+import React from "react";
+import SidebarButton from "./../../components/Sidebar/SidebarButton/SidebarButton";
 import {
   faDoorOpen,
   faLaptopHouse,
@@ -8,10 +8,14 @@ import {
   faMedal,
   faChalkboardTeacher,
   faBook,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import CountryDropdown from './../../components/util/CountryDropdown/CountryDropdown';
-import AddCourse from '../AddCourse/AddCourse';
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import CountryDropdown from "./../../components/util/CountryDropdown/CountryDropdown";
+import AddCourse from "../AddCourse/AddCourse";
+import AddTest from "../AddTest/AddTest"
+
+/////////////////////ADD QUIZ ADDITIONS///////////////////
+import { faFile } from "@fortawesome/free-solid-svg-icons";
 
 const InstructorSidebar = ({ showInstructorCourses, getCourseCatalog }) => {
   return (
@@ -40,6 +44,12 @@ const InstructorSidebar = ({ showInstructorCourses, getCourseCatalog }) => {
         />
 
         <CountryDropdown />
+
+        <SidebarButton icon={faFile} label="Add Test" toBeAdded="Test" />
+        <AddTest courseId= "63837c6b7f0a308cdd417908" 
+                instructorId= "635f37bcde75e20effb14fc3"
+                subtitleId= "635f5a2f0e456e7d8fcf6bd5"
+                  />
       </div>
     </div>
   );

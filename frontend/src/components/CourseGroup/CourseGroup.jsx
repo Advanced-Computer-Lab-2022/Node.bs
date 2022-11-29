@@ -19,7 +19,7 @@ const CourseGroup = ({ courses, loading }) => {
               </div>
               <div
                 class="modal fade modal-fullscreen"
-                id={course.title.split(' ').join('')}
+                id={course.title?.split(' ').join('')}
                 data-bs-backdrop="static"
                 data-bs-keyboard="false"
                 tabindex="-1"
@@ -62,7 +62,7 @@ const CourseGroup = ({ courses, loading }) => {
                           <iframe
                             width="560"
                             height="315"
-                            src={course.videoURL}
+                            src={course?.videoURL}
                             title="YouTube video player"
                             frameBorder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -72,14 +72,14 @@ const CourseGroup = ({ courses, loading }) => {
                       </div>
 
                       <div className="row mb-3">
-                        <p style={{ width: '50%' }}>{course.description}</p>
+                        <p style={{ width: '50%' }}>{course?.description}</p>
                       </div>
                       <div className="row mb-3">
-                        <h6 style={{ color: '#cccc' }}>{course.totalHours}</h6>
+                        <h6 style={{ color: '#cccc' }}>{course?.totalHours}</h6>
                       </div>
                       <div className="row">
                         <div class="accordion" id="subtitleAccordion">
-                          {course.subtitles.map((subtitle) => {
+                          {course.subtitles?.map((subtitle) => {
                             <div class="accordion-item">
                               <h2 class="accordion-header" id="headingOne">
                                 <button
@@ -104,10 +104,10 @@ const CourseGroup = ({ courses, loading }) => {
                                     {subtitle.lessons?.map((lesson) => {
                                       <div className="row">
                                         <div className="col-6">
-                                          <li>{lesson.name}</li>
+                                          <li>{lesson?.name}</li>
                                         </div>
                                         <div className="col-6 text-end">
-                                          {lesson.hours}
+                                          {lesson?.hours}
                                         </div>
                                       </div>;
                                     })}
