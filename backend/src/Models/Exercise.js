@@ -13,14 +13,12 @@ const ExerciseSchema = new schema(
       },
     ],
 
-    questions: [{
+    question: {
       type: String,
-    }],
-    answers: [
-      {
-        type: String,
-      },
-    ],
+    },
+    answer: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

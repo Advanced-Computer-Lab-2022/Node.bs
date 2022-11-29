@@ -12,10 +12,20 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CountryDropdown from "./../../components/util/CountryDropdown/CountryDropdown";
 import AddCourse from "../AddCourse/AddCourse";
-import AddTest from "../AddTest/AddTest"
+import AddTest from "../AddTest/AddTest";
+import InstructorReviews from "../InstructorReviews/InstructorReviews";
 
 /////////////////////ADD QUIZ ADDITIONS///////////////////
 import { faFile } from "@fortawesome/free-solid-svg-icons";
+
+//////////////////////VIEW INSTRUCTOR ADDITIONS/////////////////
+import { faStar } from "@fortawesome/free-solid-svg-icons";
+const sampleReviewsData = [
+  { username: "Omar M.", rating: 5, review: "pretty cool instructor!" },
+  { username: "Mohamed H.", rating: 3, review: "kinda overrated tbh :/" },
+  { username: "coolguy123", rating: 5, review: "Great!" },
+  { username: "Ayman H.", rarting: 5, review: "" },
+];
 
 const InstructorSidebar = ({ showInstructorCourses, getCourseCatalog }) => {
   return (
@@ -45,12 +55,7 @@ const InstructorSidebar = ({ showInstructorCourses, getCourseCatalog }) => {
 
         <CountryDropdown />
 
-        <SidebarButton icon={faFile} label="Add Test" toBeAdded="Test" />
-        <AddTest courseId= "63837c6b7f0a308cdd417908" 
-                instructorId= "635f37bcde75e20effb14fc3"
-                subtitleId= "635f5a2f0e456e7d8fcf6bd5"
-                  />
-      </div>
+             </div>
     </div>
   );
 };
