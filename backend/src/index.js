@@ -4,6 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const adminRoutes = require('./Routes/AdminRoutes');
 const courseRoutes = require('./Routes/CourseRoutes');
+const instructorRoutes = require('./Routes/InstructorRoutes');
 const cors = require('cors');
 
 //Mongo URI
@@ -22,6 +23,9 @@ app.options('*', cors());
 //   res.header('Access-Control-Allow-Headers', '*');
 //   next();
 // });
+//register deep populate plugin
+// var deepPopulate = require('mongoose-deep-populate')(mongoose);
+// PostSchema.plugin(deepPopulate, {} /* more on options below */);
 
 //JSON body parser middleware
 app.use(express.json());
@@ -35,6 +39,7 @@ app.use((req, res, next) => {
 //Register API Routes , need to protect endpoints later
 app.use('/course', courseRoutes);
 app.use('/admin', adminRoutes);
+app.use('/instructor', instructorRoutes);
 
 //connect to db (promise <=> resolve=>then , reject=>catch)
 mongoose

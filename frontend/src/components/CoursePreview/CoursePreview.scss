@@ -1,3 +1,4 @@
-@use "./../../scss/variables" as *;
-
-
+@use './../../scss/variables' as *;
+.high-z-index {
+  z-index: 20;
+}

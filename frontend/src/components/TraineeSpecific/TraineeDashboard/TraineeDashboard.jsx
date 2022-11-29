@@ -1,17 +1,17 @@
 import React from 'react';
-import Searchbar from './../../components/Searchbar/Searchbar';
-import CourseGroup from './../../components/CourseGroup/CourseGroup';
-import ProfileCard from '../../components/ProfileCard/ProfileCard';
-import ProgressCard from '../../components/ProgressCard/ProgressCard';
-import Filter from '../../components/Filter/Filter';
+import Searchbar from '../../Searchbar/Searchbar';
+import Filter from '../../Filter/Filter';
+import CourseGroup from '../../CourseGroup/CourseGroup';
+import ProfileCard from '../../ProfileCard/ProfileCard';
+import ProgressCard from '../../ProgressCard/ProgressCard';
 
-const InstructorDashboard = ({
-  id,
+const TraineeDashboard = ({
   viewedCourses,
   viewTitle,
   loading,
   filterHandler,
   searchHandler,
+  corporate,
 }) => {
   return (
     <div className="container-fluid row ">
@@ -29,24 +29,26 @@ const InstructorDashboard = ({
             <h4>{viewTitle}</h4>
           </div>
           <div className="col-3 text-end ">
-            <Filter changeHandler={filterHandler} type={'instructor'} />
+            <Filter
+              changeHandler={filterHandler}
+              type={corporate ? 'corporate' : 'individual'}
+            />
           </div>
 
-          <CourseGroup courses={viewedCourses} loading={loading} />
+          <CourseGroup
+            courses={viewedCourses}
+            loading={loading}
+            editable={false}
+          />
         </div>
       </div>
       <div className="col-4">
         <div className="row">
           <ProfileCard />
         </div>
-        <div className="row">
-          <ProgressCard />
-          <ProgressCard />
-          <ProgressCard />
-        </div>
       </div>
     </div>
   );
 };
 
-export default InstructorDashboard;
+export default TraineeDashboard;

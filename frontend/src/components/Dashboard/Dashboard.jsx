@@ -2,25 +2,24 @@ import Searchbar from './../Searchbar/Searchbar';
 import CourseGroup from './../CourseGroup/CourseGroup';
 import ProfileCard from '../ProfileCard/ProfileCard';
 import ProgressCard from '../ProgressCard/ProgressCard';
-import { useSelector, useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { getAllCourses } from '../../redux/features/resultSlice';
 
 import Filter from '../Filter/Filter';
 
 const Dashboard = (props) => {
-  const dispatch = useDispatch();
-  let all = useSelector((state) => state.courses.all);
-  let results = useSelector((state) => state.courses.results);
+  // const dispatch = useDispatch();
+  // let all = useSelector((state) => state.courses.all);
+  // let results = useSelector((state) => state.courses.results);
   // let displayedCourses = all;
-  const lastAction = useSelector((state) => state.courses.lastActionDone);
+  // const lastAction = useSelector((state) => state.courses.lastActionDone);
   useEffect(() => {
     dispatch(getAllCourses());
   }, []);
   let courses;
-  useEffect(() => {
-    courses = lastAction === 'getAll' ? all : results;
-  }, [lastAction, all, results]);
+  // useEffect(() => {
+  //   courses = lastAction === 'getAll' ? all : results;
+  // }, [lastAction, all, results]);
   // const updateState = () => {
   //   all = useSelector((state) => state.courses.all);
   //   results = useSelector((state) => state.courses.results);
