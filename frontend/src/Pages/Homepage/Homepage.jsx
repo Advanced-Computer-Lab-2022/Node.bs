@@ -19,7 +19,7 @@ const Homepage = () => {
       <Routes>
         <Route path="/admin" element={<Admin />} />
         <Route
-          path="/instructor"
+          path="/instructor/*"
           element={<Instructor id={'635f37bcde75e20effb14fc3'} />}
         />
         <Route path="/individual" element={<Trainee corporate={false} />} />

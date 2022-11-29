@@ -1,4 +1,4 @@
-@use "./../../../scss/_variables" as *;
+@use './../../../scss/_variables' as *;
 
 .card {
   width: 12rem;
@@ -10,7 +10,6 @@
   //   @include shadow;
   &:hover {
     transform: scale(1.06);
-    z-index: 20;
   }
 }
 .card-img-top {

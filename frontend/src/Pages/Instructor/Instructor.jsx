@@ -8,10 +8,12 @@ const Instructor = ({ id }) => {
   const [viewedCourses, setViewedCourses] = useState([]);
   const [viewTitle, setViewTitle] = useState('');
   const [loading, setLoading] = useState(false);
+  const [editable, setEditable] = useState(false);
 
   const getInstructorCourses = async () => {
     setLoading(true);
     setViewedCourses([]);
+    setEditable(true);
     setViewTitle('My Courses');
     try {
       const response = await courses.filter(id);
@@ -26,6 +28,7 @@ const Instructor = ({ id }) => {
     //get all courses
     setViewTitle('Course Catalog');
     setViewedCourses([]);
+    setEditable(false);
     setLoading(true);
     try {
       const response = await courses.getAll();
@@ -65,6 +68,7 @@ const Instructor = ({ id }) => {
   const searchCourses = async (body) => {
     setViewTitle('Search Results');
     setLoading(true);
+    setEditable(false);
     setViewedCourses([]);
     try {
       const response = await courses.search(body);
@@ -91,6 +95,7 @@ const Instructor = ({ id }) => {
           loading={loading}
           filterHandler={filterCourses}
           searchHandler={searchCourses}
+          editable={editable}
         />
       </div>
     </div>

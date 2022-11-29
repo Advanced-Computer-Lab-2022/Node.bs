@@ -3,7 +3,7 @@ const AvatarGrouping = ({ instructors }) => {
   return (
     <AvatarGroup
       avatars={instructors.map(
-        (instructor) => instructor.firstName + ' ' + instructor.lasttName
+        (instructor) => instructor.firstName + ' ' + instructor.lastName
       )}
       initialCharacters={1}
       max={2}

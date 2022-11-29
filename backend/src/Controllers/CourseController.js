@@ -1,5 +1,7 @@
 const Course = require('./../Models/Course');
 const Subtitle = require('./../Models/Subtitle');
+const Lesson = require('./../Models/Lesson');
+const Test = require('./../Models/Test');
 const mongoose = require('mongoose');
 
 // //optimized with extra projection parameter to reduce response size
@@ -40,7 +42,15 @@ const mongoose = require('mongoose');
 const getAllCourses = async (req, res) => {
   const result = await Course.find()
     .populate('instructors')
-    .populate('subtitles');
+    .populate({
+      path: 'subtitles',
+      populate: {
+        path: 'lessons',
+        populate: {
+          path: 'test',
+        },
+      },
+    });
 
   if (result) {
     return res.status(200).json(result);
@@ -56,7 +66,15 @@ const filterCourses = async (req, res) => {
     instructors: { $in: [mongoose.Types.ObjectId(instructorId)] },
   })
     .populate('instructors')
-    .populate('subtitles');
+    .populate({
+      path: 'subtitles',
+      populate: {
+        path: 'lessons',
+        populate: {
+          path: 'test',
+        },
+      },
+    });
 
   if (result) {
     return res.status(200).json(result);
@@ -77,7 +95,15 @@ const searchCourses = async (req, res) => {
     ],
   })
     .populate('instructors')
-    .populate('subtitles');
+    .populate({
+      path: 'subtitles',
+      populate: {
+        path: 'lessons',
+        populate: {
+          path: 'test',
+        },
+      },
+    });
 
   // console.log(result1);
 
@@ -91,7 +117,15 @@ const searchCourses = async (req, res) => {
         ],
       },
     })
-    .populate('subtitles');
+    .populate({
+      path: 'subtitles',
+      populate: {
+        path: 'lessons',
+        populate: {
+          path: 'test',
+        },
+      },
+    });
   // console.log(result2);
 
   const return2 = result2.filter((entry) => entry.instructors.length !== 0);
@@ -121,7 +155,7 @@ const searchCourses = async (req, res) => {
 //create Course
 const createCourse = async (req, res) => {
   try {
-    let subtitleIDArray = [];
+    let subtitleIDArray = []; // references -> will be stored inside course
     let subtitleNameArray = req.body.subtitles;
     console.log(subtitleNameArray);
     for (let subtitle in subtitleNameArray) {
@@ -132,15 +166,62 @@ const createCourse = async (req, res) => {
     }
     // req.body.subtitles = subtitleArray;
     const course = { ...req.body, subtitles: subtitleIDArray };
-    console.log(course);
-    // const result = await Course.create(course);
-    res.status(203).json('result');
+    // console.log(course);
+    const result = await Course.create(course);
+    res.status(203).json(result);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 
 //get course by ID
+const getCourseById = async (req, res) => {
+  try {
+    const result = await Course.findById(req.query.id)
+      .populate('instructors')
+      .populate({
+        path: 'subtitles',
+        populate: {
+          path: 'lessons',
+          populate: {
+            path: 'test',
+          },
+        },
+      });
+
+    if (result) {
+      res.status(200).json(result);
+    } else {
+      res.status(404).json('not found');
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error.message });
+  }
+};
+const updateCourse = async (req, res) => {
+  try {
+    const result = await Course.findOneAndUpdate(
+      { _id: req.query.id },
+      req.body
+    );
+    res.status(204).json(result);
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
+
+const updateSubtitle = async (req, res) => {
+  try {
+    const result = await Subtitle.findOneAndUpdate(
+      { _id: req.query.id },
+      req.body
+    );
+    res.status(204).json(result);
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
 
 module.exports = {
   // oSearchCourses,
@@ -149,4 +230,7 @@ module.exports = {
   searchCourses,
   getAllCourses,
   filterCourses,
+  getCourseById,
+  updateCourse,
+  updateSubtitle,
 };

@@ -35,17 +35,16 @@ const TraineeDashboard = ({
             />
           </div>
 
-          <CourseGroup courses={viewedCourses} loading={loading} />
+          <CourseGroup
+            courses={viewedCourses}
+            loading={loading}
+            editable={false}
+          />
         </div>
       </div>
       <div className="col-4">
         <div className="row">
           <ProfileCard />
-        </div>
-        <div className="row">
-          <ProgressCard />
-          <ProgressCard />
-          <ProgressCard />
         </div>
       </div>
     </div>

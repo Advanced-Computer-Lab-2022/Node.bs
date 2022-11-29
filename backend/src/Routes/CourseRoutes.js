@@ -6,5 +6,8 @@ Router.get('/', courseController.getAllCourses);
 Router.post('/filter', courseController.filterCourses);
 Router.post('/search', courseController.searchCourses);
 Router.post('/', courseController.createCourse);
+Router.get('/byId', courseController.getCourseById);
+Router.put('/', courseController.updateCourse);
+Router.put('/subtitle', courseController.updateSubtitle);
 
 module.exports = Router;
