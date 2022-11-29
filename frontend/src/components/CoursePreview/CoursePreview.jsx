@@ -34,12 +34,8 @@ function CoursePreview({
             <h4 id="currency">
               {course.currentDiscount &&
                 new Date(course.currentDiscount?.expiryDate) >
-                  new Date().getTime() && (
-                  <s>
-                    {course.price}
-                    {' ' + currency}
-                  </s>
-                )}
+                  new Date().getTime() && <s>{course.price} </s>}
+              &nbsp;
               {course.price === 0
                 ? 'FREE'
                 : course.currentDiscount &&

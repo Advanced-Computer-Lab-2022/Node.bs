@@ -222,6 +222,26 @@ const EditCourse = () => {
                       >
                         Save
                       </button>
+                      <h5>Lessons</h5>
+                      {subtitle.lessons.map((lesson) => {
+                        return (
+                          <div className="row">
+                            <p>{lesson.name}</p>
+                            <button
+                              id="searchButton"
+                              className="mx-2 btn btn-outline-primary"
+                            >
+                              Define Test
+                            </button>
+                          </div>
+                        );
+                      })}
+                      <button
+                        id="searchButton"
+                        className="mx-2 btn btn-outline-primary"
+                      >
+                        Add Lesson
+                      </button>
                     </div>
                   </div>
                 </div>

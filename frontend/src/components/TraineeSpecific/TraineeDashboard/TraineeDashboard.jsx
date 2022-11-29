@@ -3,7 +3,6 @@ import Searchbar from '../../Searchbar/Searchbar';
 import Filter from '../../Filter/Filter';
 import CourseGroup from '../../CourseGroup/CourseGroup';
 import ProfileCard from '../../ProfileCard/ProfileCard';
-import ProgressCard from '../../ProgressCard/ProgressCard';
 
 const TraineeDashboard = ({
   viewedCourses,

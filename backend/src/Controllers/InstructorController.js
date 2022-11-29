@@ -12,26 +12,25 @@ const createTest = async (req, res) => {
   //   Instructor.updateOne({ _id: instructorId }, { $ });
   let exercisesId = [];
 
-  
   ////////////////CREATE EXERCISE//////////////////////////
   ////////de-chain test object/////////////////
-  test.map((exercise) => {
-   const exerciseInstance = await Exercise.create({
+  test.map(async (exercise) => {
+    const exerciseInstance = await Exercise.create({
       type: 'MCQ',
       options: exercise.choices,
       answer: exercise.answer,
     });
-exercisesId.push(exerciseInstance._id);
+    exercisesId.push(exerciseInstance._id);
   });
 
-    const testInstance = await Test.create({exercises: exercisesId});
+  const testInstance = await Test.create({ exercises: exercisesId });
 
+  const lessonUpdate = await Lesson.findOneAndUpdate(
+    { _id: lessonId },
+    { test: testInstance._id }
+  );
 
-    const lessonUpdate = await Lesson.findOneAndUpdate({_id: lessonId}, {test: testInstance._id});
-
-
-//   console.log(questions);
-
+  //   console.log(questions);
 
   //   const returned = await Subtitle.updateOne({
   //     _id: mongoose.Types.ObjectId(lessonId),
