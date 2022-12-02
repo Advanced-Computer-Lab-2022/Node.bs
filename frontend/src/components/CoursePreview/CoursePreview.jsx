@@ -12,7 +12,7 @@ function CoursePreview({
   exRate,
   editable,
 }) {
-  console.log(course);
+  // console.log(course);
   return (
     <ReactModal isOpen={isOpen} onRequestClose={onRequestClose}>
       <div className="container">
@@ -57,9 +57,7 @@ function CoursePreview({
               width="800"
               height="500"
               style={{ borderRadius: '10px' }}
-              src={
-                course.videoURL || 'https://www.youtube.com/embed/mON4wycpawk'
-              }
+              src={course.URL || 'https://www.youtube.com/embed/mON4wycpawk'}
               title="YouTube video player"
               frameBorder="2px"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -75,6 +73,9 @@ function CoursePreview({
             </div>
             <div className="row">
               <h3>Subtitles</h3>
+              {course.subtitles.length === 0 && (
+                <h5>No Subtitles available now, please check again later!</h5>
+              )}
               <div className="accordion accordion-flush" id="subtitleacc">
                 {course.subtitles.map((subtitle) => {
                   return (
@@ -85,7 +86,10 @@ function CoursePreview({
                         data-bs-toggle="collapse"
                         data-bs-target={'#a' + subtitle._id}
                       >
-                        <h4>{subtitle.name}</h4>
+                        <h4>
+                          {subtitle.name}{' '}
+                          {subtitle.hours && '- ' + subtitle.hours + ' Hours'}
+                        </h4>
                       </button>
                       <div
                         id={'a' + subtitle._id}
@@ -93,8 +97,7 @@ function CoursePreview({
                         data-bs-parent="#subtitleacc"
                       >
                         <div class="accordion-body">
-                          <p>{subtitle.hours} Hours</p>
-                          <h6>Lessons and exercises</h6>
+                          <h5>Lessons and exercises</h5>
                           {subtitle.lessons.map((lesson) => {
                             return (
                               <p>
@@ -102,6 +105,9 @@ function CoursePreview({
                               </p>
                             );
                           })}
+                          {subtitle.lessons.length === 0 && (
+                            <p>No lessons available yet, check again later!</p>
+                          )}
                         </div>
                       </div>
                     </div>

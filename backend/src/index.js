@@ -5,6 +5,8 @@ const mongoose = require('mongoose');
 const adminRoutes = require('./Routes/AdminRoutes');
 const courseRoutes = require('./Routes/CourseRoutes');
 const instructorRoutes = require('./Routes/InstructorRoutes');
+const individualTraineeRoutes = require('./Routes/IndividualTraineeRoutes');
+const corporateTraineeRoutes = require('./Routes/CorporateTraineeRoutes');
 const cors = require('cors');
 
 //Mongo URI
@@ -40,6 +42,8 @@ app.use((req, res, next) => {
 app.use('/course', courseRoutes);
 app.use('/admin', adminRoutes);
 app.use('/instructor', instructorRoutes);
+app.use('/individual', individualTraineeRoutes);
+app.use('/corporate', corporateTraineeRoutes);
 
 //connect to db (promise <=> resolve=>then , reject=>catch)
 mongoose

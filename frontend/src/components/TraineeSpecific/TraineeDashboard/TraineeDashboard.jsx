@@ -11,6 +11,7 @@ const TraineeDashboard = ({
   filterHandler,
   searchHandler,
   corporate,
+  accessCourse,
 }) => {
   return (
     <div className="container-fluid row ">
@@ -38,6 +39,7 @@ const TraineeDashboard = ({
             courses={viewedCourses}
             loading={loading}
             editable={false}
+            accessCourse={accessCourse}
           />
         </div>
       </div>

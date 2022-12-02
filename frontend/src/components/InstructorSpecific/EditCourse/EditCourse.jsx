@@ -8,6 +8,9 @@ import {
   updateSubtitle,
 } from '../../../services/CourseService';
 import alert from 'sweetalert2';
+import AddLesson from '../AddLesson/AddLesson';
+import AddTest from '../../../new components/AddTest/AddTest';
+import AddResource from '../AddResource/AddResource';
 
 const EditCourse = () => {
   const [course, setCourse] = useState({});
@@ -222,26 +225,62 @@ const EditCourse = () => {
                       >
                         Save
                       </button>
-                      <h5>Lessons</h5>
-                      {subtitle.lessons.map((lesson) => {
-                        return (
-                          <div className="row">
-                            <p>{lesson.name}</p>
-                            <button
-                              id="searchButton"
-                              className="mx-2 btn btn-outline-primary"
-                            >
-                              Define Test
-                            </button>
-                          </div>
-                        );
-                      })}
+                      <br />
+                      <label className="mx-2">Hours</label>
+                      <input type="number" id={'hrs' + subtitle._id} />
                       <button
                         id="searchButton"
                         className="mx-2 btn btn-outline-primary"
+                        onClick={async () => {
+                          if (
+                            document.getElementById('hrs' + subtitle._id).value
+                          ) {
+                            try {
+                              const response = await updateSubtitle(
+                                subtitle._id,
+                                {
+                                  hours: document.getElementById(
+                                    'hrs' + subtitle._id
+                                  ).value,
+                                }
+                              );
+                              if (response.status === 204)
+                                alert.fire(
+                                  'Subtitle Hours updated successfully',
+                                  '',
+                                  'success'
+                                );
+                              else
+                                alert.fire(
+                                  'Something went wrong :/',
+                                  '',
+                                  'warning'
+                                );
+                            } catch (e) {
+                              console.log(e);
+                              alert.fire(
+                                'Something went wrong',
+                                'please try again later',
+                                'error'
+                              );
+                            }
+                          }
+                        }}
                       >
-                        Add Lesson
+                        Save
                       </button>
+                      <h5>Lessons</h5>
+                      {subtitle.lessons.map((lesson) => {
+                        return (
+                          <div className="">
+                            <p className="mx-2">{lesson.name}</p>
+                            {!lesson.test && <AddTest lesson={lesson} />}
+                            <AddResource lesson={lesson} />
+                            <hr />
+                          </div>
+                        );
+                      })}
+                      <AddLesson subtitle={subtitle} />
                     </div>
                   </div>
                 </div>

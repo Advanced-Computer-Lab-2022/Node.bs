@@ -3,7 +3,7 @@ import './CourseGroup.scss';
 // import { useSelector } from 'react-redux';
 import ReactLoading from 'react-loading';
 
-const CourseGroup = ({ courses, loading, editable }) => {
+const CourseGroup = ({ courses, loading, editable, accessCourse }) => {
   // const currency = useSelector(
   //   (state) => state.region.selectedRegion.currencyCodes[0]
   // );
@@ -20,7 +20,11 @@ const CourseGroup = ({ courses, loading, editable }) => {
       {courses.map((course) => {
         return (
           <div className="mx-1">
-            <CourseCard course={course} editable={editable} />
+            <CourseCard
+              course={course}
+              editable={editable}
+              accessCourse={accessCourse}
+            />
           </div>
         );
       })}

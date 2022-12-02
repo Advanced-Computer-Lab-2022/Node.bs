@@ -22,9 +22,15 @@ const Homepage = () => {
           path="/instructor/*"
           element={<Instructor id={'635f37bcde75e20effb14fc3'} />}
         />
-        <Route path="/individual" element={<Trainee corporate={false} />} />
+        <Route
+          path="/individual/*"
+          element={<Trainee id={''} corporate={false} />}
+        />
 
-        <Route path="/corporate" element={<Trainee corporate={true} />} />
+        <Route
+          path="/corporate/*"
+          element={<Trainee id={'635fd142224d29b004e7b1c6'} corporate={true} />}
+        />
       </Routes>
     </BrowserRouter>
   );

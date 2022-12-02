@@ -6,30 +6,45 @@ const mongoose = require('mongoose');
 const Test = require('../Models/Test');
 
 const createTest = async (req, res) => {
-  const instructorId = req.body.instructorId;
+  // const instructorId = req.body.instructorId;
   const lessonId = req.body.lessonId;
-  const test = req.body.test;
+  let test = req.body.test;
   //   Instructor.updateOne({ _id: instructorId }, { $ });
   let exercisesId = [];
-
   ////////////////CREATE EXERCISE//////////////////////////
   ////////de-chain test object/////////////////
-  test.map(async (exercise) => {
+  // test.forEach(async (exercise) => {
+  //   const exerciseInstance = await Exercise.create({
+  //     type: 'MCQ',
+  //     question: exercise.question,
+  //     options: exercise.choices,
+  //     answer: exercise.answer,
+  //   });
+  //   exercisesId.push(exerciseInstance._id);
+  //   console.log(exerciseInstance);
+  // });
+  for (let TestIndex in test) {
     const exerciseInstance = await Exercise.create({
       type: 'MCQ',
-      options: exercise.choices,
-      answer: exercise.answer,
+      question: test[TestIndex].question,
+      options: test[TestIndex].choices,
+      answer: test[TestIndex].answer,
     });
     exercisesId.push(exerciseInstance._id);
-  });
+    console.log(exerciseInstance);
+  }
+
+  console.log('new exer id!!!! =>>>>', exercisesId);
 
   const testInstance = await Test.create({ exercises: exercisesId });
+  // console.log(testInstance);
 
   const lessonUpdate = await Lesson.findOneAndUpdate(
     { _id: lessonId },
     { test: testInstance._id }
   );
 
+  // console.log(lessonUpdate);
   //   console.log(questions);
 
   //   const returned = await Subtitle.updateOne({
@@ -50,10 +65,8 @@ const getReviews = async (req, res) => {
   const returnedQuery = await Instructor.findOne({
     _id: mongoose.Types.ObjectId(instructorId),
   });
-
   //   console.log(returnedQuery[0].individualReviews);
   //   console.log(returnedQuery[0].corporateReviews);
-
   individualReviews = returnedQuery.individualReviews;
   corporateReviews = returnedQuery.corporateReviews;
   const allReviews = individualReviews.concat(corporateReviews);
