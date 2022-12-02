@@ -15,7 +15,7 @@ const createTest = async (req, res) => {
   
   ////////////////CREATE EXERCISE//////////////////////////
   ////////de-chain test object/////////////////
-  test.map((exercise) => {
+  test.map( async (exercise) => {
    const exerciseInstance = await Exercise.create({
       type: 'MCQ',
       options: exercise.choices,

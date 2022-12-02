@@ -223,6 +223,25 @@ const updateSubtitle = async (req, res) => {
   }
 };
 
+const getReviews = async (req, res) => {
+  const courseId = req.body.courseId;
+  const returnedQuery = await Course.findOne({
+    _id: courseId,
+  });
+
+  //   console.log(returnedQuery[0].individualReviews);
+  //   console.log(returnedQuery[0].corporateReviews);
+
+  individualReviews = returnedQuery.individualReviews;
+  corporateReviews = returnedQuery.corporateReviews;
+  const allReviews = individualReviews.concat(corporateReviews);
+
+  if (returnedQuery) {
+    return res.status(200).json(allReviews);
+  }
+  res.status(404).json({ message: "Couldn't find any reviews" });
+};
+
 module.exports = {
   // oSearchCourses,
   // oFilterCourses,
@@ -233,4 +252,5 @@ module.exports = {
   getCourseById,
   updateCourse,
   updateSubtitle,
+  getReviews
 };

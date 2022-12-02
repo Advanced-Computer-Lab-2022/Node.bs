@@ -1,9 +1,9 @@
-import CourseCard from './CourseCard/CourseCard';
-import './CourseGroup.scss';
+import CourseCard from "./CourseCard/CourseCard";
+import "./CourseGroup.scss";
 // import { useSelector } from 'react-redux';
-import ReactLoading from 'react-loading';
+import ReactLoading from "react-loading";
 
-const CourseGroup = ({ courses, loading, editable }) => {
+const CourseGroup = ({ courses, loading, editable, canEnroll }) => {
   // const currency = useSelector(
   //   (state) => state.region.selectedRegion.currencyCodes[0]
   // );
@@ -20,7 +20,11 @@ const CourseGroup = ({ courses, loading, editable }) => {
       {courses.map((course) => {
         return (
           <div className="mx-1">
-            <CourseCard course={course} editable={editable} />
+            <CourseCard
+              course={course}
+              editable={editable}
+              canEnroll={canEnroll}
+            />
           </div>
         );
       })}

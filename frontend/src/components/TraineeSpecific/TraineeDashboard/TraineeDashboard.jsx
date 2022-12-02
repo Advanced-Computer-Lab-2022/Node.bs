@@ -39,6 +39,7 @@ const TraineeDashboard = ({
             courses={viewedCourses}
             loading={loading}
             editable={false}
+            canEnroll = {true}
           />
         </div>
       </div>

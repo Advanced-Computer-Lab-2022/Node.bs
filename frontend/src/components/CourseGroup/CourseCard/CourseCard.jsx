@@ -8,7 +8,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import CoursePreview from '../../CoursePreview/CoursePreview';
 
-const CourseCard = ({ course, editable }) => {
+const CourseCard = ({ course, editable, canEnroll }) => {
   const userInfo = useSelector((state) => state.user);
   const currency = useSelector(
     (state) => state.region.selectedRegion.currencyCodes[0]
@@ -105,6 +105,7 @@ const CourseCard = ({ course, editable }) => {
           </div>
         </div>
       </div>
+
       <CoursePreview
         isOpen={isOpen}
         onRequestClose={() => setIsOpen(false)}
@@ -112,6 +113,7 @@ const CourseCard = ({ course, editable }) => {
         currency={currency}
         exRate={exRate}
         editable={editable}
+        canEnroll = {canEnroll}
       />
     </div>
   );
