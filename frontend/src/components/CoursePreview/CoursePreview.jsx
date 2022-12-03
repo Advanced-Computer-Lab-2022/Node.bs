@@ -8,6 +8,13 @@ import SidebarButton from "../Sidebar/SidebarButton/SidebarButton";
 import AddReviewForm from "../AddReviewForm/AddReviewForm";
 import CourseReviews from "../CourseReviews/CourseReviews";
 import { useState } from "react";
+import { registerToCourse as registerToCourseIndividual } from "../../services/IndividualTraineeService";
+import { registerToCourse as registerToCourseCorporate } from "../../services/CorporateTraineeService";
+import { reviewCourseIndividual } from "../../services/IndividualTraineeService";
+
+import {getCourseReviews} from "../../services/CourseService"
+
+import { reviewInstructorIndividual } from "../../services/IndividualTraineeService";
 function CoursePreview({
   course,
   isOpen,
@@ -19,6 +26,70 @@ function CoursePreview({
 }) {
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
+
+  const handleRegistration = async () => {
+    Swal.fire({
+      title: "Are you sure you want to enroll in this course?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No",
+      confirmButtonText: "Yes!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+
+        //ADD CONDITION TO CHECK WETHER TRAINEE IS INDIVIDUAL OR CORPORATE !!!
+        const registration = await registerToCourseIndividual({
+          individualTraineeId: "638796ae23b3b73229cb811b",
+          courseId: "638948f347f5b856a309d600",
+        });
+        Swal.fire(
+          "Enrolled!!",
+          "You have succesfully enrolled in this course!",
+          "success"
+        );
+        canEnroll = false;
+      }
+    });
+  };
+
+  const [allReviews, setAllReviews] = useState("");
+
+
+  const getReviews = async () => {
+    const returnedReviews = await getCourseReviews({courseId: course._id});
+    setAllReviews(returnedReviews);
+    console.log(returnedReviews.data)
+  };
+
+
+  const handleInstructorReviewSubmission = async (instructorId) => {
+    console.log("reviewing Instructor")
+    const addReview = await reviewInstructorIndividual({
+      individualTraineeId: "638796ae23b3b73229cb811b",
+      instructorId: instructorId,
+      review: { rating: rating, review: review },
+    });
+    Swal.fire(
+      "Submitted!",
+      "Your review has been submitted successfully.",
+      "success"
+    );
+  };
+
+  // const handleCourseReviewSubmission = async () => {
+  //   const addReview = await reviewCourseIndividual({
+  //     individualTraineeId: "638796ae23b3b73229cb811b",
+  //     courseId: "638948f347f5b856a309d600",
+  //     review: { rating: rating, review: review },
+  //   });
+  //   Swal.fire(
+  //     "Submitted!",
+  //     "Your review has been submitted successfully.",
+  //     "success"
+  //   );
+  // };
   const sampleData = [
     {
       username: "omaar",
@@ -132,7 +203,7 @@ function CoursePreview({
                                   width: "90%",
                                   height: "90%",
                                   margin: "auto",
-                                  objectFit: "cover"
+                                  objectFit: "cover",
                                 }}
                               />
                             </div>
@@ -164,104 +235,97 @@ function CoursePreview({
 
                               <p>{instructor.overview}</p>
 
-                              
+                              <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingOne">
+                                  <button
+                                    class="accordion-button"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#collapseOne"
+                                    aria-expanded="true"
+                                    aria-controls="collapseOne"
+                                  >
+                                    <FontAwesomeIcon icon={faStar} /> Review
+                                    Instructor
+                                  </button>
+                                </h2>
+                                <div
+                                  id="collapseOne"
+                                  class="accordion-collapse collapse show"
+                                  aria-labelledby="headingOne"
+                                  data-bs-parent="#accordionExample"
+                                >
+                                  <div class="accordion-body">
+                                    <div className="row">
+                                      <div
+                                        className="col-6 mb-3"
+                                        style={{ margin: "auto" }}
+                                      >
+                                        <div className="star-rating">
+                                          {[...Array(5)].map((star, index) => {
+                                            return (
+                                              <button
+                                                type="button"
+                                                key={index + 1}
+                                                className={
+                                                  index + 1 <= rating
+                                                    ? "on"
+                                                    : "off"
+                                                }
+                                                onClick={() =>
+                                                  setRating(index + 1)
+                                                }
+                                              >
+                                                {console.log(rating)}
+                                                <span className="star">
+                                                  <FontAwesomeIcon
+                                                    icon={faStar}
+                                                  />
+                                                </span>
+                                              </button>
+                                            );
+                                          })}
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className="row">
+                                      <div className="col-12">
+                                        <label
+                                          for="inputUsername"
+                                          class="form-label"
+                                        >
+                                          Review
+                                        </label>
+                                        <textarea
+                                          class="form-control"
+                                          id="message-text"
+                                          onChange={(e) =>
+                                            setReview(e.target.value)
+                                          }
+                                        >
+                                          {console.log(review)}
+                                        </textarea>
+                                      </div>
+                                    </div>
 
-                                <div class="accordion-item">
-                                  <h2 class="accordion-header" id="headingOne">
                                     <button
-                                      class="accordion-button"
-                                      type="button"
+                                      class="btn btn-md btn-primary ml-2 mt-2"
                                       data-bs-toggle="collapse"
                                       data-bs-target="#collapseOne"
-                                      aria-expanded="true"
-                                      aria-controls="collapseOne"
+                                      onClick={() => handleInstructorReviewSubmission(instructor._id)
+                                        // Swal.fire(
+                                        //   "Submitted!",
+                                        //   "Your review has been submitted successfully.",
+                                        //   "success"
+                                        // )
+                                      }
                                     >
-                                      <FontAwesomeIcon icon={faStar} /> Review
-                                      Instructor
+                                      Submit review
                                     </button>
-                                  </h2>
-                                  <div
-                                    id="collapseOne"
-                                    class="accordion-collapse collapse show"
-                                    aria-labelledby="headingOne"
-                                    data-bs-parent="#accordionExample"
-                                  >
-                                    <div class="accordion-body">
-                                      <div className="row">
-                                        <div
-                                          className="col-6 mb-3"
-                                          style={{ margin: "auto" }}
-                                        >
-                                          <div className="star-rating">
-                                            {[...Array(5)].map(
-                                              (star, index) => {
-                                                return (
-                                                  <button
-                                                    type="button"
-                                                    key={index + 1}
-                                                    className={
-                                                      index + 1 <= rating
-                                                        ? "on"
-                                                        : "off"
-                                                    }
-                                                    onClick={() =>
-                                                      setRating(index + 1)
-                                                    }
-                                                  >
-                                                    {console.log(rating)}
-                                                    <span className="star">
-                                                      <FontAwesomeIcon
-                                                        icon={faStar}
-                                                      />
-                                                    </span>
-                                                  </button>
-                                                );
-                                              }
-                                            )}
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <div className="row">
-                                        <div className="col-12">
-                                          <label
-                                            for="inputUsername"
-                                            class="form-label"
-                                          >
-                                            Review
-                                          </label>
-                                          <textarea
-                                            class="form-control"
-                                            id="message-text"
-                                            onChange={(e) =>
-                                              setReview(e.target.value)
-                                            }
-                                          >
-                                            {console.log(review)}
-                                          </textarea>
-                                        </div>
-                                      </div>
-
-                                      <button
-                                        class="btn btn-md btn-primary ml-2 mt-2"
-
-                                        data-bs-toggle="collapse"
-                                        data-bs-target="#collapseOne"
-                                       
-                                        onClick={() =>
-                                          Swal.fire(
-                                            "Submitted!",
-                                            "Your review has been submitted successfully.",
-                                            "success"
-                                          )
-                                        }
-                                      >
-                                        Submit review
-                                      </button>
-                                    </div>
                                   </div>
                                 </div>
-                                {/* <AddReviewForm /> */}
-                              
+                              </div>
+                              {/* <AddReviewForm /> */}
                             </div>
                           </div>
                         </div>
@@ -318,34 +382,17 @@ function CoursePreview({
                 id="viewCourseReviewsButton"
                 data-bs-toggle="modal"
                 data-bs-target="#viewCourseReviewsModal"
+                onClick={() => getReviews()}
               >
                 See what other students think of this course
               </button>
-              <CourseReviews reviews={sampleData} />
+              <CourseReviews reviews={allReviews} />
 
               {false ? (
                 <button
                   type="button"
                   class="btn btn-md btn-primary ml-2 mt-2"
-                  onClick={() =>
-                    Swal.fire({
-                      title: "Are you sure you want to enroll in this course?",
-                      icon: "question",
-                      showCancelButton: true,
-                      confirmButtonColor: "#3085d6",
-                      cancelButtonColor: "#d33",
-                      cancelButtonText: "No",
-                      confirmButtonText: "Yes!",
-                    }).then((result) => {
-                      if (result.isConfirmed) {
-                        Swal.fire(
-                          "Enrolled!!",
-                          "You have succesfully enrolled in this course!",
-                          "success"
-                        );
-                      }
-                    })
-                  }
+                  onClick={() => handleRegistration()}
                 >
                   <span className="content">
                     <FontAwesomeIcon icon={faPlus} className="icon" />
@@ -366,7 +413,7 @@ function CoursePreview({
                     </span>
                   </button>
 
-                  <AddReviewForm />
+                  <AddReviewForm courseInstructorReview = {false} course = {course}/>
                 </>
               )}
             </div>

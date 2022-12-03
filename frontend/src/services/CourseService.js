@@ -28,3 +28,7 @@ export const updateCourse = (id, updatedCourse) => {
 export const updateSubtitle = (id, updatedSubtitle) => {
   return BaseAxios.put('/course/subtitle?id=' + id, updatedSubtitle);
 };
+
+export const getCourseReviews = (courseId) => {
+  return BaseAxios.post('/course/courseReviews', courseId)
+}

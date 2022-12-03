@@ -4,9 +4,39 @@ import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import "./AddReviewForm.scss";
 import Swal from "sweetalert2";
-const AddReviewForm = () => {
+import { reviewCourseIndividual } from "../../services/IndividualTraineeService";
+import { reviewInstructorIndividual } from "../../services/IndividualTraineeService";
+const AddReviewForm = (course, instructor, courseInstructorReview) => {
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
+
+  console.log(course.course._id);
+  const handleCourseReviewSubmission = async () => {
+    const addReview = await reviewCourseIndividual({
+      individualTraineeId: "638796ae23b3b73229cb811b",
+      courseId: course.course._id,
+      review: { rating: rating, review: review },
+    });
+    Swal.fire(
+      "Submitted!",
+      "Your review has been submitted successfully.",
+      "success"
+    );
+  };
+
+  const handleInstructorReviewSubmission = async () => {
+    const addReview = await reviewInstructorIndividual({
+      individualTraineeId: "638796ae23b3b73229cb811b",
+      courseId: course.course._id,
+      review: { rating: rating, review: review },
+    });
+    Swal.fire(
+      "Submitted!",
+      "Your review has been submitted successfully.",
+      "success"
+    );
+  };
+
   return (
     <div
       class="modal fade"
@@ -61,11 +91,25 @@ const AddReviewForm = () => {
                   class="form-control"
                   id="message-text"
                   onChange={(e) => setReview(e.target.value)}
-                >{console.log(review)}</textarea>
+                >
+                  {console.log(review)}
+                </textarea>
               </div>
             </div>
 
-            <button className="btn btn-md btn-primary mt-5" onClick={() => Swal.fire("Submitted!","Your review has been submitted successfully." ,"success" )}>
+            <button
+              className="btn btn-md btn-primary mt-5"
+              onClick={
+                courseInstructorReview
+                  ? () => handleInstructorReviewSubmission
+                  : () => handleCourseReviewSubmission()
+                // Swal.fire(
+                //   "Submitted!",
+                //   "Your review has been submitted successfully.",
+                //   "success"
+                // )
+              }
+            >
               Submit review
             </button>
           </div>

@@ -9,6 +9,6 @@ Router.post('/', courseController.createCourse);
 Router.get('/byId', courseController.getCourseById);
 Router.put('/', courseController.updateCourse);
 Router.put('/subtitle', courseController.updateSubtitle);
-Router.get('/courseReviews', courseController.getReviews);
+Router.post('/courseReviews', courseController.getReviews);
 
 module.exports = Router;

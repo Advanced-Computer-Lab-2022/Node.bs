@@ -15,7 +15,7 @@ Router.post(
   individualTraineeController.registerToCourse
 );
 Router.post(
-  '/addReviewIndividual',
+  '/addCourseReviewIndividual',
   individualTraineeController.reviewCourseIndividual
 );
 Router.post(

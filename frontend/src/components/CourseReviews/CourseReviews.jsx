@@ -28,15 +28,19 @@ const CourseReviews = (reviews) => {
           <div class="modal-body">
             <ul class="list-group list-group-flush">
               <li class="list-group-item">
-                {reviews?.reviews?.map((review) => (
+                {reviews.reviews.data?.map((review) => (
                   <div>
-                    {console.log(reviews.reviews)}
-                    <h6>{review?.username}</h6>
+                    {/* {console.log(reviews?.reviews)} */}
+                    <h6>
+                      {review?.individualTrainee?.firstName +
+                        " " +
+                        review?.individualTrainee?.lastName}
+                    </h6>
 
-                    {[...Array(review.rating)].map((star) => (
+                    {[...Array(review?.rating)].map((star) => (
                       <FontAwesomeIcon icon={faStar} />
                     ))}
-                    <p>{review.review}</p>
+                    <p>{review?.review}</p>
                     <hr />
                   </div>
                 ))}

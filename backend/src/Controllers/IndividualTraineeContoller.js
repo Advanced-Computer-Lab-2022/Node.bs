@@ -1,6 +1,7 @@
 const IndividualTrainee = require('./../Models/IndividualTrainee');
 const mongoose = require('mongoose');
 const Course = require('./../Models/Course');
+const Instructor = require('./../Models/Instructor')
 
 
 const reviewInstructorIndividual = async (req, res) => {
@@ -15,14 +16,14 @@ const reviewInstructorIndividual = async (req, res) => {
     review: newReview.review,
   };
 
-  const instructorReturned = await Instructor.findOneById(instructorId);
+  const instructorReturned = await Instructor.findOne({_id: instructorId});
   const instructorOldReviews = await instructorReturned.individualReviews;
 
-  const updatedReviews = instructorOldReviews.push(newReviewFinalForm);
+instructorOldReviews.push(newReviewFinalForm);
 
   const updatedInstrcutor = await Instructor.findByIdAndUpdate(
-    { id: instructorId },
-    { individualReviews: updatedReviews }
+    { _id: instructorId },
+    { individualReviews: instructorOldReviews }
   );
 
   res.status(200).json(updatedInstrcutor)
@@ -40,14 +41,16 @@ const reviewCourseIndividual = async (req, res) => {
     review: newReview.review,
   };
 
-  const courseReturned = await Course.findOneById(courseId);
-  const courseOldReviews = await courseReturned.individualReviews;
+  // const indivReturned = await IndividualTrainee.findById(individualTraineeId)
+  const courseReturned = await Course.findById(courseId)
+  // const courseReturned = await Course.findOne({_id: "638513ddc4c0ad7f28e02965"});
+  let courseOldReviews =  courseReturned.individualReviews;
 
-  const updatedReviews = courseOldReviews.push(newReviewFinalForm);
+courseOldReviews.push(newReviewFinalForm);
 
   const updatedCourse = await Course.findByIdAndUpdate(
-    { id: courseId },
-    { individualReviews: updatedReviews }
+    { _id: courseId },
+    { individualReviews: courseOldReviews }
   );
 
   res.status(200).json(updatedCourse)
