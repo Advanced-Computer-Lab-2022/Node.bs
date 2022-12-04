@@ -1,8 +1,8 @@
 const IndividualTrainee = require('./../Models/IndividualTrainee');
+const Submission = require('./../Models/Submission');
 const mongoose = require('mongoose');
 const Course = require('./../Models/Course');
-const Instructor = require('./../Models/Instructor')
-
+const Instructor = require('./../Models/Instructor');
 
 const reviewInstructorIndividual = async (req, res) => {
   const instructorId = req.body.instructorId;
@@ -16,17 +16,17 @@ const reviewInstructorIndividual = async (req, res) => {
     review: newReview.review,
   };
 
-  const instructorReturned = await Instructor.findOne({_id: instructorId});
+  const instructorReturned = await Instructor.findOne({ _id: instructorId });
   const instructorOldReviews = await instructorReturned.individualReviews;
 
-instructorOldReviews.push(newReviewFinalForm);
+  instructorOldReviews.push(newReviewFinalForm);
 
   const updatedInstrcutor = await Instructor.findByIdAndUpdate(
     { _id: instructorId },
     { individualReviews: instructorOldReviews }
   );
 
-  res.status(200).json(updatedInstrcutor)
+  res.status(200).json(updatedInstrcutor);
 };
 
 const reviewCourseIndividual = async (req, res) => {
@@ -42,18 +42,18 @@ const reviewCourseIndividual = async (req, res) => {
   };
 
   // const indivReturned = await IndividualTrainee.findById(individualTraineeId)
-  const courseReturned = await Course.findById(courseId)
+  const courseReturned = await Course.findById(courseId);
   // const courseReturned = await Course.findOne({_id: "638513ddc4c0ad7f28e02965"});
-  let courseOldReviews =  courseReturned.individualReviews;
+  let courseOldReviews = courseReturned.individualReviews;
 
-courseOldReviews.push(newReviewFinalForm);
+  courseOldReviews.push(newReviewFinalForm);
 
   const updatedCourse = await Course.findByIdAndUpdate(
     { _id: courseId },
     { individualReviews: courseOldReviews }
   );
 
-  res.status(200).json(updatedCourse)
+  res.status(200).json(updatedCourse);
 };
 
 const createNewIndividualTrainee = async (req, res) => {
@@ -100,14 +100,6 @@ const registerToCourse = async (req, res) => {
   return res.status(200).json(returnedQuery);
 };
 
-module.exports = {
-  viewRegisteredCourse,
-  createNewIndividualTrainee,
-  registerToCourse,
-  reviewCourseIndividual,
-  reviewInstructorIndividual
-};
-
 //eminem userId ...
 // 638796ae23b3b73229cb811b
 
@@ -119,3 +111,62 @@ module.exports = {
 
 //Dr. Haythem Ismail
 //635f37bcde75e20effb14fc3
+const reviewInstructor = async (req, res) => {
+  const instructorId = req.body.instructorId;
+  const review = req.bodu.fullReview; //contains rating and review together
+};
+
+const getMyCourses = async (req, res) => {
+  const myId = req.query.id;
+  try {
+    const user = await IndividualTrainee.findById(myId)
+      .populate('registeredCourses.course')
+      .populate('registeredCourses.submissions');
+
+    if (user) {
+      res.status(200).json(user.registeredCourses);
+    } else {
+      res.status(404).json({ error: 'user not found' });
+    }
+  } catch (e) {
+    res.status(500).json({ error: e });
+  }
+};
+const submitTest = async (req, res) => {
+  try {
+    const submission = await Submission.create(req.body.submission);
+    let trainee = await IndividualTrainee.findById(req.body.traineeId);
+    let registeredCourses = trainee.registeredCourses;
+    for (let registeredCourse in registeredCourses) {
+      if (
+        registeredCourses[registeredCourse].course.equals(req.body.courseId)
+      ) {
+        registeredCourses[registeredCourse].submissions.push(submission._id);
+      }
+    }
+    const response = await CorporateTrainee.findOneAndUpdate(
+      { _id: req.body.traineeId },
+      { registeredCourses }
+    );
+    console.log(submission);
+    console.log(response);
+    if (response) {
+      res.status(200).json(response);
+    } else {
+      res.status(404).json({ message: 'user not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'some unexpected error occured' });
+  }
+};
+
+module.exports = {
+  reviewInstructor,
+  getMyCourses,
+  submitTest,
+  viewRegisteredCourse,
+  createNewIndividualTrainee,
+  registerToCourse,
+  reviewCourseIndividual,
+  reviewInstructorIndividual,
+};

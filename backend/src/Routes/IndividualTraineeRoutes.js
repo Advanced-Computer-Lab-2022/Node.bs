@@ -23,4 +23,7 @@ Router.post(
   individualTraineeController.reviewInstructorIndividual
 );
 
+Router.get('/courses', individualTraineeController.getMyCourses);
+Router.post('/test/submit', individualTraineeController.submitTest);
+
 module.exports = Router;

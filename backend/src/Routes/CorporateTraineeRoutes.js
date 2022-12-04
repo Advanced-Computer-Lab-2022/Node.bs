@@ -23,4 +23,7 @@ Router.post(
   corporateTraineeController.reviewInstructorCorporate
 );
 
+Router.get('/courses', corporateTraineeController.getMyCourses);
+Router.post('/test/submit', corporateTraineeController.submitTest);
+
 module.exports = Router;

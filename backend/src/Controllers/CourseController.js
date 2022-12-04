@@ -4,6 +4,7 @@ const Lesson = require('./../Models/Lesson');
 const Test = require('./../Models/Test');
 const IndividualTrainee = require('./../Models/IndividualTrainee');
 const mongoose = require('mongoose');
+const LearningResource = require('../Models/LearningResource');
 
 // //optimized with extra projection parameter to reduce response size
 // const oSearchCourses = async (req, res) => {
@@ -49,6 +50,9 @@ const getAllCourses = async (req, res) => {
         path: 'lessons',
         populate: {
           path: 'test',
+          populate: {
+            path: 'exercises',
+          },
         },
       },
     });
@@ -73,6 +77,9 @@ const filterCourses = async (req, res) => {
         path: 'lessons',
         populate: {
           path: 'test',
+          populate: {
+            path: 'exercises',
+          },
         },
       },
     });
@@ -102,6 +109,9 @@ const searchCourses = async (req, res) => {
         path: 'lessons',
         populate: {
           path: 'test',
+          populate: {
+            path: 'exercises',
+          },
         },
       },
     });
@@ -124,6 +134,9 @@ const searchCourses = async (req, res) => {
         path: 'lessons',
         populate: {
           path: 'test',
+          populate: {
+            path: 'exercises',
+          },
         },
       },
     });
@@ -186,6 +199,9 @@ const getCourseById = async (req, res) => {
           path: 'lessons',
           populate: {
             path: 'test',
+            populate: {
+              path: 'exercises',
+            },
           },
         },
       });
@@ -223,15 +239,50 @@ const updateSubtitle = async (req, res) => {
     res.status(500).json({ error });
   }
 };
+const createLesson = async (req, res) => {
+  const subtitleId = req.body.subtitleId;
+  const lesson = req.body.lesson;
+  const createdLesson = await Lesson.create(lesson);
+  const oldSubtitle = await Subtitle.findById(subtitleId);
+  try {
+    const subtitleUpdated = await Subtitle.findOneAndUpdate(
+      { _id: subtitleId },
+      { lessons: [...oldSubtitle.lessons, createdLesson._id] }
+    );
+    res.status(200).json(subtitleUpdated);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+};
+const createResource = async (req, res) => {
+  try {
+    const lessonId = req.body.lessonId;
+    const resource = req.body.resource;
+    const createdResource = await LearningResource.create(resource);
+    const lesson = await Lesson.findById(lessonId);
+    console.log(lesson);
+    let updatedResources = lesson.learningResources;
+    updatedResources.push(createdResource._id);
+    const response = await Lesson.findByIdAndUpdate(lessonId, {
+      learningResources: updatedResources,
+    });
+    if (response) {
+      res.status(200).json(response);
+    } else [res.status(404).json({ message: 'no such lesson' })];
+  } catch (error) {
+    res.status(500).json({ message: 'unexpected error occured' });
+    console.log(error);
+  }
+};
 
 const getReviews = async (req, res) => {
-  const courseId = req.body.courseId
-  console.log("-----------------------")
-  console.log(req.body)
-  console.log("req.body^^^^^^^^^^^^^^^^^^^^^^^^")
-  console.log("course id: " + courseId)
+  const courseId = req.body.courseId;
+  console.log('-----------------------');
+  console.log(req.body);
+  console.log('req.body^^^^^^^^^^^^^^^^^^^^^^^^');
+  console.log('course id: ' + courseId);
   const returnedQuery = await Course.findOne({
-    _id: courseId
+    _id: courseId,
   })
     .populate({ path: 'individualReviews.individualTrainee' })
     .populate({ path: 'corporateReviews.corporateTrainee' });
@@ -261,4 +312,6 @@ module.exports = {
   updateCourse,
   updateSubtitle,
   getReviews,
+  createLesson,
+  createResource,
 };
