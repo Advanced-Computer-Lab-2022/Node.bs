@@ -24,6 +24,7 @@ const CourseGroup = ({ courses, loading, editable, canEnroll }) => {
               course={course}
               editable={editable}
               canEnroll={canEnroll}
+              
             />
           </div>
         );
