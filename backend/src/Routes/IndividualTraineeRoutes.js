@@ -1,8 +1,29 @@
 const express = require('express');
 const Router = express.Router();
-const IndividualTraineeController = require('./../Controllers/IndividualTraineeContoller');
+const individualTraineeController = require('./../Controllers/IndividualTraineeContoller');
 
-Router.get('/courses', IndividualTraineeController.getMyCourses);
-Router.post('/test/submit', IndividualTraineeController.submitTest);
+Router.post(
+  '/newIndividualTrainee',
+  individualTraineeController.createNewIndividualTrainee
+);
+Router.get(
+  '/registeredCoursesIndividual',
+  individualTraineeController.viewRegisteredCourse
+);
+Router.post(
+  '/registerToCourseIndividual',
+  individualTraineeController.registerToCourse
+);
+Router.post(
+  '/addCourseReviewIndividual',
+  individualTraineeController.reviewCourseIndividual
+);
+Router.post(
+  '/addInstructorReviewIndividual',
+  individualTraineeController.reviewInstructorIndividual
+);
+
+Router.get('/courses', individualTraineeController.getMyCourses);
+Router.post('/test/submit', individualTraineeController.submitTest);
 
 module.exports = Router;

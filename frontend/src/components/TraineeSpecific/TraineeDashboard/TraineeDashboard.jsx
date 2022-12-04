@@ -39,7 +39,11 @@ const TraineeDashboard = ({
             courses={viewedCourses}
             loading={loading}
             editable={false}
+<<<<<<< HEAD
+            canEnroll = {true}
+=======
             accessCourse={accessCourse}
+>>>>>>> mezmez
           />
         </div>
       </div>

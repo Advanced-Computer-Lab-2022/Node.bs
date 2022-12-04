@@ -2,6 +2,7 @@ const Course = require('./../Models/Course');
 const Subtitle = require('./../Models/Subtitle');
 const Lesson = require('./../Models/Lesson');
 const Test = require('./../Models/Test');
+const IndividualTrainee = require('./../Models/IndividualTrainee');
 const mongoose = require('mongoose');
 const LearningResource = require('../Models/LearningResource');
 
@@ -274,6 +275,32 @@ const createResource = async (req, res) => {
   }
 };
 
+const getReviews = async (req, res) => {
+  const courseId = req.body.courseId;
+  console.log('-----------------------');
+  console.log(req.body);
+  console.log('req.body^^^^^^^^^^^^^^^^^^^^^^^^');
+  console.log('course id: ' + courseId);
+  const returnedQuery = await Course.findOne({
+    _id: courseId,
+  })
+    .populate({ path: 'individualReviews.individualTrainee' })
+    .populate({ path: 'corporateReviews.corporateTrainee' });
+
+  console.log(returnedQuery);
+  //   console.log(returnedQuery[0].individualReviews);
+  //   console.log(returnedQuery[0].corporateReviews);
+
+  individualReviews = returnedQuery.individualReviews;
+  corporateReviews = returnedQuery.corporateReviews;
+  const allReviews = individualReviews.concat(corporateReviews);
+
+  if (returnedQuery) {
+    return res.status(200).json(allReviews);
+  }
+  // res.status(404).json({ message: "Couldn't find any reviews" });
+};
+
 module.exports = {
   // oSearchCourses,
   // oFilterCourses,
@@ -284,6 +311,7 @@ module.exports = {
   getCourseById,
   updateCourse,
   updateSubtitle,
+  getReviews,
   createLesson,
   createResource,
 };
