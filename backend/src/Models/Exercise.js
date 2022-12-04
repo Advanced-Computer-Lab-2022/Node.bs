@@ -7,11 +7,9 @@ const ExerciseSchema = new schema(
       type: String,
     },
 
-    options: [
-      {
-        type: String, //must be of size 4
-      },
-    ],
+    options: {
+      type: Object, //must be of size 4
+    },
 
     question: {
       type: String,

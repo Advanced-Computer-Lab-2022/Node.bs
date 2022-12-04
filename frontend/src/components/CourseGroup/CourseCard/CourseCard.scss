@@ -1,5 +1,9 @@
 @use './../../../scss/_variables' as *;
-
+.hover {
+  &:hover {
+    cursor: pointer;
+  }
+}
 .card {
   width: 12rem;
   margin: auto;

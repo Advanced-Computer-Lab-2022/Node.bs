@@ -9,5 +9,7 @@ Router.post('/', courseController.createCourse);
 Router.get('/byId', courseController.getCourseById);
 Router.put('/', courseController.updateCourse);
 Router.put('/subtitle', courseController.updateSubtitle);
+Router.post('/lesson', courseController.createLesson);
+Router.post('/addresource', courseController.createResource);
 
 module.exports = Router;

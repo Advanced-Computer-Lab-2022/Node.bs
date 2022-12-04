@@ -4,14 +4,34 @@ import TraineeSidebar from '../../components/TraineeSpecific/TraineeSidebar/Trai
 import './Trainee.scss';
 import { useState, useEffect } from 'react';
 import * as courses from './../../services/CourseService';
+import { Route, Routes } from 'react-router-dom';
+import ViewCourse from './../../components/TraineeSpecific/ViewCourse/ViewCourse';
 
-const Trainee = ({ corporate }) => {
+const Trainee = ({ corporate, id }) => {
   const [viewedCourses, setViewedCourses] = useState([]);
   const [viewTitle, setViewTitle] = useState('');
   const [loading, setLoading] = useState(false);
+  const [viewingEnrolled, setViewingEnrolled] = useState(false);
+  // const [currentlyViewedCourse, setCurrentlyViewedCourse] = useState({});
+
+  const getMyCourses = async () => {
+    setViewTitle('Enrolled Courses');
+    setViewingEnrolled(true);
+    setViewedCourses([]);
+    setLoading(true);
+    try {
+      const response = await courses.getMyCourses(corporate, id);
+      console.log(response.data);
+      setViewedCourses(response.data);
+    } catch (e) {
+      console.log(e);
+    }
+    setLoading(false);
+  };
 
   const getAllCourses = async () => {
     //get all courses
+    setViewingEnrolled(false);
     setViewTitle('Course Catalog');
     setViewedCourses([]);
     setLoading(true);
@@ -25,6 +45,11 @@ const Trainee = ({ corporate }) => {
   };
 
   const filterCourses = async (rating, subjects, maxPrice, minPrice) => {
+    if (viewTitle === 'Enrolled Courses') {
+      setViewingEnrolled(true);
+    } else {
+      setViewingEnrolled(false);
+    }
     setViewTitle('Filter Results');
     setLoading(true);
     setViewedCourses([]);
@@ -49,6 +74,7 @@ const Trainee = ({ corporate }) => {
     setViewTitle('Search Results');
     setLoading(true);
     setViewedCourses([]);
+    setViewingEnrolled(false);
     try {
       const response = await courses.search(body);
       setViewedCourses(response.data);
@@ -57,29 +83,75 @@ const Trainee = ({ corporate }) => {
     }
     setLoading(false);
   };
+  const accessCourse = async (courseId) => {
+    for (let i in viewedCourses) {
+      if (viewedCourses[i].course._id === courseId) {
+        window.location.href +=
+          '/course/' + id + '/' + i + '/' + (corporate ? '1' : '0');
+      }
+    }
+    // console.log(currentlyViewedCourse);
+    // if (currentlyViewedCourse.course) {
+    //   window.location.href += '/course';
+    // }
+  };
+  // useEffect(() => {
+  //   if (currentlyViewedCourse.course) {
+  //     console.log(currentlyViewedCourse);
+  //     window.location.href += '/course';
+  //   }
+  // }, [currentlyViewedCourse]);
 
   useEffect(() => {
     getAllCourses();
   }, []);
 
   return (
-    <div>
-      <div className="container-fluid row main px-0" id="traineeMainPage">
-        <div className="col-2">
-          <TraineeSidebar getCourseCatalog={getAllCourses} />
-        </div>
-        <div className="col-10">
-          <TraineeDashboard
+    <Routes>
+      <Route
+        path=""
+        element={
+          <div>
+            <div className="container-fluid row main px-0" id="traineeMainPage">
+              <div className="col-2">
+                <TraineeSidebar
+                  getCourseCatalog={getAllCourses}
+                  getMyCourses={getMyCourses}
+                />
+              </div>
+              <div className="col-10">
+                <TraineeDashboard
+                  corporate={corporate}
+                  viewTitle={viewTitle}
+                  viewedCourses={
+                    viewingEnrolled
+                      ? viewedCourses.map((registeredCourse) => {
+                          return registeredCourse.course;
+                        })
+                      : viewedCourses
+                  }
+                  enrolledCourses={viewingEnrolled ? viewedCourses : []}
+                  loading={loading}
+                  filterHandler={filterCourses}
+                  searchHandler={searchCourses}
+                  accessCourse={viewingEnrolled ? accessCourse : undefined}
+                />
+              </div>
+            </div>
+          </div>
+        }
+      />
+      <Route
+        path="/course/:id/:registeredCourseId/:corporate"
+        element={
+          <ViewCourse
+            // registeredCourse={currentlyViewedCourse}
             corporate={corporate}
-            viewTitle={viewTitle}
-            viewedCourses={viewedCourses}
-            loading={loading}
-            filterHandler={filterCourses}
-            searchHandler={searchCourses}
+            // id={id}
           />
-        </div>
-      </div>
-    </div>
+        }
+      />
+    </Routes>
   );
 };
 export default Trainee;

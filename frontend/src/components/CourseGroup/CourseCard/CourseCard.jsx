@@ -8,7 +8,11 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import CoursePreview from '../../CoursePreview/CoursePreview';
 
-const CourseCard = ({ course, editable }) => {
+<<<<<<< HEAD
+const CourseCard = ({ course, editable, canEnroll }) => {
+=======
+const CourseCard = ({ course, editable, accessCourse }) => {
+>>>>>>> mezmez
   const userInfo = useSelector((state) => state.user);
   const currency = useSelector(
     (state) => state.region.selectedRegion.currencyCodes[0]
@@ -48,13 +52,24 @@ const CourseCard = ({ course, editable }) => {
     <div className="card my-1" id="course-card">
       <img
         src="https://img.freepik.com/free-psd/3d-rendering-ui-icon_23-2149182280.jpg?w=1380&t=st=1666956873~exp=1666957473~hmac=d6871289272b36f6fb1d1d99fa2195bf8599b686ed7e2d86419e8bf371d03147"
-        className="card-img-top"
+        className={'card-img-top ' + (accessCourse ? 'hover' : '')}
         alt=""
         height={180}
+        onClick={() => {
+          if (accessCourse) accessCourse(course._id);
+        }}
       />
       <div className="card-body container pt-0 pb-2 px-3 ">
         <div className="row mb-3 ">
-          <h3 className="card-title font font-primary mb-0 ">
+          <h3
+            onClick={() => {
+              if (accessCourse) accessCourse(course._id);
+            }}
+            className={
+              'card-title font font-primary mb-0' +
+              (accessCourse ? 'hover' : '')
+            }
+          >
             {course?.title}
           </h3>
           <div className="col-5 p-0 px-2">
@@ -105,6 +120,7 @@ const CourseCard = ({ course, editable }) => {
           </div>
         </div>
       </div>
+
       <CoursePreview
         isOpen={isOpen}
         onRequestClose={() => setIsOpen(false)}
@@ -112,6 +128,7 @@ const CourseCard = ({ course, editable }) => {
         currency={currency}
         exRate={exRate}
         editable={editable}
+        canEnroll = {canEnroll}
       />
     </div>
   );
