@@ -14,6 +14,7 @@ const InstructorDashboard = ({
   filterHandler,
   searchHandler,
   editable,
+  id,
 }) => {
   return (
     <Routes>
@@ -42,12 +43,13 @@ const InstructorDashboard = ({
                   courses={viewedCourses}
                   loading={loading}
                   editable={editable}
+                  type={'instructor'}
                 />
               </div>
             </div>
             <div className="col-4">
               <div className="row">
-                <ProfileCard />
+                <ProfileCard type={'instructor'} id={id} />
               </div>
             </div>
           </div>

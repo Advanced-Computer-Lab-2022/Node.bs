@@ -96,6 +96,7 @@ const Instructor = ({ id }) => {
           filterHandler={filterCourses}
           searchHandler={searchCourses}
           editable={editable}
+          id={id}
         />
       </div>
     </div>

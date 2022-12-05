@@ -117,12 +117,14 @@ const Trainee = ({ corporate, id }) => {
                 <TraineeSidebar
                   getCourseCatalog={getAllCourses}
                   getMyCourses={getMyCourses}
+                  id={id}
                 />
               </div>
               <div className="col-10">
                 <TraineeDashboard
                   corporate={corporate}
                   viewTitle={viewTitle}
+                  id={id}
                   viewedCourses={
                     viewingEnrolled
                       ? viewedCourses.map((registeredCourse) => {

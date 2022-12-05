@@ -2,15 +2,22 @@ import React from 'react';
 import './../ProfileCard/ProfileCard.scss';
 import { faPencil } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-function ProfileCard() {
+import { useState } from 'react';
+import ReactModal from 'react-modal';
+import OverviewForm from '../OverviewForm/OverviewForm';
+import PasswordForm from '../PasswordForm/PasswordForm';
+
+function ProfileCard({ id, type }) {
+  const [viewEditProfile, setViewEditProfile] = useState(false);
   return (
-    <div id = "profile-card">
-      <div className="row" >
-        <div className="col-9">
-          {/* <h2>Profile</h2> */}
-        </div>
+    <div id="profile-card">
+      <div className="row">
+        <div className="col-9">{/* <h2>Profile</h2> */}</div>
         <div className="col">
-          <div className="edit-icon-container">
+          <div
+            className="edit-icon-container"
+            onClick={() => setViewEditProfile(true)}
+          >
             <FontAwesomeIcon icon={faPencil} className="edit-icon" />
           </div>
         </div>
@@ -22,6 +29,20 @@ function ProfileCard() {
         <h4>Ronnie Coleman</h4>
         <h6 className="font-secondary">Individual Trainee</h6>
       </div>
+      <ReactModal
+        isOpen={viewEditProfile}
+        onRequestClose={() => setViewEditProfile(false)}
+        style={{
+          content: {
+            width: '40vw',
+            height: '35vh',
+            margin: 'auto',
+          },
+        }}
+      >
+        {type === 'instructor' && <OverviewForm id={id} />}
+        <PasswordForm type={type} id={id} />
+      </ReactModal>
     </div>
   );
 }

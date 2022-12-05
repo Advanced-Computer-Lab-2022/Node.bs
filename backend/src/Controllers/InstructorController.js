@@ -64,7 +64,9 @@ const getReviews = async (req, res) => {
   const instructorId = req.body.instructorId;
   const returnedQuery = await Instructor.findOne({
     _id: mongoose.Types.ObjectId(instructorId),
-  });
+  })
+    .populate({ path: 'individualReviews.user' })
+    .populate({ path: 'corporateReviews.user' });
   //   console.log(returnedQuery[0].individualReviews);
   //   console.log(returnedQuery[0].corporateReviews);
   individualReviews = returnedQuery.individualReviews;
@@ -76,10 +78,78 @@ const getReviews = async (req, res) => {
   }
   res.status(404).json({ message: "Couldn't find any reviews" });
 };
+const updateInstructorPassword = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ error: 'This ID is false' });
+  }
+
+  const instructor = await Instructor.findOneAndUpdate(
+    { _id: id },
+    { ...req.body }
+  );
+
+  if (!instructor) {
+    return res.status(400).json({ error: 'instructor not found' });
+  }
+  res.status(200).json(instructor);
+};
+
+const updateInstructorOverview = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ error: 'This ID is false' });
+  }
+
+  const instructor = await Instructor.findOneAndUpdate(
+    { _id: id },
+    { ...req.body }
+  );
+
+  if (!instructor) {
+    return res.status(400).json({ error: 'instructor not found' });
+  }
+  res.status(200).json(instructor);
+};
+
+const updateInstructorTerms = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ error: 'This ID is false' });
+  }
+
+  const instructor = await Instructor.findOneAndUpdate(
+    { _id: id },
+    { ...req.body }
+  );
+
+  if (!instructor) {
+    return res.status(400).json({ error: 'instructor not found' });
+  }
+  res.status(200).json(instructor);
+};
+
+const getInstructorById = async (req, res) => {
+  const instructorId = req.query.id;
+  const instructor = await Instructor.findById(instructorId);
+
+  if (instructor) {
+    res.status(200).json(instructor);
+  } else {
+    res.status(404).json({ error: 'instructor not found' });
+  }
+};
 
 module.exports = {
   getReviews,
   createTest,
+  updateInstructorOverview,
+  updateInstructorPassword,
+  updateInstructorTerms,
+  getInstructorById,
 };
 
 // Rami Younes ID

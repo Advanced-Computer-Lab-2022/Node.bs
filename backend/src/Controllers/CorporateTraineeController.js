@@ -3,27 +3,28 @@ const mongoose = require('mongoose');
 const Course = require('./../Models/Course');
 const Submission = require('./../Models/Submission');
 const LearningResource = require('./../Models/LearningResource');
+const Instructor = require('./../Models/Instructor');
 
 const reviewInstructorCorporate = async (req, res) => {
   const instructorId = req.body.instructorId;
 
-  const corporateTraineeId = req.body.corporateTraineeId;
+  const corporateTraineeId = req.body.user;
   const newReview = req.body.review;
 
   const newReviewFinalForm = {
-    corporateTrainee: corporateTraineeId,
+    user: corporateTraineeId,
     rating: newReview.rating,
     review: newReview.review,
   };
 
-  const instructorReturned = await Instructor.findOneById(instructorId);
+  const instructorReturned = await Instructor.findById(instructorId);
   const instructorOldReviews = await instructorReturned.corporateReviews;
 
-  const updatedReviews = instructorOldReviews.push(newReviewFinalForm);
+  instructorOldReviews.push(newReviewFinalForm);
 
   const updatedInstrcutor = await Instructor.findByIdAndUpdate(
-    { id: instructorId },
-    { corporateReviews: updatedReviews }
+    { _id: instructorId },
+    { corporateReviews: instructorOldReviews }
   );
 
   res.status(200).json(updatedInstrcutor);
@@ -54,14 +55,14 @@ const reviewCourseCorporate = async (req, res) => {
     review: newReview.review,
   };
 
-  const courseReturned = await Course.findOneById(courseId);
+  const courseReturned = await Course.findById(courseId);
   const courseOldReviews = courseReturned.corporateReviews;
 
-  const updatedReviews = courseOldReviews.push(newReviewFinalForm);
+  courseOldReviews.push(newReviewFinalForm);
 
   const updatedCourse = await Course.findByIdAndUpdate(
-    { id: courseId },
-    { corporateReviews: updatedReviews }
+    { _id: courseId },
+    { corporateReviews: courseOldReviews }
   );
 
   res.status(200).json(updatedCourse);
@@ -169,6 +170,23 @@ const submitTest = async (req, res) => {
     res.status(500).json({ message: 'some unexpected error occured' });
   }
 };
+const updateCorporatePassword = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ error: 'This ID is false' });
+  }
+
+  const corporateTrainee = await CorporateTrainee.findOneAndUpdate(
+    { _id: id },
+    { ...req.body }
+  );
+
+  if (!corporateTrainee) {
+    return res.status(400).json({ error: 'Corporate trainee not found' });
+  }
+  res.status(200).json(corporateTrainee);
+};
 
 module.exports = {
   getMyCourses,
@@ -178,4 +196,5 @@ module.exports = {
   viewRegisteredCourse,
   createNewCorporateTrainee,
   reviewInstructorCorporate,
+  updateCorporatePassword,
 };

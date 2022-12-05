@@ -8,7 +8,8 @@ const CourseGroup = ({
   loading,
   editable,
   accessCourse,
-  canEnroll,
+  type,
+  id,
 }) => {
   // const currency = useSelector(
   //   (state) => state.region.selectedRegion.currencyCodes[0]
@@ -29,8 +30,9 @@ const CourseGroup = ({
             <CourseCard
               course={course}
               editable={editable}
-              canEnroll={canEnroll}
               accessCourse={accessCourse}
+              type={type}
+              id={id}
             />
           </div>
         );

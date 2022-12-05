@@ -1,21 +1,21 @@
-import BaseAxios from "../Requester/BaseAxios";
+import BaseAxios from '../Requester/BaseAxios';
 
 export const createNewIndividualTrainee = (newIndividualTrainee) => {
   return BaseAxios.post(
-    "/individual/newIndividualTrainee",
+    '/individual/newIndividualTrainee',
     newIndividualTrainee
   );
 };
 
 export const viewRegisteredCourse = (individualTraineeId) => {
   return BaseAxios.get(
-    "individual/registeredCoursesIndividual",
+    'individual/registeredCoursesIndividual',
     individualTraineeId
   );
 };
 export const registerToCourse = (individualTraineeId, courseId) => {
   return BaseAxios.post(
-    "/individual/registerToCourseIndividual",
+    '/individual/registerToCourseIndividual',
     individualTraineeId,
     courseId
   );
@@ -27,7 +27,7 @@ export const reviewCourseIndividual = (
   review
 ) => {
   return BaseAxios.post(
-    "/individual/addCourseReviewIndividual",
+    '/individual/addCourseReviewIndividual',
     individualTraineeId,
     courseId,
     review
@@ -40,7 +40,7 @@ export const reviewInstructorIndividual = (
   review
 ) => {
   return BaseAxios.post(
-    "/individual/addInstructorReviewIndividual",
+    '/individual/addInstructorReviewIndividual',
     individualTraineeId,
     instructorId,
     review

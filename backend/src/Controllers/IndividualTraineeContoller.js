@@ -7,11 +7,11 @@ const Instructor = require('./../Models/Instructor');
 const reviewInstructorIndividual = async (req, res) => {
   const instructorId = req.body.instructorId;
 
-  const individualTraineeId = req.body.individualTraineeId;
+  const individualTraineeId = req.body.user;
   const newReview = req.body.review;
 
   const newReviewFinalForm = {
-    individualTrainee: individualTraineeId,
+    user: individualTraineeId,
     rating: newReview.rating,
     review: newReview.review,
   };
@@ -111,10 +111,6 @@ const registerToCourse = async (req, res) => {
 
 //Dr. Haythem Ismail
 //635f37bcde75e20effb14fc3
-const reviewInstructor = async (req, res) => {
-  const instructorId = req.body.instructorId;
-  const review = req.bodu.fullReview; //contains rating and review together
-};
 
 const getMyCourses = async (req, res) => {
   const myId = req.query.id;
@@ -159,9 +155,25 @@ const submitTest = async (req, res) => {
     res.status(500).json({ message: 'some unexpected error occured' });
   }
 };
+const updateIndividualPassword = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ error: 'This ID is false' });
+  }
+
+  const individualTrainee = await IndividualTrainee.findOneAndUpdate(
+    { _id: id },
+    { ...req.body }
+  );
+
+  if (!individualTrainee) {
+    return res.status(400).json({ error: 'individual trainee not found' });
+  }
+  res.status(200).json(individualTrainee);
+};
 
 module.exports = {
-  reviewInstructor,
   getMyCourses,
   submitTest,
   viewRegisteredCourse,
@@ -169,4 +181,5 @@ module.exports = {
   registerToCourse,
   reviewCourseIndividual,
   reviewInstructorIndividual,
+  updateIndividualPassword,
 };

@@ -1,7 +1,8 @@
 const Admin = require('../Models/Adminstrator');
 const Instructor = require('../Models/Instructor');
 const CorporateTrainee = require('../Models/CorporateTrainee');
-
+const IndividualTrainee = require('../Models/IndividualTrainee');
+const { sendEmail } = require('./../NodeMailer/main');
 // Create an Admin
 
 const createAdmin = async (req, res) => {
@@ -56,8 +57,27 @@ const createCorporateTrainee = async (req, res) => {
   }
 };
 
+const resetPassword = async (req, res) => {
+  const { id } = req.body;
+  let type = 0;
+  console.log('id->>>>', id);
+  let found = await Instructor.findById(id);
+  if (!found) {
+    found = await IndividualTrainee.findById(id);
+    type = 1;
+    if (!found) {
+      found = await CorporateTrainee.findById(id);
+      type = 2;
+    }
+  }
+
+  console.log(found);
+  sendEmail(found.email, `http://localhost:3000/change-password/${id}/${type}`);
+};
+
 module.exports = {
   createAdmin,
   createInstructor,
   createCorporateTrainee,
+  resetPassword,
 };

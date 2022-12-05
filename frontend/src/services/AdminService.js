@@ -11,3 +11,7 @@ export const createCorporateTrainee = (trainee) => {
 export const createInstructor = (instructor) => {
   return BaseAxios.post('/admin/instructor', instructor);
 };
+
+export const resetPassword = (id) => {
+  return BaseAxios.post('/admin/resetPassword', { id });
+};

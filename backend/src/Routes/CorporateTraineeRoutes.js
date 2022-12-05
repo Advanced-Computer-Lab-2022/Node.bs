@@ -25,5 +25,6 @@ Router.post(
 
 Router.get('/courses', corporateTraineeController.getMyCourses);
 Router.post('/test/submit', corporateTraineeController.submitTest);
+Router.patch('/:id', corporateTraineeController.updateCorporatePassword);
 
 module.exports = Router;

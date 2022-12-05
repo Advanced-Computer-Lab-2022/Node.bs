@@ -11,5 +11,6 @@ Router.put('/', courseController.updateCourse);
 Router.put('/subtitle', courseController.updateSubtitle);
 Router.post('/lesson', courseController.createLesson);
 Router.post('/addresource', courseController.createResource);
+Router.post('/courseReviews', courseController.getReviews);
 
 module.exports = Router;

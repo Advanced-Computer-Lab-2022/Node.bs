@@ -1,10 +1,12 @@
 import Admin from '../Admin/Admin';
 import Instructor from '../Instructor/Instructor';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useParams } from 'react-router-dom';
 // import Dashboard from './../../components/Dashboard/Dashboard';
 // import Sidebar from './../../components/Sidebar/Sidebar';
 import './Homepage.scss';
 import Trainee from '../Trainee/Trainee';
+import PasswordForm from '../../components/PasswordForm/PasswordForm';
+import PasswordReset from '../../components/PasswordReset/PasswordReset';
 const Homepage = () => {
   return (
     // <div className="container-fluid row main px-0">
@@ -17,6 +19,7 @@ const Homepage = () => {
     // </div>
     <BrowserRouter>
       <Routes>
+        <Route path="/change-password/:id/:type" element={<PasswordReset />} />
         <Route path="/admin" element={<Admin />} />
         <Route
           path="/instructor/*"

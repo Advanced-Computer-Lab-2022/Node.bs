@@ -12,6 +12,7 @@ const TraineeDashboard = ({
   searchHandler,
   corporate,
   accessCourse,
+  id,
 }) => {
   return (
     <div className="container-fluid row ">
@@ -39,17 +40,16 @@ const TraineeDashboard = ({
             courses={viewedCourses}
             loading={loading}
             editable={false}
-<<<<<<< HEAD
-            canEnroll = {true}
-=======
+            canEnroll={true}
             accessCourse={accessCourse}
->>>>>>> mezmez
+            type={corporate ? 'corporate' : 'individual'}
+            id={id}
           />
         </div>
       </div>
       <div className="col-4">
         <div className="row">
-          <ProfileCard />
+          <ProfileCard id={id} type={corporate ? 'corporate' : 'individual'} />
         </div>
       </div>
     </div>

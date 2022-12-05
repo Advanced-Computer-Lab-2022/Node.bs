@@ -8,11 +8,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import CoursePreview from '../../CoursePreview/CoursePreview';
 
-<<<<<<< HEAD
-const CourseCard = ({ course, editable, canEnroll }) => {
-=======
-const CourseCard = ({ course, editable, accessCourse }) => {
->>>>>>> mezmez
+const CourseCard = ({ course, editable, accessCourse, type, id }) => {
   const userInfo = useSelector((state) => state.user);
   const currency = useSelector(
     (state) => state.region.selectedRegion.currencyCodes[0]
@@ -128,7 +124,8 @@ const CourseCard = ({ course, editable, accessCourse }) => {
         currency={currency}
         exRate={exRate}
         editable={editable}
-        canEnroll = {canEnroll}
+        type={type}
+        id={id}
       />
     </div>
   );

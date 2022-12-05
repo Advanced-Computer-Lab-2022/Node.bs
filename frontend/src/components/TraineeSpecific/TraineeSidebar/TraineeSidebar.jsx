@@ -8,11 +8,18 @@ import {
   faClipboard,
   faMedal,
   faBookOpen,
+  faArrowTurnDown,
 } from '@fortawesome/free-solid-svg-icons';
 import SidebarButton from '../../Sidebar/SidebarButton/SidebarButton';
 import CountryDropdown from '../../util/CountryDropdown/CountryDropdown';
+import { resetPassword } from '../../../services/AdminService';
 
-const TraineeSidebar = ({ getCourseCatalog, getMyCourses }) => {
+const TraineeSidebar = ({ getCourseCatalog, getMyCourses, id }) => {
+  const sendMeAnEmail = async () => {
+    // console.log(instructorId);
+    const returned = await resetPassword(id);
+    console.log(returned);
+  };
   const [buttonPressed, setButtonPressed] = useState('Dashboard');
   const dashboardButtonHandler = () => {
     getCourseCatalog();
@@ -59,6 +66,11 @@ const TraineeSidebar = ({ getCourseCatalog, getMyCourses }) => {
           label="Enrolled Courses"
           primary={buttonPressed === 'Enrolled' ? true : false}
           click={() => enrolledCoursesButtonHandler()}
+        />
+        <SidebarButton
+          icon={faArrowTurnDown}
+          click={() => sendMeAnEmail()}
+          label="Reset Password"
         />
         <CountryDropdown />
       </div>

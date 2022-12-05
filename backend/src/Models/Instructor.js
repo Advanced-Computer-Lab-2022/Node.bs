@@ -7,6 +7,7 @@ const InstructorSchema = new schema(
     lastName: { type: String },
     username: { type: String },
     email: { type: String },
+    accepted: { type: Boolean, default: false },
     password: { type: String },
     fieldOfExpertise: { type: String },
     overview: { type: String },
