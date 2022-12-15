@@ -39,7 +39,6 @@ function CoursePreview({
     if (type !== 'instructor') {
       const checkEnrolled = async () => {
         const myCourses = await getMyCourses(type === 'corporate', id);
-        console.log(myCourses.data);
         myCourses.data.forEach((registeration) => {
           if (registeration.course._id === course._id) {
             setCanEnroll(false);
@@ -430,7 +429,7 @@ function CoursePreview({
                       >
                         <div class="accordion-body">
                           <h5>Lessons and exercises</h5>
-                          {subtitle.lessons.map((lesson) => {
+                          {subtitle?.lessons?.map((lesson) => {
                             return (
                               <p>
                                 {lesson.name} - {lesson.hours} Hours

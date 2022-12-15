@@ -5,6 +5,7 @@ const Test = require('./../Models/Test');
 const IndividualTrainee = require('./../Models/IndividualTrainee');
 const mongoose = require('mongoose');
 const LearningResource = require('../Models/LearningResource');
+const Report = require('../Models/Report');
 
 // //optimized with extra projection parameter to reduce response size
 // const oSearchCourses = async (req, res) => {
@@ -301,6 +302,48 @@ const getReviews = async (req, res) => {
   // res.status(404).json({ message: "Couldn't find any reviews" });
 };
 
+const addReport = async (req, res) => {
+  const courseId = req.body.courseId;
+  const traineeId = req.body.traineeId;
+  const traineeType = req.body.traineeType;
+  const reportType = req.body.reportType;
+  const reportBody = req.body.reportBody;
+
+  console.log(req.body)
+  if (traineeType === '0') {
+    const reportToBeAdded = {
+      course: courseId,
+      individualTrainee: traineeId,
+      type: reportType,
+      body: reportBody,
+      status: 'unseen',
+      seen: false,
+    };
+    const newReport = await Report.create(reportToBeAdded);
+    if (newReport) {
+      return res.status(200).json(newReport);
+    } else {
+      return res.status(400).json('No report submitted');
+    }
+  } else if (traineeType === '1') {
+    const reportToBeAdded = {
+      course: courseId,
+      corporateTrainee: traineeId,
+      type: reportType,
+      body: reportBody,
+      status: 'unseen',
+      seen: false,
+    };
+    const newReport = await Report.create(reportToBeAdded);
+    if (newReport) {
+      return res.status(200).json(newReport);
+    } else {
+      return res.status(400).json('No report submitted');
+    }
+  }
+
+
+};
 module.exports = {
   // oSearchCourses,
   // oFilterCourses,
@@ -314,4 +357,5 @@ module.exports = {
   getReviews,
   createLesson,
   createResource,
+  addReport,
 };

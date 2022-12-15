@@ -12,6 +12,7 @@ const ReportSchema = new schema(
       ref: 'CorporateTrainee',
     },
     type: { type: String },
+    body: { type: String },
     status: { type: String },
     seen: { type: Boolean },
   },

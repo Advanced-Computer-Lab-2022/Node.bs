@@ -27,7 +27,7 @@ const Homepage = () => {
         />
         <Route
           path="/individual/*"
-          element={<Trainee id={''} corporate={false} />}
+          element={<Trainee id={'638796ae23b3b73229cb811b'} corporate={false} />}
         />
 
         <Route

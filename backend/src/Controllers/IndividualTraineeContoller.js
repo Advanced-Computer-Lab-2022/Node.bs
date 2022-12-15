@@ -114,18 +114,44 @@ const registerToCourse = async (req, res) => {
 
 const getMyCourses = async (req, res) => {
   const myId = req.query.id;
+  console.log(req.query.id);
   try {
     const user = await IndividualTrainee.findById(myId)
-      .populate('registeredCourses.course')
-      .populate('registeredCourses.submissions');
+      .populate({
+        path: 'registeredCourses.submissions',
+        populate: { path: 'test', populate: { path: 'exercises' } },
+      })
+      .populate({
+        path: 'registeredCourses.course',
+        populate: { path: 'instructors' },
+      })
+      .populate({
+        path: 'registeredCourses.course',
+        populate: {
+          path: 'subtitles',
+          populate: {
+            path: 'lessons',
+            populate: {
+              path: 'learningResources test',
+              populate: {
+                path: 'exercises',
+                strictPopulate: false,
+              },
+            },
+          },
+        },
+      });
 
     if (user) {
+      //   console.log(user.registeredCourses);
+      //   console.log(user.registeredCourses[0].course.subtitles[0].lessons);
       res.status(200).json(user.registeredCourses);
     } else {
       res.status(404).json({ error: 'user not found' });
     }
   } catch (e) {
-    res.status(500).json({ error: e });
+    res.status(500).json({ error: e.message });
+    console.log(e);
   }
 };
 const submitTest = async (req, res) => {

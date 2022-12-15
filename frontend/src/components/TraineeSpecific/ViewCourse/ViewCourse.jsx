@@ -1,14 +1,14 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
-import { useState } from 'react';
-import * as courses from './../../../services/CourseService';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDoorOpen } from '@fortawesome/free-solid-svg-icons';
-import { useEffect } from 'react';
-import ReactLoading from 'react-loading';
-import ReactModal from 'react-modal';
-import './ViewCourse.scss';
-import alert from 'sweetalert2';
+import React from "react";
+import { useParams } from "react-router-dom";
+import { useState } from "react";
+import * as courses from "./../../../services/CourseService";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDoorOpen, faFlag } from "@fortawesome/free-solid-svg-icons";
+import { useEffect } from "react";
+import ReactLoading from "react-loading";
+import ReactModal from "react-modal";
+import "./ViewCourse.scss";
+import alert from "sweetalert2";
 
 const ViewCourse = () => {
   const { id, registeredCourseId, corporate } = useParams();
@@ -20,6 +20,11 @@ const ViewCourse = () => {
   const [showTest, setShowTest] = useState(false);
   const [finishedSubmission, setFinishedSubmission] = useState(null);
   const [canTakeTest, setCanTakeTest] = useState(false);
+
+  //REPORT
+  const [reportOpen, setReportOpen] = useState(false);
+  const [reportType, setReportType] = useState("");
+  const [reportBody, setReportBody] = useState("");
 
   const checkCanTakeTest = (lesson) => {
     for (let submission in registeredCourse.submissions) {
@@ -40,7 +45,7 @@ const ViewCourse = () => {
     let complete = true;
     let grade = 0;
     let answers = viewedLesson.test.exercises.map((exercise) => {
-      let options = document.getElementsByName('answer' + exercise._id);
+      let options = document.getElementsByName("answer" + exercise._id);
       for (let i in options) {
         if (options[i].checked) {
           if (options[i].value === exercise.answer) {
@@ -66,19 +71,20 @@ const ViewCourse = () => {
         complete = false;
       }
     }
+
     if (complete) {
       try {
         const response = await courses.submitTest(
-          corporate === '1' ? true : false,
+          corporate === "1" ? true : false,
           submission,
           id,
           course._id
         );
         if (response.status === 200) {
           alert.fire(
-            'Test submitted successfully',
-            'Congratulations! ',
-            'success'
+            "Test submitted successfully",
+            "Congratulations! ",
+            "success"
           );
         }
         setShowTest(false);
@@ -87,17 +93,50 @@ const ViewCourse = () => {
           window.location.reload();
         }, 3000);
       } catch (error) {
-        alert.fire('An error has occured', 'try again later', 'error');
+        alert.fire("An error has occured", "try again later", "error");
       }
     } else {
-      alert.fire('Bad input!', 'Please answer all questions', 'warning');
+      alert.fire("Bad input!", "Please answer all questions", "warning");
+    }
+  };
+
+  const handleAddReport = async () => {
+    const traineeId = id;
+    const traineeType = corporate;
+    const courseId = course._id;
+
+    const reportToBeAdded = {
+      traineeId: traineeId,
+      traineeType: traineeType,
+      courseId: courseId,
+      reportType: reportType,
+      reportBody: reportBody,
+    };
+    if (reportBody === "") {
+      alert.fire(
+        "Bad Input!",
+        "Don't leave the body of the report blank.",
+        "warning"
+      );
+    } else {
+      const response = await courses.addReport(reportToBeAdded);
+
+      if (response.status === 200) {
+        alert.fire(
+          "Report Submitted",
+          "Your report has been submitted successfuly!",
+          "success"
+        );
+      } else {
+        alert.fire("An error occurred", "Something went wrong...", "error");
+      }
     }
   };
   const getMyCourses = async () => {
     setLoading(true);
     try {
       const response = await courses.getMyCourses(
-        corporate === '1' ? true : false,
+        corporate === "1" ? true : false,
         id
       );
 
@@ -134,19 +173,19 @@ const ViewCourse = () => {
                       class="accordion-button"
                       type="button"
                       data-bs-toggle="collapse"
-                      data-bs-target={'#a' + subtitle._id}
+                      data-bs-target={"#a" + subtitle._id}
                       onClick={() => {
                         setViewedSubtitle(subtitle);
                         setViewedLesson(null);
                       }}
                     >
                       <h4>
-                        {subtitle.name}{' '}
-                        {subtitle.hours && '- ' + subtitle.hours + ' Hours'}
+                        {subtitle.name}{" "}
+                        {subtitle.hours && "- " + subtitle.hours + " Hours"}
                       </h4>
                     </button>
                     <div
-                      id={'a' + subtitle._id}
+                      id={"a" + subtitle._id}
                       class="accordion-collapse collapse "
                       data-bs-parent="#subtitleacc"
                     >
@@ -175,6 +214,106 @@ const ViewCourse = () => {
                 );
               })}
             </div>
+            <div className="row p-5">
+              <button
+                className="btn btn-outline-danger"
+                onClick={() => {
+                  setReportOpen(true);
+                }}
+              >
+                <FontAwesomeIcon icon={faFlag} /> Report
+              </button>
+              <ReactModal
+                isOpen={reportOpen}
+                onRequestClose={() => {
+                  setReportOpen(false);
+                }}
+                style={{
+                  content: {
+                    margin: "auto",
+                    width: "60vw",
+                    height: "40vw",
+                  },
+                }}
+              >
+                <div className="container">
+                  <h1>Report a problem</h1>
+                  <hr />
+                  <h3>Type of problem</h3>
+                  <div className="container mt-2">
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="inlineRadioOptions"
+                        id="inlineRadio1"
+                        value="option1"
+                        onClick={() => {
+                          setReportType("Technical");
+                        }}
+                      />
+                      <label class="form-check-label" for="inlineRadio1">
+                        Technical
+                      </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="inlineRadioOptions"
+                        id="inlineRadio2"
+                        value="option2"
+                        onClick={() => {
+                          setReportType("Financial");
+                        }}
+                      />
+                      <label class="form-check-label" for="inlineRadio2">
+                        Financial
+                      </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="inlineRadioOptions"
+                        id="inlineRadio3"
+                        value="option3"
+                        onClick={() => {
+                          setReportType("Other");
+                        }}
+                      />
+                      <label class="form-check-label" for="inlineRadio3">
+                        Other
+                      </label>
+                    </div>
+                  </div>
+                  <div className="container mt-5">
+                    <div class="mb-3">
+                      <label
+                        for="exampleFormControlTextarea1"
+                        class="form-label"
+                      >
+                        <h3>Explain your problem</h3>
+                      </label>
+                      <textarea
+                        class="form-control"
+                        id="exampleFormControlTextarea1"
+                        rows="9"
+                        onChange={(e) => setReportBody(e.target.value)}
+                      ></textarea>
+                    </div>
+                  </div>
+                  <div className="row mt-5 p-3">
+                    <button
+                      className="btn btn-outline-primary"
+                      onClick={() => handleAddReport()}
+                    >
+                      Submit Report
+                    </button>
+                  </div>
+                </div>
+              </ReactModal>
+            </div>
           </div>
           <div className="col-8">
             <h3 className="text-start">{course.title}</h3>
@@ -187,17 +326,17 @@ const ViewCourse = () => {
                   <iframe
                     width="800"
                     height="500"
-                    style={{ borderRadius: '10px' }}
+                    style={{ borderRadius: "10px" }}
                     src={
                       viewedSubtitle.videoURL ||
-                      'https://www.youtube.com/embed/mON4wycpawk'
+                      "https://www.youtube.com/embed/mON4wycpawk"
                     }
                     title="YouTube video player"
                     frameBorder="2px"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
-                    srcDoc={'<p>Loading preview...</p>'}
-                    onLoad={(e) => e.currentTarget.removeAttribute('srcdoc')}
+                    srcDoc={"<p>Loading preview...</p>"}
+                    onLoad={(e) => e.currentTarget.removeAttribute("srcdoc")}
                   />
                   <p>{viewedSubtitle.description}</p>
                 </div>
@@ -209,25 +348,25 @@ const ViewCourse = () => {
                   <h5>Lesson - {viewedLesson.name}</h5>
                   {console.log(viewedLesson)}
                   {viewedLesson.learningResources.map((resource) => {
-                    if (resource.type === 'video') {
+                    if (resource.type === "video") {
                       return (
                         <div>
                           <h6>{resource.title}</h6>
                           <iframe
                             width="800"
                             height="500"
-                            style={{ borderRadius: '10px' }}
+                            style={{ borderRadius: "10px" }}
                             src={
                               resource.URL ||
-                              'https://www.youtube.com/embed/mON4wycpawk'
+                              "https://www.youtube.com/embed/mON4wycpawk"
                             }
                             title="YouTube video player"
                             frameBorder="2px"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowFullScreen
-                            srcDoc={'<p>Loading preview...</p>'}
+                            srcDoc={"<p>Loading preview...</p>"}
                             onLoad={(e) =>
-                              e.currentTarget.removeAttribute('srcdoc')
+                              e.currentTarget.removeAttribute("srcdoc")
                             }
                           />
                         </div>
@@ -263,64 +402,64 @@ const ViewCourse = () => {
                                       color:
                                         finishedSubmission.answers[
                                           exerciseIndex
-                                        ] === 'A'
+                                        ] === "A"
                                           ? finishedSubmission.answers[
                                               exerciseIndex
                                             ] === exercise.answer
-                                            ? 'green'
-                                            : 'red'
-                                          : '#545454',
+                                            ? "green"
+                                            : "red"
+                                          : "#545454",
                                     }}
                                   >
-                                    A: {exercise.options['A']}
+                                    A: {exercise.options["A"]}
                                   </li>
                                   <li
                                     style={{
                                       color:
                                         finishedSubmission.answers[
                                           exerciseIndex
-                                        ] === 'B'
+                                        ] === "B"
                                           ? finishedSubmission.answers[
                                               exerciseIndex
                                             ] === exercise.answer
-                                            ? 'green'
-                                            : 'red'
-                                          : '#545454',
+                                            ? "green"
+                                            : "red"
+                                          : "#545454",
                                     }}
                                   >
-                                    B: {exercise.options['B']}
+                                    B: {exercise.options["B"]}
                                   </li>
                                   <li
                                     style={{
                                       color:
                                         finishedSubmission.answers[
                                           exerciseIndex
-                                        ] === 'C'
+                                        ] === "C"
                                           ? finishedSubmission.answers[
                                               exerciseIndex
                                             ] === exercise.answer
-                                            ? 'green'
-                                            : 'red'
-                                          : '#545454',
+                                            ? "green"
+                                            : "red"
+                                          : "#545454",
                                     }}
                                   >
-                                    C: {exercise.options['C']}
+                                    C: {exercise.options["C"]}
                                   </li>
                                   <li
                                     style={{
                                       color:
                                         finishedSubmission.answers[
                                           exerciseIndex
-                                        ] === 'D'
+                                        ] === "D"
                                           ? finishedSubmission.answers[
                                               exerciseIndex
                                             ] === exercise.answer
-                                            ? 'green'
-                                            : 'red'
-                                          : '#545454',
+                                            ? "green"
+                                            : "red"
+                                          : "#545454",
                                     }}
                                   >
-                                    D: {exercise.options['D']}
+                                    D: {exercise.options["D"]}
                                   </li>
                                 </ul>
                                 <li>
@@ -350,9 +489,9 @@ const ViewCourse = () => {
                       <ReactModal
                         style={{
                           content: {
-                            width: '28vw',
-                            height: '45vh',
-                            margin: 'auto',
+                            width: "28vw",
+                            height: "45vh",
+                            margin: "auto",
                           },
                         }}
                         isOpen={showTest}
@@ -369,8 +508,8 @@ const ViewCourse = () => {
 
                                 <input
                                   type="radio"
-                                  name={'answer' + exercise._id}
-                                  id={'exercise' + exercise._id}
+                                  name={"answer" + exercise._id}
+                                  id={"exercise" + exercise._id}
                                   value="A"
                                 />
                                 <label htmlFor="">
@@ -379,8 +518,8 @@ const ViewCourse = () => {
                                 <br />
                                 <input
                                   type="radio"
-                                  name={'answer' + exercise._id}
-                                  id={'exercise' + exercise._id}
+                                  name={"answer" + exercise._id}
+                                  id={"exercise" + exercise._id}
                                   value="B"
                                 />
                                 <label htmlFor="">
@@ -389,8 +528,8 @@ const ViewCourse = () => {
                                 <br />
                                 <input
                                   type="radio"
-                                  name={'answer' + exercise._id}
-                                  id={'exercise' + exercise._id}
+                                  name={"answer" + exercise._id}
+                                  id={"exercise" + exercise._id}
                                   value="C"
                                 />
                                 <label htmlFor="">
@@ -399,8 +538,8 @@ const ViewCourse = () => {
                                 <br />
                                 <input
                                   type="radio"
-                                  name={'answer' + exercise._id}
-                                  id={'exercise' + exercise._id}
+                                  name={"answer" + exercise._id}
+                                  id={"exercise" + exercise._id}
                                   value="D"
                                 />
                                 <label htmlFor="">
