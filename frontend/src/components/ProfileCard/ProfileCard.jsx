@@ -1,14 +1,46 @@
-import React from 'react';
-import './../ProfileCard/ProfileCard.scss';
-import { faPencil } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useState } from 'react';
-import ReactModal from 'react-modal';
-import OverviewForm from '../OverviewForm/OverviewForm';
-import PasswordForm from '../PasswordForm/PasswordForm';
+import React from "react";
+import "./../ProfileCard/ProfileCard.scss";
+import {
+  faMoneyBillTrendUp,
+  faPencil,
+  faWallet,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useState } from "react";
+import ReactModal from "react-modal";
+import OverviewForm from "../OverviewForm/OverviewForm";
+import PasswordForm from "../PasswordForm/PasswordForm";
+import { getWalletAmount } from "../../services/IndividualTraineeService";
+import { useEffect } from "react";
+import { getMoneyOwedPerMonth } from "../../services/InstructorService";
 
 function ProfileCard({ id, type }) {
   const [viewEditProfile, setViewEditProfile] = useState(false);
+
+  useEffect(() => {
+    handleGetWalletAmount();
+    handleGetMoneyOwedPerMonth();
+  }, []);
+
+  const [wallet, setWallet] = useState(0);
+  const handleGetWalletAmount = async () => {
+    const wallet = await getWalletAmount({ individualTraineeId: id });
+    if (wallet) {
+      console.log(wallet.data);
+      setWallet(wallet.data);
+    }
+  };
+
+  /////////////INSTRUCTOR GET MONEY OWED PER MONTH//////////////
+  const [moneyOwedPerMonth, setMoneyOwedPerMonth] = useState(0.0);
+  const handleGetMoneyOwedPerMonth = async () => {
+    const query = await getMoneyOwedPerMonth({ instructorId: id });
+
+    if (query) {
+      console.log(query);
+      setMoneyOwedPerMonth(query.data);
+    }
+  };
   return (
     <div id="profile-card">
       <div className="row">
@@ -29,18 +61,51 @@ function ProfileCard({ id, type }) {
         <h4>Ronnie Coleman</h4>
         <h6 className="font-secondary">Individual Trainee</h6>
       </div>
+      <div className="row">
+        <div className="col-12">
+          {" "}
+          {type == "individual" && (
+            <div className="row">
+              <button
+                className="btn btn-outline-dark disabled"
+                onClick={() => handleGetWalletAmount()}
+              >
+                <h3>
+                  <FontAwesomeIcon icon={faWallet} /> {" " + wallet} $
+                </h3>
+                {console.log(id)}
+              </button>
+            </div>
+          )}
+          {type === "instructor" && (
+            <div className="row">
+              {" "}
+              <button
+                className="btn btn-outline-dark disabled"
+                onClick={() => handleGetMoneyOwedPerMonth()}
+              >
+                <h3>
+                  <FontAwesomeIcon icon={faMoneyBillTrendUp} />{" "}
+                  {" " + moneyOwedPerMonth} $
+                </h3>
+                {console.log(id)}
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
       <ReactModal
         isOpen={viewEditProfile}
         onRequestClose={() => setViewEditProfile(false)}
         style={{
           content: {
-            width: '40vw',
-            height: '35vh',
-            margin: 'auto',
+            width: "40vw",
+            height: "35vh",
+            margin: "auto",
           },
         }}
       >
-        {type === 'instructor' && <OverviewForm id={id} />}
+        {type === "instructor" && <OverviewForm id={id} />}
         <PasswordForm type={type} id={id} />
       </ReactModal>
     </div>

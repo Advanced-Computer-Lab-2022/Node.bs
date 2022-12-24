@@ -27,12 +27,12 @@ const Homepage = () => {
         />
         <Route
           path="/individual/*"
-          element={<Trainee id={'638796ae23b3b73229cb811b'} corporate={false} />}
+          element={<Trainee id={'63a2eb4d7dcc2cec5b085060'} corporate={false} />}
         />
 
         <Route
           path="/corporate/*"
-          element={<Trainee id={'635fd142224d29b004e7b1c6'} corporate={true} />}
+          element={<Trainee id={'635fd360026911078fd8ef5a'} corporate={true} />}
         />
       </Routes>
     </BrowserRouter>

@@ -12,6 +12,9 @@ Router.put('/subtitle', courseController.updateSubtitle);
 Router.post('/lesson', courseController.createLesson);
 Router.post('/addresource', courseController.createResource);
 Router.post('/courseReviews', courseController.getReviews);
-Router.post('/addReport', courseController.addReport)
+Router.post('/addReport', courseController.addReport);
+Router.post('/addFollowup', courseController.addFollowupToReport);
+Router.post('/reports', courseController.getAllReports);
+Router.post('/incrementViews', courseController.incrementViews);
 
 module.exports = Router;

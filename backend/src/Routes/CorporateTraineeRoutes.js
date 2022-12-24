@@ -27,4 +27,16 @@ Router.get('/courses', corporateTraineeController.getMyCourses);
 Router.post('/test/submit', corporateTraineeController.submitTest);
 Router.patch('/:id', corporateTraineeController.updateCorporatePassword);
 
+Router.post(
+  '/reportsIssued',
+  corporateTraineeController.getCorporateTraineeReportsIssued
+);
+
+Router.post('/requestCourse', corporateTraineeController.requestAccessToCourse);
+
+Router.post(
+  '/markResourceAsSeen',
+  corporateTraineeController.markResourceAsSeen
+);
+
 module.exports = Router;

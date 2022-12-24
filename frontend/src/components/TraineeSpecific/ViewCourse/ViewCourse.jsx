@@ -3,13 +3,15 @@ import { useParams } from "react-router-dom";
 import { useState } from "react";
 import * as courses from "./../../../services/CourseService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDoorOpen, faFlag } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faDoorOpen, faFlag } from "@fortawesome/free-solid-svg-icons";
 import { useEffect } from "react";
 import ReactLoading from "react-loading";
 import ReactModal from "react-modal";
 import "./ViewCourse.scss";
 import alert from "sweetalert2";
-
+import { requestRefund } from "../../../services/IndividualTraineeService";
+import { markResourceAsSeen as markResourceSeenCorporate } from "../../../services/CorporateTraineeService";
+import { markResourceAsSeen as markResourceSeenIndividual } from "../../../services/IndividualTraineeService";
 const ViewCourse = () => {
   const { id, registeredCourseId, corporate } = useParams();
   const [loading, setLoading] = useState(false);
@@ -140,6 +142,7 @@ const ViewCourse = () => {
         id
       );
 
+      console.log(response.data[parseInt(registeredCourseId)].course._id )
       setRegisteredCourse(response.data[parseInt(registeredCourseId)]);
       setCourse(response.data[parseInt(registeredCourseId)].course);
     } catch (e) {
@@ -152,6 +155,72 @@ const ViewCourse = () => {
     getMyCourses();
   }, []);
 
+  useEffect(() => {
+    if (registeredCourse) {
+      let tempProgress = 0;
+
+      Object.values(registeredCourse.seen).forEach((seen) =>
+        seen ? tempProgress++ : console.log("samo3leko")
+      );
+      setProgress(tempProgress / Object.values(registeredCourse.seen).length);
+    }
+  }, [registeredCourse]);
+
+  ///////////////////////REFUNDS//////////////////////////////
+  const handleRefundRequest = async () => {
+    const individualTraineeId = id;
+
+    const courseId = registeredCourse.course._id;
+    console.log(courseId)
+    //hardcoded for testsing, should be ^
+    // const courseId = "63a60dd0adbc47b995d31829";
+    // console.log("hardcoded")
+
+    console.log("id -> " + individualTraineeId);
+    console.log("course -> " + courseId);
+    const query = await requestRefund({
+      individualTraineeId: individualTraineeId,
+      courseId: courseId,
+    });
+    if (query.status == 200) {
+      alert.fire(
+        "Success",
+        "You have successfully requested a refund",
+        "success"
+      );
+    } else {
+      alert.fire(
+        "Error",
+        "error"
+      );
+    }
+  };
+
+  ///////////////////MARK RESOURCE AS SEEN & PROGRESS///////////////////////
+  const [progress, setProgress] = useState(0);
+  const handleMarkResourceAsSeen = async (resourceId) => {
+    if (corporate == "1") {
+      //corporate
+      const corporateUpdate = await markResourceSeenCorporate(
+        resourceId,
+        id,
+        course._id
+      );
+      if (corporateUpdate) {
+        console.log("Corporate Resources updated");
+      }
+    } else {
+      //individual
+      const individualUpdate = await markResourceSeenIndividual(
+        resourceId,
+        id,
+        course._id
+      );
+      if (individualUpdate) {
+        console.log("Individual Resources updated");
+      }
+    }
+  };
   return (
     <div className="container-fluid row main px-0 h-100 ">
       <div className="row">
@@ -214,7 +283,7 @@ const ViewCourse = () => {
                 );
               })}
             </div>
-            <div className="row p-5">
+            <div className="row mt-3">
               <button
                 className="btn btn-outline-danger"
                 onClick={() => {
@@ -314,9 +383,34 @@ const ViewCourse = () => {
                 </div>
               </ReactModal>
             </div>
+            <div className="row mt-3">
+              {progress < 0.5 && (
+                <button
+                  className="btn btn-outline-secondary"
+                  onClick={() => handleRefundRequest()}
+                >
+                  Feeling you don't like the course? Request a refund!
+                </button>
+              )}
+            </div>
           </div>
           <div className="col-8">
-            <h3 className="text-start">{course.title}</h3>
+            <h3 className="text-start">
+              {course.title + " "}{" "}
+              <div class="progress">
+                <div
+                  class="progress-bar"
+                  role="progressbar"
+                  style={{ width: progress * 1000, fontSize: "9px" }}
+                  aria-valuenow={progress * 100}
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                >
+                  {(progress * 100).toFixed(0) + "%"}
+                </div>
+              </div>
+            </h3>
+
             <hr />
             {viewedSubtitle && (
               <div className="container-fluid">
@@ -339,6 +433,15 @@ const ViewCourse = () => {
                     onLoad={(e) => e.currentTarget.removeAttribute("srcdoc")}
                   />
                   <p>{viewedSubtitle.description}</p>
+                  <div className="row">
+                    <p>NOTES</p>
+                    <textarea
+                      name="notes"
+                      className="form-control"
+                      cols="30"
+                      rows="10"
+                    ></textarea>
+                  </div>
                 </div>
               </div>
             )}
@@ -350,8 +453,22 @@ const ViewCourse = () => {
                   {viewedLesson.learningResources.map((resource) => {
                     if (resource.type === "video") {
                       return (
-                        <div>
-                          <h6>{resource.title}</h6>
+                        <div
+                          onClick={() => handleMarkResourceAsSeen(resource._id)}
+                        >
+                          <h6>
+                            {resource.title}{" "}
+                            <FontAwesomeIcon
+                              style={{
+                                color: "green",
+                                display: registeredCourse.seen[resource._id]
+                                  ? "inline"
+                                  : "none",
+                              }}
+                              icon={faCheck}
+                            />
+                          </h6>
+
                           <iframe
                             width="800"
                             height="500"
@@ -373,8 +490,21 @@ const ViewCourse = () => {
                       );
                     } else {
                       return (
-                        <div>
-                          <h6>{resource.title}</h6>
+                        <div
+                          onClick={() => handleMarkResourceAsSeen(resource._id)}
+                        >
+                          <h6>
+                            {resource.title}{" "}
+                            <FontAwesomeIcon
+                              style={{
+                                color: "green",
+                                display: registeredCourse.seen[resource._id]
+                                  ? "inline"
+                                  : "none",
+                              }}
+                              icon={faCheck}
+                            />
+                          </h6>
                           <a className="lesson-hover" href={resource.URL}>
                             Read More!
                           </a>

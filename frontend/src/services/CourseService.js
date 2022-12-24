@@ -65,8 +65,18 @@ export const createResource = (body) => {
   return BaseAxios.post("/course/addresource", body);
 };
 
-export const addReport = (
-  body
-) => {
+export const addReport = (body) => {
   return BaseAxios.post("/course/addReport", body);
+};
+
+export const addFollowupToReport = (reportId, followupBody) => {
+  return BaseAxios.post("/course/addFollowup", reportId, followupBody);
+};
+
+export const getAllReports = () => {
+  return BaseAxios.post("/course/reports");
+};
+
+export const incrementViews = (courseId) => {
+  return BaseAxios.post("/course/incrementViews", courseId);
 };

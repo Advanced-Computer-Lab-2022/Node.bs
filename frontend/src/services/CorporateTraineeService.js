@@ -40,3 +40,24 @@ export const reviewInstructorCorporate = (
     review
   );
 };
+
+export const getCorporateTraineeReportsIssued = (corpoateTraineeId) => {
+  return BaseAxios.post("/corporate/reportsIssued", corpoateTraineeId);
+};
+
+export const requestAccessToCourse = (corporateTraineeId, courseId) => {
+  return BaseAxios.post(
+    "/corporate/requestCourse",
+    corporateTraineeId,
+    courseId
+  );
+};
+
+export const markResourceAsSeen = (resourceId, traineeId, courseId) => {
+  return BaseAxios.post(
+    "/corporate/markResourceAsSeen",
+    {resourceId,
+    traineeId,
+    courseId}
+  );
+};

@@ -1,5 +1,5 @@
-import React from 'react';
-import SidebarButton from '../../Sidebar/SidebarButton/SidebarButton';
+import React from "react";
+import SidebarButton from "../../Sidebar/SidebarButton/SidebarButton";
 import {
   faDoorOpen,
   faLaptopHouse,
@@ -11,20 +11,23 @@ import {
   faCheck,
   faStar,
   faArrowTurnDown,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import CountryDropdown from './../../util/CountryDropdown/CountryDropdown';
-import AddCourse from '../AddCourse/AddCourse';
-import { useState } from 'react';
-import { useEffect } from 'react';
+  faFlag,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import CountryDropdown from "./../../util/CountryDropdown/CountryDropdown";
+import AddCourse from "../AddCourse/AddCourse";
+import { useState } from "react";
+import { useEffect } from "react";
 import {
   getInstructorById,
   getReviews,
-} from '../../../services/InstructorService';
-import ReactModal from 'react-modal';
-import AcceptTerms from '../AcceptTerms/AcceptTerms';
-import InstructorReviews from '../../InstructorReviews/InstructorReviews';
-import { resetPassword } from '../../../services/AdminService';
+  getInstructorReportsIssued
+} from "../../../services/InstructorService";
+import ReactModal from "react-modal";
+import AcceptTerms from "../AcceptTerms/AcceptTerms";
+import InstructorReviews from "../../InstructorReviews/InstructorReviews";
+import { resetPassword } from "../../../services/AdminService";
+import ReportsIssued from "../../ReportsIssued/ReportsIssued";
 
 const InstructorSidebar = ({
   showInstructorCourses,
@@ -38,18 +41,18 @@ const InstructorSidebar = ({
   };
   const dashboardButtonHandler = () => {
     getCourseCatalog();
-    setButtonPressed('Dashboard');
+    setButtonPressed("Dashboard");
   };
   const myCoursesButtonHandler = () => {
     showInstructorCourses();
-    setButtonPressed('My Courses');
+    setButtonPressed("My Courses");
   };
   const sendMeAnEmail = async () => {
     // console.log(instructorId);
     const returned = await resetPassword(instructorId);
     console.log(returned);
   };
-  const [buttonPressed, setButtonPressed] = useState('Dashboard');
+  const [buttonPressed, setButtonPressed] = useState("Dashboard");
   const [showAccept, setShowAccept] = useState(false);
   const [notAccepted, setNotAccepted] = useState(true);
   useEffect(() => {
@@ -62,6 +65,13 @@ const InstructorSidebar = ({
     checkAcceptance();
   }, []);
   const handleAccept = () => {};
+
+  const [allReports, setAllReports] = useState({})
+  const getInstructorReports = async() => {
+    console.log("instructorId: " + instructorId)
+    const returnedReports = await getInstructorReportsIssued({instructorId: instructorId});
+    setAllReports(returnedReports)
+  }
   return (
     <div class="container-fluid sidebar-container">
       <div className="logo">
@@ -74,45 +84,45 @@ const InstructorSidebar = ({
           click={dashboardButtonHandler}
           icon={faLaptopHouse}
           label="Dashboard"
-          primary={buttonPressed === 'Dashboard' ? true : false}
+          primary={buttonPressed === "Dashboard" ? true : false}
         />
         <SidebarButton
-          primary={buttonPressed === 'Certificates' ? true : false}
+          primary={buttonPressed === "Certificates" ? true : false}
           icon={faMedal}
           label="Certificates"
-          click={() => setButtonPressed('Certificates')}
+          click={() => setButtonPressed("Certificates")}
         />
         <SidebarButton
-          primary={buttonPressed === 'Tests' ? true : false}
+          primary={buttonPressed === "Tests" ? true : false}
           icon={faClipboard}
           label="Tests"
-          click={() => setButtonPressed('Tests')}
+          click={() => setButtonPressed("Tests")}
         />
         <SidebarButton
-          primary={buttonPressed === 'Settings' ? true : false}
+          primary={buttonPressed === "Settings" ? true : false}
           icon={faCog}
           label="Settings"
-          click={() => setButtonPressed('Settings')}
+          click={() => setButtonPressed("Settings")}
         />
         <SidebarButton
-          primary={buttonPressed === 'Add Course' ? true : false}
+          primary={buttonPressed === "Add Course" ? true : false}
           icon={faBook}
           label="Add Course"
           toBeAdded="Course"
-          click={() => setButtonPressed('Add Course')}
+          click={() => setButtonPressed("Add Course")}
         />
         <AddCourse InstructorId={instructorId} />
         <SidebarButton
-          primary={buttonPressed === 'My Courses' ? true : false}
+          primary={buttonPressed === "My Courses" ? true : false}
           icon={faChalkboardTeacher}
           label="My Courses"
           click={myCoursesButtonHandler}
         />
         <SidebarButton
-          primary={buttonPressed === 'My Reviews' ? true : false}
+          primary={buttonPressed === "My Reviews" ? true : false}
           icon={faStar}
           label="My Reviews"
-          toBeViewed={'InstructorReviews'}
+          toBeViewed={"InstructorReviews"}
           click={getInstructorReviews}
         />
         <InstructorReviews reviews={allReviews} />
@@ -123,13 +133,13 @@ const InstructorSidebar = ({
         />
         {notAccepted && (
           <>
-            {' '}
+            {" "}
             <SidebarButton
-              primary={buttonPressed === 'Accept Terms' ? true : false}
+              primary={buttonPressed === "Accept Terms" ? true : false}
               icon={faCheck}
               label="Accept Terms"
               click={() => {
-                setButtonPressed('Accept Terms');
+                setButtonPressed("Accept Terms");
                 setShowAccept(true);
               }}
             />
@@ -138,9 +148,9 @@ const InstructorSidebar = ({
               onRequestClose={() => setShowAccept(false)}
               style={{
                 content: {
-                  width: '30vw',
-                  height: '33vh',
-                  margin: 'auto',
+                  width: "30vw",
+                  height: "33vh",
+                  margin: "auto",
                 },
               }}
             >
@@ -148,7 +158,14 @@ const InstructorSidebar = ({
             </ReactModal>
           </>
         )}
-
+        <SidebarButton
+          primary={buttonPressed === "Reports Issued" ? true : false}
+          icon={faFlag}
+          label="Reports Issued"
+          toBeViewed={"ReportsIssued"}
+          click={getInstructorReports}
+        />
+        <ReportsIssued reports = {allReports}/>
         <CountryDropdown />
       </div>
     </div>

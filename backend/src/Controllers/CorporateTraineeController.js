@@ -4,7 +4,7 @@ const Course = require('./../Models/Course');
 const Submission = require('./../Models/Submission');
 const LearningResource = require('./../Models/LearningResource');
 const Instructor = require('./../Models/Instructor');
-
+const Report = require('./../Models/Report');
 const reviewInstructorCorporate = async (req, res) => {
   const instructorId = req.body.instructorId;
 
@@ -188,6 +188,99 @@ const updateCorporatePassword = async (req, res) => {
   res.status(200).json(corporateTrainee);
 };
 
+/////////////////////REPORTS///////////////////////////
+
+const getCorporateTraineeReportsIssued = async (req, res) => {
+  const corporateTraineeId = req.body.corporateTraineeId;
+  console.log('corporateTraineeId: ' + corporateTraineeId);
+
+  const returnedQuery = await Report.find({
+    corporateTrainee: corporateTraineeId,
+  });
+
+  if (returnedQuery) {
+    return res.status(200).json(returnedQuery);
+  } else {
+    res.status(400).json();
+  }
+};
+
+///////////////////REQUEST ACCESS/////////////////
+
+const requestAccessToCourse = async (req, res) => {
+  const corporateTraineeId = req.body.corporateTraineeId;
+  const courseId = req.body.courseId;
+
+  const corporateTrainee = await CorporateTrainee.findOne({
+    _id: corporateTraineeId,
+  });
+
+  console.log('I AM WORKING!!!');
+  console.log('CORPT: ' + corporateTraineeId);
+  console.log('courseID' + courseId);
+
+  const checkIfAlreadyRequested = await CorporateTrainee.findOne({
+    _id: corporateTraineeId,
+    registeredCourses: { $elemMatch: { courseId } },
+  });
+  console.log('already requested ' + checkIfAlreadyRequested);
+  if (corporateTrainee.requestedCourses) {
+    //array 'requestedCourses' does exist
+    let currentRequests = corporateTrainee.requestedCourses;
+    const newCourse = { courseId };
+    console.log(currentRequests);
+    currentRequests.push(courseId);
+    const updatedRequests = await CorporateTrainee.findOneAndUpdate(
+      { _id: corporateTraineeId },
+      { requestedCourses: currentRequests }
+    );
+
+    if (updatedRequests) {
+      return res.status(200).json(updatedRequests);
+    } else {
+      res.status(400).json('something went wrong!');
+    }
+  } else {
+    // array 'requestedCourses' does not exist
+    const updatedRequests = await CorporateTrainee.findOneAndUpdate(
+      { _id: corporateTraineeId },
+      { requestedCourses: [courseId] }
+    );
+    if (updatedRequests) {
+      return res.status(200).json(updatedRequests);
+    } else {
+      res.status(400).json('something went wrong!');
+    }
+  }
+};
+
+const markResourceAsSeen = async (req, res) => {
+  try {
+    const resourceId = req.body.resourceId;
+    let trainee = await CorporateTrainee.findById(req.body.traineeId);
+    let registeredCourses = trainee.registeredCourses;
+    for (let registeredCourse in registeredCourses) {
+      if (
+        registeredCourses[registeredCourse].course.equals(req.body.courseId)
+      ) {
+        registeredCourses[registeredCourse].seen[resourceId] = true;
+      }
+    }
+    const response = await CorporateTrainee.findOneAndUpdate(
+      { _id: req.body.traineeId },
+      { registeredCourses }
+    );
+
+    console.log(response);
+    if (response) {
+      res.status(200).json(response);
+    } else {
+      res.status(404).json({ message: 'user not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'some unexpected error occured' });
+  }
+};
 module.exports = {
   getMyCourses,
   submitTest,
@@ -197,4 +290,7 @@ module.exports = {
   createNewCorporateTrainee,
   reviewInstructorCorporate,
   updateCorporatePassword,
+  getCorporateTraineeReportsIssued,
+  requestAccessToCourse,
+  markResourceAsSeen,
 };

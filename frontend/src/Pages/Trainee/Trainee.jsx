@@ -1,27 +1,28 @@
-import React from 'react';
-import TraineeDashboard from './../../components/TraineeSpecific/TraineeDashboard/TraineeDashboard';
-import TraineeSidebar from '../../components/TraineeSpecific/TraineeSidebar/TraineeSidebar';
-import './Trainee.scss';
-import { useState, useEffect } from 'react';
-import * as courses from './../../services/CourseService';
-import { Route, Routes } from 'react-router-dom';
-import ViewCourse from './../../components/TraineeSpecific/ViewCourse/ViewCourse';
+import React from "react";
+import TraineeDashboard from "./../../components/TraineeSpecific/TraineeDashboard/TraineeDashboard";
+import TraineeSidebar from "../../components/TraineeSpecific/TraineeSidebar/TraineeSidebar";
+import "./Trainee.scss";
+import { useState, useEffect } from "react";
+import * as courses from "./../../services/CourseService";
+import { Route, Routes } from "react-router-dom";
+import ViewCourse from "./../../components/TraineeSpecific/ViewCourse/ViewCourse";
 
 const Trainee = ({ corporate, id }) => {
   const [viewedCourses, setViewedCourses] = useState([]);
-  const [viewTitle, setViewTitle] = useState('');
+  const [viewTitle, setViewTitle] = useState("");
   const [loading, setLoading] = useState(false);
   const [viewingEnrolled, setViewingEnrolled] = useState(false);
   // const [currentlyViewedCourse, setCurrentlyViewedCourse] = useState({});
 
   const getMyCourses = async () => {
-    setViewTitle('Enrolled Courses');
+    setViewTitle("Enrolled Courses");
     setViewingEnrolled(true);
     setViewedCourses([]);
     setLoading(true);
     try {
       const response = await courses.getMyCourses(corporate, id);
       console.log(response.data);
+
       setViewedCourses(response.data);
     } catch (e) {
       console.log(e);
@@ -29,15 +30,23 @@ const Trainee = ({ corporate, id }) => {
     setLoading(false);
   };
 
-  const getAllCourses = async () => {
+  const getAllCourses = async (sortByPopularity) => {
     //get all courses
     setViewingEnrolled(false);
-    setViewTitle('Course Catalog');
+    setViewTitle("Course Catalog");
     setViewedCourses([]);
     setLoading(true);
     try {
       const response = await courses.getAll();
-      setViewedCourses(response.data);
+      if (sortByPopularity) {
+        const sortedCourses = response.data.sort(
+          (c1, c2) => c2.courseViews - c1.courseViews
+        );
+        console.log(sortedCourses);
+        setViewedCourses(sortedCourses);
+      } else {
+        setViewedCourses(response.data);
+      }
     } catch (e) {
       console.log(e);
     }
@@ -45,12 +54,12 @@ const Trainee = ({ corporate, id }) => {
   };
 
   const filterCourses = async (rating, subjects, maxPrice, minPrice) => {
-    if (viewTitle === 'Enrolled Courses') {
+    if (viewTitle === "Enrolled Courses") {
       setViewingEnrolled(true);
     } else {
       setViewingEnrolled(false);
     }
-    setViewTitle('Filter Results');
+    setViewTitle("Filter Results");
     setLoading(true);
     setViewedCourses([]);
     try {
@@ -71,7 +80,7 @@ const Trainee = ({ corporate, id }) => {
     setLoading(false);
   };
   const searchCourses = async (body) => {
-    setViewTitle('Search Results');
+    setViewTitle("Search Results");
     setLoading(true);
     setViewedCourses([]);
     setViewingEnrolled(false);
@@ -87,7 +96,7 @@ const Trainee = ({ corporate, id }) => {
     for (let i in viewedCourses) {
       if (viewedCourses[i].course._id === courseId) {
         window.location.href +=
-          '/course/' + id + '/' + i + '/' + (corporate ? '1' : '0');
+          "/course/" + id + "/" + i + "/" + (corporate ? "1" : "0");
       }
     }
     // console.log(currentlyViewedCourse);
@@ -118,6 +127,7 @@ const Trainee = ({ corporate, id }) => {
                   getCourseCatalog={getAllCourses}
                   getMyCourses={getMyCourses}
                   id={id}
+                  corporate={corporate}
                 />
               </div>
               <div className="col-10">
@@ -149,7 +159,7 @@ const Trainee = ({ corporate, id }) => {
           <ViewCourse
             // registeredCourse={currentlyViewedCourse}
             corporate={corporate}
-            // id={id}
+            id={id}
           />
         }
       />
