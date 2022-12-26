@@ -97,7 +97,13 @@ const registerToCourse = async (req, res) => {
     });
   });
 
-  const newCourse = { course: courseId, submissions: [], progress: 0, seen };
+  const newCourse = {
+    course: courseId,
+    submissions: [],
+    progress: 0,
+    seen,
+    paid: course.price * course.currentDiscount.percentage,
+  };
 
   const trainee = await IndividualTrainee.findById(individualTraineeId);
   console.log(trainee);
@@ -241,18 +247,18 @@ const requestRefund = async (req, res) => {
 
   console.log('TRAINEEE --->' + individualTraineeId);
   console.log('COURSE --->' + courseId);
- 
+
   try {
     // console.log("courseId try: " + courseId)
     const requester = await IndividualTrainee.findById(individualTraineeId);
     // console.log(requester)
     let refundRequestsTemp = requester.refundRequests;
     refundRequestsTemp.push({ course: courseId, requestedAt: new Date() });
-    console.log(refundRequestsTemp)
+    console.log(refundRequestsTemp);
     const updatedQuery = await IndividualTrainee.findOneAndUpdate(
       { _id: individualTraineeId },
       { refundRequests: refundRequestsTemp }
-    ).populate("refundRequests.course");
+    ).populate('refundRequests.course');
     // console.log(updatedQuery.refundRequests)
 
     return res.status(200).json(updatedQuery);
@@ -312,6 +318,17 @@ const markResourceAsSeen = async (req, res) => {
     res.status(500).json({ message: 'some unexpected error occured' });
   }
 };
+const getTrainee = async (req, res) => {
+  const trainee = await IndividualTrainee.findById(
+    req.body.individualTraineeId
+  );
+
+  if (trainee) {
+    return res.status(200).json(trainee);
+  } else {
+    res.status(400).json('Could not find no trainee with this id');
+  }
+};
 module.exports = {
   getMyCourses,
   submitTest,
@@ -325,4 +342,5 @@ module.exports = {
   requestRefund,
   getWalletAmount,
   markResourceAsSeen,
+  getTrainee,
 };

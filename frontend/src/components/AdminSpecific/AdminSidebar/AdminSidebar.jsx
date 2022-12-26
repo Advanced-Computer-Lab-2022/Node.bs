@@ -30,6 +30,7 @@ import {
   returnCoursesFromSearch,
   applyPromotionOnCourses,
   getRefundRequests,
+  grantRefund,
 } from "../../../services/AdminService";
 import "./AdminSidebar.scss";
 import { useState } from "react";
@@ -146,6 +147,21 @@ const AdminSidebar = () => {
       setTraineesRequesting(query.data);
     }
   };
+
+  /////////////////GRANT REFUND////////////////////
+  const handleGrantRefund = async (individualTraineeId, courseId) => {
+    const query = await grantRefund({
+      individualTraineeId: individualTraineeId,
+      courseId: courseId,
+    });
+    if (query.status === 200) {
+      Swal.fire("Success", "Trainee has been refunded", "success");
+    } else {
+      Swal.fire("Error", "", "error");
+    }
+  };
+
+ 
   return (
     <div class="container-fluid sidebar-container">
       <div class="logo">
@@ -442,7 +458,6 @@ const AdminSidebar = () => {
         <ReactModal
           isOpen={openRefund}
           onRequestClose={() => setOpenRefund(false)}
-   
         >
           <h1>Refund Requests</h1>
           <hr />
@@ -453,23 +468,31 @@ const AdminSidebar = () => {
                 <div className="row m-2">
                   {trainee.refundRequests.map((request) => (
                     <>
-                    <div className="col-10">
-                    <h6>On the course: {request.course?.title} {console.log(request)}</h6>
-                    <h6>@ {request.requestedAt}</h6>
-                    <h6 style={{color: "green", fontWeight: "bolder"}}>refund value: {request.course?.price}</h6>
-                    </div>
-                    <div className="col-2">
-                    <button className="btn btn-outline-success">
-                      Grant Refund
-                    </button>
-                   
-                  </div>
-                  <hr />
-                  </>
-                 ))}
+                      <div className="col-10">
+                        <h6>
+                          On the course: {request.course?.title}{" "}
+                          {console.log(request)}
+                        </h6>
+                        <h6>@ {request.requestedAt}</h6>
+                        <h6 style={{ color: "green", fontWeight: "bolder" }}>
+                          refund value: {request.course?.price}
+                        </h6>
+                      </div>
+                      <div className="col-2">
+                        <button
+                          className="btn btn-outline-success"
+                          onClick={() =>
+                            handleGrantRefund(trainee._id, request.course?._id)
+                          }
+                        >
+                          Grant Refund
+                        </button>
+                      </div>
+                      <hr />
+                    </>
+                  ))}
                 </div>
               </div>
-           
 
               <hr />
             </div>

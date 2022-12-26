@@ -117,7 +117,7 @@ function CoursePreview({
   const [reportOpen, setReportOpen] = useState(false);
 
   const handleAddReport = async () => {
-    const instructorId = "635f37bcde75e20effb14fc3";
+    const instructorId = id;
 
     const reportToBeAdded = {
       instructorId: instructorId,

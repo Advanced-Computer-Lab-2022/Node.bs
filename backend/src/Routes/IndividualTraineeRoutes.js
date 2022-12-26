@@ -40,6 +40,6 @@ Router.post(
   individualTraineeController.markResourceAsSeen
 );
 
-
+Router.post('/getTrainee', individualTraineeController.getTrainee);
 
 module.exports = Router;

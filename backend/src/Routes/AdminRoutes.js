@@ -13,4 +13,6 @@ Router.post('/grantAccessToCourse', adminController.grantAccessToCourse);
 Router.post('/searchCourses', adminController.returnCoursesFromSearch);
 Router.post('/applyPromotion', adminController.applyPromotionOnCourses);
 Router.post('/refundRequests', adminController.getRefundRequests);
+Router.post('/grantRefund', adminController.grantRefundToIndividualTrainee);
+Router.post("/sendCertificate", adminController.sendCertificate)
 module.exports = Router;

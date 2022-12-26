@@ -39,4 +39,6 @@ Router.post(
   corporateTraineeController.markResourceAsSeen
 );
 
+Router.post('/getTrainee', corporateTraineeController.getTrainee);
+
 module.exports = Router;

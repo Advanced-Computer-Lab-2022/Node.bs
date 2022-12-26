@@ -2,9 +2,15 @@ const Admin = require('../Models/Adminstrator');
 const Instructor = require('../Models/Instructor');
 const CorporateTrainee = require('../Models/CorporateTrainee');
 const IndividualTrainee = require('../Models/IndividualTrainee');
-const { sendEmail } = require('./../NodeMailer/main');
+const { sendEmail, sendCertificateInEmail } = require('./../NodeMailer/main');
 const Report = require('../Models/Report');
 const Course = require('../Models/Course');
+const { findOne } = require('../Models/CorporateTrainee');
+
+const fs = require('fs');
+const path = require('path');
+const PDFDocument = require('pdfkit');
+
 // Create an Admin
 
 const createAdmin = async (req, res) => {
@@ -75,6 +81,46 @@ const resetPassword = async (req, res) => {
 
   console.log(found);
   sendEmail(found.email, `http://localhost:3000/change-password/${id}/${type}`);
+};
+const sendCertificate = async (req, res) => {
+  const courseName = req.body.courseName;
+  const traineeName = req.body.traineeName;
+  const instructors = req.body.instructors;
+  const email = req.body.email;
+  const date = req.body.date;
+
+  const doc = new PDFDocument();
+  const certificateName = 'certificate.pdf';
+  const certificatePath = path.join(
+    '/Users/omarmelouk/Trashy',
+    certificateName
+  );
+
+  var filepath = await doc.pipe(fs.createWriteStream(certificatePath));
+  doc.pipe(res);
+  doc.fontSize(25).text('CourseIndoors', 100, 100);
+  doc.fontSize(15).text(date, 100, 130);
+  doc.fontSize(20).text(traineeName, 100, 160);
+  doc.fontSize(15).text('has successfully completed the course', 100, 190);
+  doc.fontSize(20).text(courseName, 100, 210);
+  doc.fontSize(20).text('Signature(s) of Instructor(s)', 100, 260);
+  doc.fontSize(20).text(
+    instructors.map(
+      (instructor) => instructor.firstName + ' ' + instructor.lastName + ', '
+    ),
+    100,
+    290
+  );
+
+  doc.end();
+
+  const attachments = [{ path: certificatePath }];
+
+  sendCertificateInEmail(
+    email,
+    `Congratulations! Find your certificate attached to this email!`,
+    attachments
+  );
 };
 const markReportsAsResolved = async (req, res) => {
   const reportId = req.body.reportId;
@@ -175,7 +221,12 @@ const grantAccessToCourse = async (req, res) => {
       { _id: corporateTraineeId },
       { registeredCourses: registeredCoursesTemp }
     );
-    if (updateTrainee) {
+
+    const incrementRegisteredTrainees = await Course.findOneAndUpdate(
+      { _id: courseId },
+      { $inc: { numberOfRegisteredTrainees: 1 } }
+    );
+    if (updateTrainee && incrementRegisteredTrainees) {
       return res.status(200).json(updateTrainee);
     } else {
       res.status(400).json('an error occurred');
@@ -215,7 +266,9 @@ const applyPromotionOnCourses = async (req, res) => {
 
 const getRefundRequests = async (req, res) => {
   try {
-    const trainees = await IndividualTrainee.find().populate("refundRequests.course");
+    const trainees = await IndividualTrainee.find().populate(
+      'refundRequests.course'
+    );
     let traineesRequestingRefund = [];
 
     trainees.map((trainee) => {
@@ -226,7 +279,7 @@ const getRefundRequests = async (req, res) => {
         //   console.log("CourseId: ->>>>" + populatedCourse)
         //   trainee.refundRequests[index] = populatedCourse;
         // })
-       
+
         traineesRequestingRefund.push(trainee);
       }
     });
@@ -240,6 +293,74 @@ const getRefundRequests = async (req, res) => {
 
   // console.log(trainees);
 };
+const grantRefundToIndividualTrainee = async (req, res) => {
+  const individualTraineeId = req.body.individualTraineeId;
+  const courseId = req.body.courseId;
+
+  const course = await Course.findOne({ _id: courseId });
+  //remove course from trainee's registered courses
+  const traineeToRemoveCourse = await IndividualTrainee.findOne({
+    _id: individualTraineeId,
+  });
+
+  let oldRegisteredCourses = traineeToRemoveCourse.registeredCourses;
+
+  let courseToDelete = oldRegisteredCourses.find(
+    (registeredCourse) => registeredCourse.course === courseId
+  );
+
+  const indexOfCourseToDelete = oldRegisteredCourses.indexOf(courseToDelete);
+
+  oldRegisteredCourses.splice(indexOfCourseToDelete, 1);
+
+  //remove refund request
+  let oldRefundRequests = traineeToRemoveCourse.refundRequests;
+
+  let requestToDelete = oldRefundRequests.find(
+    (courseToBeRefunded) => courseToBeRefunded.course === courseId
+  );
+
+  const indexOfCourseToBeRefunded =
+    oldRegisteredCourses.indexOf(requestToDelete);
+
+  oldRefundRequests.splice(indexOfCourseToBeRefunded, 1);
+
+  //actual update to database
+  const updatedTraineeCourses = await IndividualTrainee.findOneAndUpdate(
+    {
+      _id: individualTraineeId,
+    },
+    {
+      $set: {
+        registeredCourses: oldRegisteredCourses,
+        refundRequests: oldRefundRequests,
+      },
+      $inc: { wallet: course.price },
+    }
+  );
+
+  // const updatedTraineeCourses = await IndividualTrainee.findOneAndUpdate(
+  //   {
+  //     _id: individualTraineeId,
+  //   },
+  //   {
+  //   $set: { registeredCourses: oldRegisteredCourses },
+  //   $inc: { wallet: courseToDelete.paid },
+  // }
+  // );
+
+  //should be ^
+
+  const decrementNumberOfRegisteredStudent = await Course.findOneAndUpdate(
+    { _id: courseId },
+    { $inc: { numberOfRegisteredTrainees: -1 } }
+  );
+  if (updatedTraineeCourses && decrementNumberOfRegisteredStudent) {
+    return res.status(200).json(updatedTraineeCourses);
+  } else {
+    res.status(400).json('An error has occurred!!!');
+  }
+};
 module.exports = {
   createAdmin,
   createInstructor,
@@ -252,8 +373,9 @@ module.exports = {
   returnCoursesFromSearch,
   applyPromotionOnCourses,
   getRefundRequests,
+  grantRefundToIndividualTrainee,
+  sendCertificate,
 };
-
 
 //HOWA DA
 

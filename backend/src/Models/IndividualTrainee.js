@@ -26,6 +26,7 @@ const IndividualTraineeSchema = new schema(
         submissions: [{ type: schema.Types.ObjectId, ref: 'Submission' }],
         progress: { type: Number },
         seen: { type: Object },
+        paid: {type: Number}
       },
     ],
 

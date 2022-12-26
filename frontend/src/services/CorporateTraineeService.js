@@ -54,10 +54,12 @@ export const requestAccessToCourse = (corporateTraineeId, courseId) => {
 };
 
 export const markResourceAsSeen = (resourceId, traineeId, courseId) => {
-  return BaseAxios.post(
-    "/corporate/markResourceAsSeen",
-    {resourceId,
+  return BaseAxios.post("/corporate/markResourceAsSeen", {
+    resourceId,
     traineeId,
-    courseId}
-  );
+    courseId,
+  });
+};
+export const getTrainee = (corporateTraineeId) => {
+  return BaseAxios.post("/corporate/getTrainee", corporateTraineeId);
 };

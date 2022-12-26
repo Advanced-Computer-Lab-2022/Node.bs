@@ -54,3 +54,24 @@ export const applyPromotionOnCourses = (
 export const getRefundRequests = () => {
   return BaseAxios.post("/admin/refundRequests");
 };
+
+export const grantRefund = (individualTraineeId, courseId) => {
+  return BaseAxios.post("/admin/grantRefund", individualTraineeId, courseId);
+};
+
+export const sendCertificate = (
+  courseName,
+  traineeName,
+  instructors,
+  email,
+  date
+) => {
+  return BaseAxios.post(
+    "/admin/sendCertificate",
+    courseName,
+    traineeName,
+    instructors,
+    email,
+    date
+  );
+};

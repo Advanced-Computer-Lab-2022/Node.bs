@@ -64,11 +64,13 @@ export const getWalletAmount = (individualTraineeId) => {
 };
 
 export const markResourceAsSeen = (resourceId, traineeId, courseId) => {
-  return BaseAxios.post(
-    "/individual/markResourceAsSeen",
-    {resourceId,
+  return BaseAxios.post("/individual/markResourceAsSeen", {
+    resourceId,
     traineeId,
-    courseId}
-  );
+    courseId,
+  });
 };
 
+export const getTrainee = (individualTraineeId) => {
+  return BaseAxios.post("/individual/getTrainee", individualTraineeId);
+};

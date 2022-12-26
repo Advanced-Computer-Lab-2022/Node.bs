@@ -281,6 +281,15 @@ const markResourceAsSeen = async (req, res) => {
     res.status(500).json({ message: 'some unexpected error occured' });
   }
 };
+
+const getTrainee = async (req, res) => {
+  const trainee = await CorporateTrainee.findById(req.body.corporateTraineeId);
+  if (trainee) {
+    return res.status(200).json(trainee);
+  } else {
+    res.status(400).json('Could not find no trainee with this id');
+  }
+};
 module.exports = {
   getMyCourses,
   submitTest,
@@ -293,4 +302,5 @@ module.exports = {
   getCorporateTraineeReportsIssued,
   requestAccessToCourse,
   markResourceAsSeen,
+  getTrainee
 };
