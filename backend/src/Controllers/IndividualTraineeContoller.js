@@ -116,8 +116,30 @@ const getMyCourses = async (req, res) => {
   const myId = req.query.id;
   try {
     const user = await IndividualTrainee.findById(myId)
-      .populate('registeredCourses.course')
-      .populate('registeredCourses.submissions');
+      .populate({
+        path: 'registeredCourses.submissions',
+        populate: { path: 'test', populate: { path: 'exercises' } },
+      })
+      .populate({
+        path: 'registeredCourses.course',
+        populate: { path: 'instructors' },
+      })
+      .populate({
+        path: 'registeredCourses.course',
+        populate: {
+          path: 'subtitles',
+          populate: {
+            path: 'lessons',
+            populate: {
+              path: 'learningResources test',
+              populate: {
+                path: 'exercises',
+                strictPopulate: false,
+              },
+            },
+          },
+        },
+      });
 
     if (user) {
       res.status(200).json(user.registeredCourses);

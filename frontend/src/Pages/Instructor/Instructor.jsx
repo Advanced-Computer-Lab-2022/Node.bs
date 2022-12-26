@@ -4,11 +4,12 @@ import InstructorDashboard from './../../components/InstructorSpecific/Instructo
 import InstructorSidebar from './../../components/InstructorSpecific/InstructorSidebar/InstructorSidebar';
 import * as courses from './../../services/CourseService';
 
-const Instructor = ({ id }) => {
+const Instructor = () => {
   const [viewedCourses, setViewedCourses] = useState([]);
   const [viewTitle, setViewTitle] = useState('');
   const [loading, setLoading] = useState(false);
   const [editable, setEditable] = useState(false);
+  const [id, setId] = useState(sessionStorage['id']);
 
   const getInstructorCourses = async () => {
     setLoading(true);

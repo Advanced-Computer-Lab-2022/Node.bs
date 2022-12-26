@@ -1,1 +1,7 @@
 @use './scss/_variables.scss' as *;
+body {
+  font-family: Roboto, Helvetica, Arial, sans-serif;
+}
+.app {
+  min-height: 100vh;
+}

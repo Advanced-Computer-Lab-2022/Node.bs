@@ -28,6 +28,7 @@ const IndividualTraineeSchema = new schema(
     ],
     wallet: {
       type: Number,
+      default: 0,
     },
     verified: {
       type: Boolean,
