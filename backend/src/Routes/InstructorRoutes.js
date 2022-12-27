@@ -8,5 +8,7 @@ Router.patch('/:id', instructorController.updateInstructorPassword);
 Router.patch('/:id', instructorController.updateInstructorOverview);
 Router.patch('/:id', instructorController.updateInstructorTerms);
 Router.get('/byId', instructorController.getInstructorById);
+Router.post('/reportsIssued', instructorController.getInstructorReportsIssued);
+Router.post('/getMoneyOwedPerMonth', instructorController.getMoneyOwedPerMonth);
 
 module.exports = Router;

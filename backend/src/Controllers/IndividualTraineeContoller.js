@@ -3,6 +3,7 @@ const Submission = require('./../Models/Submission');
 const mongoose = require('mongoose');
 const Course = require('./../Models/Course');
 const Instructor = require('./../Models/Instructor');
+const Report = require('./../Models/Report');
 
 const reviewInstructorIndividual = async (req, res) => {
   const instructorId = req.body.instructorId;
@@ -62,10 +63,9 @@ const createNewIndividualTrainee = async (req, res) => {
 
   const insertion = await IndividualTrainee.create(newIndividualTrainee);
 
-  const indvids = await IndividualTrainee.find();
+  // const indvids = await IndividualTrainee.findOne({_id: "63a2ea096db611c124762cda"});
 
-  console.log(insertion._id);
-  console.log();
+  // console.log(insertion._id);
 
   return res.status(200).json(insertion);
 };
@@ -82,7 +82,28 @@ const viewRegisteredCourse = async (req, res) => {
 const registerToCourse = async (req, res) => {
   const individualTraineeId = req.body.individualTraineeId;
   const courseId = req.body.courseId;
-  const newCourse = { course: courseId, submissions: [], progress: 0 };
+  const course = await Course.findById(courseId).populate({
+    path: 'subtitles',
+    populate: {
+      path: 'lessons',
+    },
+  });
+  let seen = {};
+  course.subtitles.forEach((subtitle) => {
+    subtitle.lessons.forEach((lesson) => {
+      lesson.learningResources.forEach((resource) => {
+        seen[resource] = false;
+      });
+    });
+  });
+
+  const newCourse = {
+    course: courseId,
+    submissions: [],
+    progress: 0,
+    seen,
+    paid: course.price * (1 - course.currentDiscount.percentage),
+  };
 
   const trainee = await IndividualTrainee.findById(individualTraineeId);
   console.log(trainee);
@@ -159,6 +180,8 @@ const submitTest = async (req, res) => {
     const submission = await Submission.create(req.body.submission);
     let trainee = await IndividualTrainee.findById(req.body.traineeId);
     let registeredCourses = trainee.registeredCourses;
+    console.log('trainee ' + trainee);
+    console.log('sub: ' + submission);
     for (let registeredCourse in registeredCourses) {
       if (
         registeredCourses[registeredCourse].course.equals(req.body.courseId)
@@ -200,6 +223,112 @@ const updateIndividualPassword = async (req, res) => {
   res.status(200).json(individualTrainee);
 };
 
+/////////////////////REPORTS/////////////////////
+const getIndividualTraineeReportsIssued = async (req, res) => {
+  const individualTraineeId = req.body.individualTraineeId;
+  console.log('individualTraineeId: ' + individualTraineeId);
+
+  const returnedQuery = await Report.find({
+    individualTrainee: individualTraineeId,
+  });
+
+  if (returnedQuery) {
+    return res.status(200).json(returnedQuery);
+  } else {
+    res.status(400).json();
+  }
+};
+
+///////////////////////REFUNDS///////////////////////
+
+const requestRefund = async (req, res) => {
+  const individualTraineeId = req.body.individualTraineeId;
+  const courseId = req.body.courseId;
+
+  console.log('TRAINEEE --->' + individualTraineeId);
+  console.log('COURSE --->' + courseId);
+
+  try {
+    // console.log("courseId try: " + courseId)
+    const requester = await IndividualTrainee.findById(individualTraineeId);
+    // console.log(requester)
+    let refundRequestsTemp = requester.refundRequests;
+    refundRequestsTemp.push({ course: courseId, requestedAt: new Date() });
+    console.log(refundRequestsTemp);
+    const updatedQuery = await IndividualTrainee.findOneAndUpdate(
+      { _id: individualTraineeId },
+      { refundRequests: refundRequestsTemp }
+    ).populate('refundRequests.course');
+    // console.log(updatedQuery.refundRequests)
+
+    return res.status(200).json(updatedQuery);
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json(e);
+  }
+  // } else {
+  //   //refund rejected
+  //   return res
+  //     .status(400)
+  //     .json(
+  //       'Something went wrong. You may have exceeded 50% of the course content, report this problem and our adminstartors will look into it if you need further assistance'
+  //     );
+  // }
+};
+
+const getWalletAmount = async (req, res) => {
+  const individualTraineeId = req.body.individualTraineeId;
+  const trainee = await IndividualTrainee.findOne({ _id: individualTraineeId });
+
+  console.log(trainee?.wallet);
+
+  if (trainee) {
+    return res.status(200).json(trainee.wallet);
+  } else {
+    res
+      .status(400)
+      .json('Something went wrong, You may be in the instructor page');
+  }
+};
+
+const markResourceAsSeen = async (req, res) => {
+  try {
+    const resourceId = req.body.resourceId;
+    let trainee = await IndividualTrainee.findById(req.body.traineeId);
+    let registeredCourses = trainee.registeredCourses;
+    for (let registeredCourse in registeredCourses) {
+      if (
+        registeredCourses[registeredCourse].course.equals(req.body.courseId)
+      ) {
+        registeredCourses[registeredCourse].seen[resourceId] = true;
+      }
+    }
+    const response = await IndividualTrainee.findOneAndUpdate(
+      { _id: req.body.traineeId },
+      { registeredCourses }
+    );
+
+    console.log(response);
+    if (response) {
+      res.status(200).json(response);
+    } else {
+      res.status(404).json({ message: 'user not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'some unexpected error occured' });
+  }
+};
+const getTrainee = async (req, res) => {
+  const trainee = await IndividualTrainee.findById(
+    req.body.individualTraineeId
+  );
+
+  if (trainee) {
+    return res.status(200).json(trainee);
+  } else {
+    res.status(400).json('Could not find no trainee with this id');
+  }
+};
 module.exports = {
   getMyCourses,
   submitTest,
@@ -209,4 +338,9 @@ module.exports = {
   reviewCourseIndividual,
   reviewInstructorIndividual,
   updateIndividualPassword,
+  getIndividualTraineeReportsIssued,
+  requestRefund,
+  getWalletAmount,
+  markResourceAsSeen,
+  getTrainee,
 };

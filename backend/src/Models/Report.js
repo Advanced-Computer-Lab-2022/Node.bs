@@ -11,10 +11,15 @@ const ReportSchema = new schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'CorporateTrainee',
     },
+    instructor: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Instructor',
+    },
     type: { type: String },
     body: { type: String },
     status: { type: String },
     seen: { type: Boolean },
+    followups: [{ followupBody: { type: String }, dateAdded: {type: Date } }],
   },
   { timestamps: true }
 );

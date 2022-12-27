@@ -25,4 +25,23 @@ const sendEmail = (to, text) => {
   });
 };
 
-module.exports = { sendEmail };
+const sendCertificateInEmail = (to, text, attachments) => {
+  const mailOptions = {
+    from: 'CourseIndoors@gmail.com',
+    to: to,
+    subject: 'Congratulations!',
+    text: text,
+    attachments: attachments
+  }
+
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+      // do something useful
+    }
+  });
+}
+
+module.exports = { sendEmail, sendCertificateInEmail };
