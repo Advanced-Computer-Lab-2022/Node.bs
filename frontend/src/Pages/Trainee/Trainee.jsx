@@ -7,6 +7,7 @@ import * as courses from "./../../services/CourseService";
 import { Route, Routes } from "react-router-dom";
 import ViewCourse from "./../../components/TraineeSpecific/ViewCourse/ViewCourse";
 
+
 const Trainee = ({ corporate, id }) => {
   const [viewedCourses, setViewedCourses] = useState([]);
   const [viewTitle, setViewTitle] = useState("");

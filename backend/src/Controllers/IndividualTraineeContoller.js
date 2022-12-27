@@ -102,7 +102,7 @@ const registerToCourse = async (req, res) => {
     submissions: [],
     progress: 0,
     seen,
-    paid: course.price * course.currentDiscount.percentage,
+    paid: course.price * (1 - course.currentDiscount.percentage),
   };
 
   const trainee = await IndividualTrainee.findById(individualTraineeId);

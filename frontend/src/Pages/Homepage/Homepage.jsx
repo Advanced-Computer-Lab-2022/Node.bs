@@ -1,12 +1,14 @@
-import Admin from '../Admin/Admin';
-import Instructor from '../Instructor/Instructor';
-import { BrowserRouter, Route, Routes, useParams } from 'react-router-dom';
+import Admin from "../Admin/Admin";
+import Instructor from "../Instructor/Instructor";
+import { BrowserRouter, Route, Routes, useParams } from "react-router-dom";
 // import Dashboard from './../../components/Dashboard/Dashboard';
 // import Sidebar from './../../components/Sidebar/Sidebar';
-import './Homepage.scss';
-import Trainee from '../Trainee/Trainee';
-import PasswordForm from '../../components/PasswordForm/PasswordForm';
-import PasswordReset from '../../components/PasswordReset/PasswordReset';
+import "./Homepage.scss";
+import Trainee from "../Trainee/Trainee";
+import PasswordForm from "../../components/PasswordForm/PasswordForm";
+import PasswordReset from "../../components/PasswordReset/PasswordReset";
+import LandingPage from "../../components/LandingPage/LandingPage";
+import Guest from "../../components/Guest/Guest";
 const Homepage = () => {
   return (
     // <div className="container-fluid row main px-0">
@@ -19,20 +21,24 @@ const Homepage = () => {
     // </div>
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/guest/*" element={<Guest />} />
         <Route path="/change-password/:id/:type" element={<PasswordReset />} />
         <Route path="/admin" element={<Admin />} />
         <Route
           path="/instructor/*"
-          element={<Instructor id={'635f37bcde75e20effb14fc3'} />}
+          element={<Instructor id={"635f37bcde75e20effb14fc3"} />}
         />
         <Route
           path="/individual/*"
-          element={<Trainee id={'63a2eb4d7dcc2cec5b085060'} corporate={false} />}
+          element={
+            <Trainee id={"63a2eb4d7dcc2cec5b085060"} corporate={false} />
+          }
         />
 
         <Route
           path="/corporate/*"
-          element={<Trainee id={'635fd360026911078fd8ef5a'} corporate={true} />}
+          element={<Trainee id={"635fd360026911078fd8ef5a"} corporate={true} />}
         />
       </Routes>
     </BrowserRouter>

@@ -36,13 +36,14 @@ function CoursePreview({
   editable,
   type,
   id,
+  guest,
 }) {
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
   const [canEnroll, setCanEnroll] = useState(true);
 
   useEffect(() => {
-    if (type !== "instructor") {
+    if (type !== "instructor" && id) {
       const checkEnrolled = async () => {
         const myCourses = await getMyCourses(type === "corporate", id);
         // console.log(myCourses.data)
@@ -358,7 +359,7 @@ function CoursePreview({
                               <h3>Biography: </h3>
 
                               <p>{instructor.overview}</p>
-                              {type !== "instructor" && (
+                              {type !== "instructor" && !guest && (
                                 <div class="accordion-item">
                                   <h2 class="accordion-header" id="headingOne">
                                     <button
@@ -528,224 +529,232 @@ function CoursePreview({
               <CourseReviews reviews={allReviews} />
               {/* {insert report button here if type is instructor and if instructor teaches this course} */}
 
-              {canEnroll && type !== "instructor" && type == "individual" && (
-                <>
+              {canEnroll &&
+                type !== "instructor" &&
+                type == "individual" &&
+                !guest && (
+                  <>
+                    <button
+                      type="button"
+                      class="btn btn-md btn-primary ml-2 mt-2"
+                      // onClick={() => handleRegistration()}
+                      onClick={() => setCreditCardOpen(true)}
+                    >
+                      <span className="content">
+                        <FontAwesomeIcon icon={faPlus} className="icon" />
+                        Enroll in Course?
+                      </span>
+                    </button>
+                    <ReactModal
+                      isOpen={creditCardOpen}
+                      onRequestClose={() => setCreditCardOpen(false)}
+                      style={{
+                        content: {
+                          width: "100vh",
+                          height: "70vh",
+                          margin: "auto",
+                        },
+                      }}
+                    >
+                      <h1>Credit Card details:</h1>
+                      <hr />
+                      <form>
+                        <div class="row mb-4">
+                          <div class="col">
+                            <div class="form-outline">
+                              <label class="form-label" for="formNameOnCard">
+                                Name on card
+                              </label>
+                              <input
+                                type="text"
+                                id="formNameOnCard"
+                                class="form-control"
+                              />
+                            </div>
+                          </div>
+                          <div class="col">
+                            <div class="form-outline">
+                              <label class="form-label" for="formCardNumber">
+                                Credit card number
+                              </label>
+                              <input
+                                type="text"
+                                id="formCardNumber"
+                                class="form-control"
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="row mb-4">
+                          <div class="col-3">
+                            <div class="form-outline">
+                              <label class="form-label" for="formExpiration">
+                                Expiration
+                              </label>
+                              <input
+                                type="text"
+                                id="formExpiration"
+                                class="form-control"
+                              />
+                            </div>
+                          </div>
+                          <div class="col-3">
+                            <div class="form-outline">
+                              <label class="form-label" for="formCVV">
+                                CVV
+                              </label>
+                              <input
+                                type="text"
+                                id="formCVV"
+                                class="form-control"
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        <h6 style={{ color: "red", fontStyle: "" }}>
+                          Warning: The price of the course will be deducted from
+                          you credit card when pressing "Confirm Payment". Are
+                          you sure you want to proceed?
+                        </h6>
+                        <div className="row">
+                          <div className="col-9"> </div>
+                          <div class="col-3">
+                            <button
+                              class="btn btn-outline-primary btn-md mt-5 ml-5"
+                              type="button"
+                              onClick={() => handleRegistration()}
+                            >
+                              Confirm Payment
+                            </button>
+                          </div>
+                        </div>
+                      </form>
+                    </ReactModal>
+                  </>
+                )}
+              {canEnroll &&
+                !guest &&
+                type !== "instructor" &&
+                type == "corporate" && (
+                  <>
+                    <button
+                      type="button"
+                      class="btn btn-md btn-primary ml-2 mt-2"
+                      onClick={() => handleRequestAccessToCourse(course._id)}
+                      // onClick={() => setCreditCardOpen(true)}
+                    >
+                      <span className="content">
+                        <FontAwesomeIcon icon={faPlus} className="icon" />
+                        Request acces to this course
+                      </span>
+                    </button>
+                  </>
+                )}
+              {!guest && (
+                <div className="row">
                   <button
-                    type="button"
-                    class="btn btn-md btn-primary ml-2 mt-2"
-                    // onClick={() => handleRegistration()}
-                    onClick={() => setCreditCardOpen(true)}
+                    className="btn btn-outline-danger btn-md mt-2"
+                    onClick={() => {
+                      setReportOpen(true);
+                    }}
                   >
-                    <span className="content">
-                      <FontAwesomeIcon icon={faPlus} className="icon" />
-                      Enroll in Course?
-                    </span>
+                    <FontAwesomeIcon icon={faFlag} /> Report
                   </button>
                   <ReactModal
-                    isOpen={creditCardOpen}
-                    onRequestClose={() => setCreditCardOpen(false)}
+                    isOpen={reportOpen}
+                    onRequestClose={() => {
+                      setReportOpen(false);
+                    }}
                     style={{
                       content: {
-                        width: "100vh",
-                        height: "70vh",
                         margin: "auto",
+                        width: "60vw",
+                        height: "40vw",
                       },
                     }}
                   >
-                    <h1>Credit Card details:</h1>
-                    <hr />
-                    <form>
-                      <div class="row mb-4">
-                        <div class="col">
-                          <div class="form-outline">
-                            <label class="form-label" for="formNameOnCard">
-                              Name on card
-                            </label>
-                            <input
-                              type="text"
-                              id="formNameOnCard"
-                              class="form-control"
-                            />
-                          </div>
+                    <div className="container">
+                      <h1>Report a problem</h1>
+                      <hr />
+                      <h3>Type of problem</h3>
+                      <div className="container mt-2">
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="inlineRadioOptions"
+                            id="inlineRadio1"
+                            value="option1"
+                            onClick={() => {
+                              setReportType("Technical");
+                            }}
+                          />
+                          <label class="form-check-label" for="inlineRadio1">
+                            Technical
+                          </label>
                         </div>
-                        <div class="col">
-                          <div class="form-outline">
-                            <label class="form-label" for="formCardNumber">
-                              Credit card number
-                            </label>
-                            <input
-                              type="text"
-                              id="formCardNumber"
-                              class="form-control"
-                            />
-                          </div>
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="inlineRadioOptions"
+                            id="inlineRadio2"
+                            value="option2"
+                            onClick={() => {
+                              setReportType("Financial");
+                            }}
+                          />
+                          <label class="form-check-label" for="inlineRadio2">
+                            Financial
+                          </label>
                         </div>
-                      </div>
-
-                      <div class="row mb-4">
-                        <div class="col-3">
-                          <div class="form-outline">
-                            <label class="form-label" for="formExpiration">
-                              Expiration
-                            </label>
-                            <input
-                              type="text"
-                              id="formExpiration"
-                              class="form-control"
-                            />
-                          </div>
-                        </div>
-                        <div class="col-3">
-                          <div class="form-outline">
-                            <label class="form-label" for="formCVV">
-                              CVV
-                            </label>
-                            <input
-                              type="text"
-                              id="formCVV"
-                              class="form-control"
-                            />
-                          </div>
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="inlineRadioOptions"
+                            id="inlineRadio3"
+                            value="option3"
+                            onClick={() => {
+                              setReportType("Other");
+                            }}
+                          />
+                          <label class="form-check-label" for="inlineRadio3">
+                            Other
+                          </label>
                         </div>
                       </div>
-
-                      <h6 style={{ color: "red", fontStyle: "" }}>
-                        Warning: The price of the course will be deducted from
-                        you credit card when pressing "Confirm Payment". Are you
-                        sure you want to proceed?
-                      </h6>
-                      <div className="row">
-                        <div className="col-9"> </div>
-                        <div class="col-3">
-                          <button
-                            class="btn btn-outline-primary btn-md mt-5 ml-5"
-                            type="button"
-                            onClick={() => handleRegistration()}
+                      <div className="container mt-5">
+                        <div class="mb-3">
+                          <label
+                            for="exampleFormControlTextarea1"
+                            class="form-label"
                           >
-                            Confirm Payment
-                          </button>
+                            <h3>Explain your problem</h3>
+                          </label>
+                          <textarea
+                            class="form-control"
+                            id="exampleFormControlTextarea1"
+                            rows="9"
+                            onChange={(e) => setReportBody(e.target.value)}
+                          ></textarea>
                         </div>
                       </div>
-                    </form>
-                  </ReactModal>
-                </>
-              )}
-              {canEnroll && type !== "instructor" && type == "corporate" && (
-                <>
-                  <button
-                    type="button"
-                    class="btn btn-md btn-primary ml-2 mt-2"
-                    onClick={() => handleRequestAccessToCourse(course._id)}
-                    // onClick={() => setCreditCardOpen(true)}
-                  >
-                    <span className="content">
-                      <FontAwesomeIcon icon={faPlus} className="icon" />
-                      Request acces to this course
-                    </span>
-                  </button>
-                </>
-              )}
-              <div className="row">
-                <button
-                  className="btn btn-outline-danger btn-md mt-2"
-                  onClick={() => {
-                    setReportOpen(true);
-                  }}
-                >
-                  <FontAwesomeIcon icon={faFlag} /> Report
-                </button>
-                <ReactModal
-                  isOpen={reportOpen}
-                  onRequestClose={() => {
-                    setReportOpen(false);
-                  }}
-                  style={{
-                    content: {
-                      margin: "auto",
-                      width: "60vw",
-                      height: "40vw",
-                    },
-                  }}
-                >
-                  <div className="container">
-                    <h1>Report a problem</h1>
-                    <hr />
-                    <h3>Type of problem</h3>
-                    <div className="container mt-2">
-                      <div class="form-check form-check-inline">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="inlineRadioOptions"
-                          id="inlineRadio1"
-                          value="option1"
-                          onClick={() => {
-                            setReportType("Technical");
-                          }}
-                        />
-                        <label class="form-check-label" for="inlineRadio1">
-                          Technical
-                        </label>
-                      </div>
-                      <div class="form-check form-check-inline">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="inlineRadioOptions"
-                          id="inlineRadio2"
-                          value="option2"
-                          onClick={() => {
-                            setReportType("Financial");
-                          }}
-                        />
-                        <label class="form-check-label" for="inlineRadio2">
-                          Financial
-                        </label>
-                      </div>
-                      <div class="form-check form-check-inline">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="inlineRadioOptions"
-                          id="inlineRadio3"
-                          value="option3"
-                          onClick={() => {
-                            setReportType("Other");
-                          }}
-                        />
-                        <label class="form-check-label" for="inlineRadio3">
-                          Other
-                        </label>
-                      </div>
-                    </div>
-                    <div className="container mt-5">
-                      <div class="mb-3">
-                        <label
-                          for="exampleFormControlTextarea1"
-                          class="form-label"
+                      <div className="row mt-5 p-3">
+                        <button
+                          className="btn btn-outline-primary"
+                          onClick={() => handleAddReport()}
                         >
-                          <h3>Explain your problem</h3>
-                        </label>
-                        <textarea
-                          class="form-control"
-                          id="exampleFormControlTextarea1"
-                          rows="9"
-                          onChange={(e) => setReportBody(e.target.value)}
-                        ></textarea>
+                          Submit Report
+                        </button>
                       </div>
                     </div>
-                    <div className="row mt-5 p-3">
-                      <button
-                        className="btn btn-outline-primary"
-                        onClick={() => handleAddReport()}
-                      >
-                        Submit Report
-                      </button>
-                    </div>
-                  </div>
-                </ReactModal>
-              </div>
-              {!canEnroll && type !== "instructor" && (
+                  </ReactModal>
+                </div>
+              )}
+              {!canEnroll && type !== "instructor" && !guest && (
                 <>
                   <button
                     type="button"

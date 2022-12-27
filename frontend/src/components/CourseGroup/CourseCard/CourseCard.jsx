@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import CoursePreview from "../../CoursePreview/CoursePreview";
 import { incrementViews } from "../../../services/CourseService";
 
-const CourseCard = ({ course, editable, accessCourse, type, id }) => {
+const CourseCard = ({ course, editable, accessCourse, type, id, guest }) => {
   const userInfo = useSelector((state) => state.user);
   const currency = useSelector(
     (state) => state.region.selectedRegion.currencyCodes[0]
@@ -136,6 +136,7 @@ const CourseCard = ({ course, editable, accessCourse, type, id }) => {
         editable={editable}
         type={type}
         id={id}
+        guest = {guest}
       />
     </div>
   );
