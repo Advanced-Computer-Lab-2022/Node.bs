@@ -7,6 +7,14 @@ import * as courses from './../../services/CourseService';
 import { Route, Routes } from 'react-router-dom';
 import ViewCourse from './../../components/TraineeSpecific/ViewCourse/ViewCourse';
 import AuthContext from '../../Context/AuthProvider';
+import React from 'react';
+import TraineeDashboard from './../../components/TraineeSpecific/TraineeDashboard/TraineeDashboard';
+import TraineeSidebar from '../../components/TraineeSpecific/TraineeSidebar/TraineeSidebar';
+import './Trainee.scss';
+import { useState, useEffect } from 'react';
+import * as courses from './../../services/CourseService';
+import { Route, Routes } from 'react-router-dom';
+import ViewCourse from './../../components/TraineeSpecific/ViewCourse/ViewCourse';
 
 const Trainee = ({ corporate }) => {
   const [viewedCourses, setViewedCourses] = useState([]);
@@ -28,6 +36,7 @@ const Trainee = ({ corporate }) => {
     try {
       const response = await courses.getMyCourses(corporate, id);
       console.log(response.data);
+
       setViewedCourses(response.data);
     } catch (e) {
       console.log(e);
@@ -35,7 +44,7 @@ const Trainee = ({ corporate }) => {
     setLoading(false);
   };
 
-  const getAllCourses = async () => {
+  const getAllCourses = async (sortByPopularity) => {
     //get all courses
     setViewingEnrolled(false);
     setViewTitle('Course Catalog');
@@ -43,7 +52,15 @@ const Trainee = ({ corporate }) => {
     setLoading(true);
     try {
       const response = await courses.getAll();
-      setViewedCourses(response.data);
+      if (sortByPopularity) {
+        const sortedCourses = response.data.sort(
+          (c1, c2) => c2.courseViews - c1.courseViews
+        );
+        console.log(sortedCourses);
+        setViewedCourses(sortedCourses);
+      } else {
+        setViewedCourses(response.data);
+      }
     } catch (e) {
       console.log(e);
     }
@@ -124,6 +141,7 @@ const Trainee = ({ corporate }) => {
                   getCourseCatalog={getAllCourses}
                   getMyCourses={getMyCourses}
                   id={id}
+                  corporate={corporate}
                 />
               </div>
               <div className="col-10">
@@ -155,7 +173,7 @@ const Trainee = ({ corporate }) => {
           <ViewCourse
             // registeredCourse={currentlyViewedCourse}
             corporate={corporate}
-            // id={id}
+            id={id}
           />
         }
       />

@@ -10,6 +10,7 @@ const CourseGroup = ({
   accessCourse,
   type,
   id,
+  guest
 }) => {
   // const currency = useSelector(
   //   (state) => state.region.selectedRegion.currencyCodes[0]
@@ -36,6 +37,7 @@ const CourseGroup = ({
               accessCourse={accessCourse}
               type={type}
               id={id}
+              guest = {guest}
             />
           </div>
         );

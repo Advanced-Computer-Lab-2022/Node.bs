@@ -75,6 +75,7 @@ const CourseSchema = new schema(
     releaseDate: {
       type: Date,
     },
+    reports: { type: schema.Types.ObjectId, ref: 'Report' },
   },
   { timestamps: true }
 );
