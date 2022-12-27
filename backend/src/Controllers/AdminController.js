@@ -12,10 +12,9 @@ const createAdmin = async (req, res) => {
       username: req.body.username,
     });
     if (existingUser.length == 0) {
-      const hashedPassword = bcrypt.hash(req.body.password);
+      // const hashedPassword = bcrypt.hash(req.body.password,10);
       const admin = await Admin.create({
         ...req.body,
-        password: hashedPassword,
       });
       res.status(203).json(admin);
     } else {
@@ -34,7 +33,7 @@ const createInstructor = async (req, res) => {
       $or: [{ username: req.body.username }],
     });
     if (existingUser.length == 0) {
-      const hashedPassword = bcrypt.hash(req.body.password);
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
       const instructor = await Instructor.create({
         ...req.body,
         password: hashedPassword,
@@ -56,7 +55,7 @@ const createCorporateTrainee = async (req, res) => {
       username: req.body.username,
     });
     if (existingUser.length == 0) {
-      const hashedPassword = bcrypt.hash(req.body.password);
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
       const corporateTrainee = await CorporateTrainee.create({
         ...req.body,
         password: hashedPassword,

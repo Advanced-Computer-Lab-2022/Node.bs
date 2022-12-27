@@ -167,6 +167,7 @@ const searchCourses = async (req, res) => {
 };
 
 //create Course
+const stripe = require('stripe')(process.env.STRIPE_SECRET);
 const createCourse = async (req, res) => {
   try {
     let subtitleIDArray = []; // references -> will be stored inside course
@@ -179,7 +180,19 @@ const createCourse = async (req, res) => {
       subtitleIDArray.push(createdSubtitle._id);
     }
     // req.body.subtitles = subtitleArray;
-    const course = { ...req.body, subtitles: subtitleIDArray };
+    const product = await stripe.products.create({
+      name: req.body.title,
+    });
+    const price = await stripe.prices.create({
+      unit_amount: req.body.price * 100,
+      currency: 'usd',
+      product: product.id,
+    });
+    const course = {
+      ...req.body,
+      subtitles: subtitleIDArray,
+      priceId: price.id,
+    };
     // console.log(course);
     const result = await Course.create(course);
     res.status(203).json(result);

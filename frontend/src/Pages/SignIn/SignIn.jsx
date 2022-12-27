@@ -84,6 +84,7 @@ export default function SignIn() {
       // updateAuth(response.data._id, response.data.type);
       sessionStorage['id'] = response.data._id;
       sessionStorage['type'] = response.data.type;
+      Cookies.set('type', response.data.type);
       window.location.href = '/' + response.data.type;
     }
   };

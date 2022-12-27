@@ -5,15 +5,20 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import store from './redux/app/store';
 import { Provider } from 'react-redux';
-import { AuthProvider } from './Context/AuthProvider';
-// import 'mdb-react-ui-kit/dist/css/mdb.min.css';
-// import '@fortawesome/fontawesome-free/css/all.min.css';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
+
+const publishableKey =
+  'pk_test_51MJgDSB83C7nM6cpUcvMU0emvlX5JWBD4ejCvUTgYSGjj49qdaDJSiSYv77yOMnK807yV7t0qMH7ZyQd18tF13BO00PUT2lVNv';
+const stripePromise = loadStripe(publishableKey);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <Elements stripe={stripePromise}>
+        <App />
+      </Elements>
     </Provider>
   </React.StrictMode>
 );

@@ -162,7 +162,7 @@ const submitTest = async (req, res) => {
         registeredCourses[registeredCourse].submissions.push(submission._id);
       }
     }
-    const response = await CorporateTrainee.findOneAndUpdate(
+    const response = await IndividualTrainee.findOneAndUpdate(
       { _id: req.body.traineeId },
       { registeredCourses }
     );
@@ -174,6 +174,7 @@ const submitTest = async (req, res) => {
       res.status(404).json({ message: 'user not found' });
     }
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: 'some unexpected error occured' });
   }
 };

@@ -90,12 +90,12 @@ const signIn = async (req, res) => {
     type = 'admin';
   }
 
-  if (user) {
+  if (user && type !== 'admin') {
     bcrypt.compare(password, user.password).then((result) => {
       if (result) {
         const refreshToken = jwt.sign(
           {
-            username: user.username,
+            name: user.username,
           },
           process.env.REFRESH_TOKEN_SECRET,
           { expiresIn: '1d' }
@@ -123,12 +123,43 @@ const signIn = async (req, res) => {
     // } else {
     //   res.status(400).json({ message: 'Incorrect username or password' });
     // }
+  } else if (user) {
+    if (user.password === password) {
+      const refreshToken = jwt.sign(
+        {
+          username: user.username,
+        },
+        process.env.REFRESH_TOKEN_SECRET,
+        { expiresIn: '1d' }
+      );
+
+      const token = createToken(user.username);
+
+      res.cookie('jwt', token, {
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000,
+      });
+      res.cookie('refresh', refreshToken, {
+        httpOnly: true,
+        maxAge: maxAge * 2000,
+      });
+      res.status(200).json({ _id: user._id, type, token });
+    } else {
+      res.status(400).json({ message: 'Incorrect password' });
+    }
   } else {
     res.status(400).json({ message: 'Incorrect username or password' });
   }
 };
 
+const logOut = async (req, res) => {
+  res.cookie('jwt', '');
+  res.cookie('refresh', '');
+  res.status(200).json({ message: 'logged out succesfully' });
+};
+
 module.exports = {
   signup,
   signIn,
+  logOut,
 };

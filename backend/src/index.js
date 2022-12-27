@@ -10,6 +10,7 @@ const corporateTraineeRoutes = require('./Routes/CorporateTraineeRoutes');
 const guestRoutes = require('./Routes/GuestRoutes');
 const cors = require('cors');
 const cookieparser = require('cookie-parser');
+const { authMiddleware } = require('./Middleware/authMiddleware');
 
 //Mongo URI
 const mongoURI = process.env.MONGO_URI;
@@ -54,10 +55,10 @@ app.use((req, res, next) => {
 //Register API Routes , need to protect endpoints later
 app.use('/guest', guestRoutes);
 app.use('/course', courseRoutes);
-app.use('/admin', adminRoutes);
-app.use('/instructor', instructorRoutes);
-app.use('/individual', individualTraineeRoutes);
-app.use('/corporate', corporateTraineeRoutes);
+app.use('/admin', authMiddleware('admin'), adminRoutes);
+app.use('/instructor', authMiddleware('instructor'), instructorRoutes);
+app.use('/individual', authMiddleware('individual'), individualTraineeRoutes);
+app.use('/corporate', authMiddleware('corporate'), corporateTraineeRoutes);
 
 //connect to db (promise <=> resolve=>then , reject=>catch)
 mongoose
