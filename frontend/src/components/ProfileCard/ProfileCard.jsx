@@ -1,24 +1,37 @@
 import React from 'react';
 import './../ProfileCard/ProfileCard.scss';
-import { faPencil } from '@fortawesome/free-solid-svg-icons';
+import { faPencil, faSignOut } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
 import ReactModal from 'react-modal';
 import OverviewForm from '../OverviewForm/OverviewForm';
 import PasswordForm from '../PasswordForm/PasswordForm';
+import { logOut } from '../../services/GuestService';
 
 function ProfileCard({ id, type }) {
   const [viewEditProfile, setViewEditProfile] = useState(false);
+  const logOutHandler = async () => {
+    await logOut();
+    window.location.href = '/signin';
+  };
   return (
     <div id="profile-card">
       <div className="row">
         <div className="col-9">{/* <h2>Profile</h2> */}</div>
         <div className="col">
-          <div
-            className="edit-icon-container"
-            onClick={() => setViewEditProfile(true)}
-          >
-            <FontAwesomeIcon icon={faPencil} className="edit-icon" />
+          <div className="d-flex justify-content-end">
+            <div
+              className="edit-icon-container"
+              onClick={() => setViewEditProfile(true)}
+            >
+              <FontAwesomeIcon icon={faPencil} className="edit-icon" />
+            </div>
+            <div
+              className="edit-icon-container"
+              onClick={() => logOutHandler()}
+            >
+              <FontAwesomeIcon icon={faSignOut} className="edit-icon" />
+            </div>
           </div>
         </div>
       </div>

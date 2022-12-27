@@ -7,7 +7,10 @@ const courseRoutes = require('./Routes/CourseRoutes');
 const instructorRoutes = require('./Routes/InstructorRoutes');
 const individualTraineeRoutes = require('./Routes/IndividualTraineeRoutes');
 const corporateTraineeRoutes = require('./Routes/CorporateTraineeRoutes');
+const guestRoutes = require('./Routes/GuestRoutes');
 const cors = require('cors');
+const cookieparser = require('cookie-parser');
+const { authMiddleware } = require('./Middleware/authMiddleware');
 
 //Mongo URI
 const mongoURI = process.env.MONGO_URI;
@@ -17,12 +20,22 @@ const port = process.env.PORT || '8000';
 
 //create express app
 const app = express();
-app.use(cors());
-app.options('*', cors());
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+
+    credentials: true,
+  })
+);
+// app.options(
+//   '*',
+
+// );
 //cors error handler
 // app.use((req, res, next) => {
-//   res.header('Access-Control-Allow-Origin', '*');
+//   res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
 //   res.header('Access-Control-Allow-Headers', '*');
+//   res.header(`Access-Control-Allow-Credentials`, 'true');
 //   next();
 // });
 //register deep populate plugin
@@ -31,6 +44,7 @@ app.options('*', cors());
 
 //JSON body parser middleware
 app.use(express.json());
+app.use(cookieparser());
 
 //logger
 app.use((req, res, next) => {
@@ -39,11 +53,12 @@ app.use((req, res, next) => {
   next();
 });
 //Register API Routes , need to protect endpoints later
+app.use('/guest', guestRoutes);
 app.use('/course', courseRoutes);
-app.use('/admin', adminRoutes);
-app.use('/instructor', instructorRoutes);
-app.use('/individual', individualTraineeRoutes);
-app.use('/corporate', corporateTraineeRoutes);
+app.use('/admin', authMiddleware('admin'), adminRoutes);
+app.use('/instructor', authMiddleware('instructor'), instructorRoutes);
+app.use('/individual', authMiddleware('individual'), individualTraineeRoutes);
+app.use('/corporate', authMiddleware('corporate'), corporateTraineeRoutes);
 
 //connect to db (promise <=> resolve=>then , reject=>catch)
 mongoose

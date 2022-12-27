@@ -63,7 +63,7 @@ const InstructorSidebar = ({
   }, []);
   const handleAccept = () => {};
   return (
-    <div class="container-fluid sidebar-container">
+    <div class="container-fluid sidebar-container" id="inverted-color">
       <div className="logo">
         <h6 className="brand">
           <FontAwesomeIcon icon={faDoorOpen} /> CourseIndoors

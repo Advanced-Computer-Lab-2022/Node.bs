@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import TraineeDashboard from './../../components/TraineeSpecific/TraineeDashboard/TraineeDashboard';
 import TraineeSidebar from '../../components/TraineeSpecific/TraineeSidebar/TraineeSidebar';
 import './Trainee.scss';
@@ -6,14 +6,20 @@ import { useState, useEffect } from 'react';
 import * as courses from './../../services/CourseService';
 import { Route, Routes } from 'react-router-dom';
 import ViewCourse from './../../components/TraineeSpecific/ViewCourse/ViewCourse';
+import AuthContext from '../../Context/AuthProvider';
 
-const Trainee = ({ corporate, id }) => {
+const Trainee = ({ corporate }) => {
   const [viewedCourses, setViewedCourses] = useState([]);
   const [viewTitle, setViewTitle] = useState('');
   const [loading, setLoading] = useState(false);
   const [viewingEnrolled, setViewingEnrolled] = useState(false);
-  // const [currentlyViewedCourse, setCurrentlyViewedCourse] = useState({});
+  const { auth } = useContext(AuthContext);
+  const [id, setId] = useState(sessionStorage['id']);
 
+  // const [currentlyViewedCourse, setCurrentlyViewedCourse] = useState({});
+  useEffect(() => {
+    console.log(auth);
+  });
   const getMyCourses = async () => {
     setViewTitle('Enrolled Courses');
     setViewingEnrolled(true);

@@ -3,6 +3,7 @@ const Instructor = require('../Models/Instructor');
 const CorporateTrainee = require('../Models/CorporateTrainee');
 const IndividualTrainee = require('../Models/IndividualTrainee');
 const { sendEmail } = require('./../NodeMailer/main');
+const bcrypt = require('bcrypt');
 // Create an Admin
 
 const createAdmin = async (req, res) => {
@@ -11,7 +12,10 @@ const createAdmin = async (req, res) => {
       username: req.body.username,
     });
     if (existingUser.length == 0) {
-      const admin = await Admin.create(req.body);
+      // const hashedPassword = bcrypt.hash(req.body.password,10);
+      const admin = await Admin.create({
+        ...req.body,
+      });
       res.status(203).json(admin);
     } else {
       res.status(400).json({ message: 'user already in use' });
@@ -29,7 +33,11 @@ const createInstructor = async (req, res) => {
       $or: [{ username: req.body.username }],
     });
     if (existingUser.length == 0) {
-      const instructor = await Instructor.create(req.body);
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
+      const instructor = await Instructor.create({
+        ...req.body,
+        password: hashedPassword,
+      });
       res.status(203).json(instructor);
     } else {
       res.status(400).json({ message: 'user already in use' });
@@ -47,7 +55,11 @@ const createCorporateTrainee = async (req, res) => {
       username: req.body.username,
     });
     if (existingUser.length == 0) {
-      const corporateTrainee = await CorporateTrainee.create(req.body);
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
+      const corporateTrainee = await CorporateTrainee.create({
+        ...req.body,
+        password: hashedPassword,
+      });
       res.status(203).json(corporateTrainee);
     } else {
       res.status(400).json({ message: 'user already in use' });

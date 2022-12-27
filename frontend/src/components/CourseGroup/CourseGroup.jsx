@@ -15,7 +15,10 @@ const CourseGroup = ({
   //   (state) => state.region.selectedRegion.currencyCodes[0]
   // );
   return (
-    <div className="container card-group" id="courseGroup">
+    <div
+      className="container card-group justify-content-between"
+      id="courseGroup"
+    >
       {/* <div className="row" id="courseGroup"> */}
       {!loading && courses.length === 0 && <h3>No results found.</h3>}
       {loading && (
@@ -26,7 +29,7 @@ const CourseGroup = ({
       {/*className=" col-md-4 col-sm-12 col-xs-12"*/}
       {courses.map((course) => {
         return (
-          <div className="mx-1">
+          <div className="my-1">
             <CourseCard
               course={course}
               editable={editable}
