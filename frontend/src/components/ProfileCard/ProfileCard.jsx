@@ -7,26 +7,36 @@ import ReactModal from 'react-modal';
 import OverviewForm from '../OverviewForm/OverviewForm';
 import PasswordForm from '../PasswordForm/PasswordForm';
 import { logOut } from '../../services/GuestService';
+import './../ProfileCard/ProfileCard.scss';
+import {
+  faMoneyBillTrendUp,
+  faWallet,
+  faPencil,
+} from '@fortawesome/free-solid-svg-icons';
+
+import { getWalletAmount } from '../../services/IndividualTraineeService';
+import { useEffect } from 'react';
+import { getMoneyOwedPerMonth } from '../../services/InstructorService';
 
 const logOutHandler = async () => {
   await logOut();
   window.location.href = '/signin';
 };
-import React from 'react';
-import './../ProfileCard/ProfileCard.scss';
-import {
-  faMoneyBillTrendUp,
-  faPencil,
-  faWallet,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useState } from 'react';
-import ReactModal from 'react-modal';
-import OverviewForm from '../OverviewForm/OverviewForm';
-import PasswordForm from '../PasswordForm/PasswordForm';
-import { getWalletAmount } from '../../services/IndividualTraineeService';
-import { useEffect } from 'react';
-import { getMoneyOwedPerMonth } from '../../services/InstructorService';
+// import React from 'react';
+// import './../ProfileCard/ProfileCard.scss';
+// import {
+//   faMoneyBillTrendUp,
+
+//   faWallet,
+// } from '@fortawesome/free-solid-svg-icons';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { useState } from 'react';
+// import ReactModal from 'react-modal';
+// import OverviewForm from '../OverviewForm/OverviewForm';
+// import PasswordForm from '../PasswordForm/PasswordForm';
+// import { getWalletAmount } from '../../services/IndividualTraineeService';
+// import { useEffect } from 'react';
+// import { getMoneyOwedPerMonth } from '../../services/InstructorService';
 
 function ProfileCard({ id, type }) {
   const [viewEditProfile, setViewEditProfile] = useState(false);

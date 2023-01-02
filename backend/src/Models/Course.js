@@ -76,6 +76,10 @@ const CourseSchema = new schema(
       type: Date,
     },
     reports: { type: schema.Types.ObjectId, ref: 'Report' },
+<<<<<<< HEAD
+=======
+    priceId: { type: String },
+>>>>>>> old-state
   },
   { timestamps: true }
 );

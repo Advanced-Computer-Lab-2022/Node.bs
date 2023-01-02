@@ -1,31 +1,44 @@
-import React from "react";
-import "./CoursePreview.scss";
-import ReactModal from "react-modal";
+import React from 'react';
+import './CoursePreview.scss';
+import ReactModal from 'react-modal';
 import {
   faPencil,
   faPlus,
   faStar,
   faFlag,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Swal from "sweetalert2";
-import * as courses from "./../../services/CourseService";
-import AddReviewForm from "../AddReviewForm/AddReviewForm";
-import CourseReviews from "../CourseReviews/CourseReviews";
-import { useState } from "react";
-import { registerToCourse as registerToCourseIndividual } from "../../services/IndividualTraineeService";
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Swal from 'sweetalert2';
+import * as courses from './../../services/CourseService';
+import AddReviewForm from '../AddReviewForm/AddReviewForm';
+import CourseReviews from '../CourseReviews/CourseReviews';
+import { useState } from 'react';
+import { registerToCourse as registerToCourseIndividual } from '../../services/IndividualTraineeService';
 import {
   registerToCourse as registerToCourseCorporate,
   requestAccessToCourse,
   reviewInstructorCorporate,
-} from "../../services/CorporateTraineeService";
+} from '../../services/CorporateTraineeService';
 
-import { getMyCourses } from "../../services/CourseService";
+import { getMyCourses } from '../../services/CourseService';
 
-import { getCourseReviews } from "../../services/CourseService";
+import { getCourseReviews } from '../../services/CourseService';
 
-import { reviewInstructorIndividual } from "../../services/IndividualTraineeService";
-import { useEffect } from "react";
+import { reviewInstructorIndividual } from '../../services/IndividualTraineeService';
+import { useEffect } from 'react';
+import { loadStripe } from '@stripe/stripe-js';
+
+let stripePromise;
+
+const getStripe = () => {
+  if (!stripePromise) {
+    stripePromise = loadStripe(
+      'pk_test_51MJgDSB83C7nM6cpUcvMU0emvlX5JWBD4ejCvUTgYSGjj49qdaDJSiSYv77yOMnK807yV7t0qMH7ZyQd18tF13BO00PUT2lVNv'
+    );
+  }
+
+  return stripePromise;
+};
 
 function CoursePreview({
   course,
@@ -39,13 +52,34 @@ function CoursePreview({
   guest,
 }) {
   const [rating, setRating] = useState(0);
-  const [review, setReview] = useState("");
+  const [review, setReview] = useState('');
   const [canEnroll, setCanEnroll] = useState(true);
 
+  const item = {
+    price: course.priceId,
+    quantity: 1,
+  };
+
+  const checkoutOptions = {
+    lineItems: [item],
+    mode: 'payment',
+    successUrl: `${window.location.origin}/enroll/${course._id}/${id}/${
+      type === 'individual' ? 1 : 0
+    }`,
+    cancelUrl: `${window.location.origin}/${type}`,
+  };
+
+  const redirectToCheckout = async () => {
+    console.log('redirectToCheckout');
+    const stripe = await getStripe();
+    const { err } = await stripe.redirectToCheckout(checkoutOptions);
+    console.log('stripe checkout error: ', err);
+  };
+
   useEffect(() => {
-    if (type !== "instructor" && id) {
+    if (type !== 'instructor' && id) {
       const checkEnrolled = async () => {
-        const myCourses = await getMyCourses(type === "corporate", id);
+        const myCourses = await getMyCourses(type === 'corporate', id);
         // console.log(myCourses.data)
         myCourses.data.forEach((registeration) => {
           // console.log(registeration)
@@ -60,24 +94,24 @@ function CoursePreview({
 
   const handleRegistration = async () => {
     Swal.fire({
-      title: "Are you sure you want to enroll in this course?",
-      icon: "question",
+      title: 'Are you sure you want to enroll in this course?',
+      icon: 'question',
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      cancelButtonText: "No",
-      confirmButtonText: "Yes!",
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      cancelButtonText: 'No',
+      confirmButtonText: 'Yes!',
     }).then(async (result) => {
       if (result.isConfirmed) {
         //ADD CONDITION TO CHECK WETHER TRAINEE IS INDIVIDUAL OR CORPORATE !!!
         try {
           let registration = null;
-          if (type === "individual") {
+          if (type === 'individual') {
             registration = await registerToCourseIndividual({
               individualTraineeId: id,
               courseId: course._id,
             });
-          } else if (type === "corporate") {
+          } else if (type === 'corporate') {
             registration = await registerToCourseCorporate({
               corporateTraineeId: id,
               courseId: course._id,
@@ -85,23 +119,23 @@ function CoursePreview({
           }
           if (registration.status === 200) {
             Swal.fire(
-              "Enrolled!!",
-              "You have succesfully enrolled in this course!",
-              "success"
+              'Enrolled!!',
+              'You have succesfully enrolled in this course!',
+              'success'
             );
             window.location.reload();
           } else {
             Swal.fire(
-              "An error has occured",
+              'An error has occured',
               "Couldn't enroll in course",
-              "error"
+              'error'
             );
           }
         } catch (error) {
           Swal.fire(
-            "An error has occured",
+            'An error has occured',
             "Couldn't enroll in course",
-            "error"
+            'error'
           );
         }
       }
@@ -113,8 +147,8 @@ function CoursePreview({
 
   //REPORT
 
-  const [reportBody, setReportBody] = useState("");
-  const [reportType, setReportType] = useState("");
+  const [reportBody, setReportBody] = useState('');
+  const [reportType, setReportType] = useState('');
   const [reportOpen, setReportOpen] = useState(false);
 
   const handleAddReport = async () => {
@@ -126,28 +160,28 @@ function CoursePreview({
       reportType: reportType,
       reportBody: reportBody,
     };
-    if (reportBody === "") {
+    if (reportBody === '') {
       Swal.fire(
-        "Bad Input!",
+        'Bad Input!',
         "Don't leave the body of the report blank.",
-        "warning"
+        'warning'
       );
     } else {
       const response = await courses.addReport(reportToBeAdded);
 
       if (response.status === 200) {
         Swal.fire(
-          "Report Submitted",
-          "Your report has been submitted successfuly!",
-          "success"
+          'Report Submitted',
+          'Your report has been submitted successfuly!',
+          'success'
         );
       } else {
-        Swal.fire("An error occurred", "Something went wrong...", "error");
+        Swal.fire('An error occurred', 'Something went wrong...', 'error');
       }
     }
   };
 
-  const [allReviews, setAllReviews] = useState("");
+  const [allReviews, setAllReviews] = useState('');
 
   const getReviews = async () => {
     const returnedReviews = await getCourseReviews({ courseId: course._id });
@@ -159,13 +193,13 @@ function CoursePreview({
     // console.log('reviewing Instructor');
     if (rating > 1) {
       try {
-        if (type === "individual") {
+        if (type === 'individual') {
           const addReview = await reviewInstructorIndividual({
             user: id,
             instructorId: instructorId,
             review: { rating: rating, review: review },
           });
-        } else if (type === "corporate") {
+        } else if (type === 'corporate') {
           const addReview = await reviewInstructorCorporate({
             user: id,
             instructorId: instructorId,
@@ -173,15 +207,15 @@ function CoursePreview({
           });
         }
         Swal.fire(
-          "Submitted!",
-          "Your review has been submitted successfully.",
-          "success"
+          'Submitted!',
+          'Your review has been submitted successfully.',
+          'success'
         );
       } catch (error) {
-        Swal.fire("Error", "an error has occured!", "error");
+        Swal.fire('Error', 'an error has occured!', 'error');
       }
     } else {
-      Swal.fire("Bad input!", "please don't leave any blanks", "warning");
+      Swal.fire('Bad input!', "please don't leave any blanks", 'warning');
     }
   };
 
@@ -189,8 +223,8 @@ function CoursePreview({
     const corporateTraineeId = id;
     const courseId = course;
 
-    console.log("CORPT : " + corporateTraineeId);
-    console.log("course: " + courseId);
+    console.log('CORPT : ' + corporateTraineeId);
+    console.log('course: ' + courseId);
     const functionCall = await requestAccessToCourse({
       corporateTraineeId: corporateTraineeId,
       courseId: courseId,
@@ -198,12 +232,12 @@ function CoursePreview({
 
     if (functionCall.status == 200) {
       Swal.fire(
-        "Your request has been submitted!",
-        "Our adminstators will look into you request..",
-        "success"
+        'Your request has been submitted!',
+        'Our adminstators will look into you request..',
+        'success'
       );
     } else {
-      Swal.fire("Error", "Something went wrong!", "erro");
+      Swal.fire('Error', 'Something went wrong!', 'erro');
     }
   };
 
@@ -221,11 +255,11 @@ function CoursePreview({
   // };
   const sampleData = [
     {
-      username: "omaar",
+      username: 'omaar',
       rating: 5,
-      review: "Easiest course I have had in a while. Would recommend",
+      review: 'Easiest course I have had in a while. Would recommend',
     },
-    { username: "coolio123", rating: 3, review: "Not bad :)" },
+    { username: 'coolio123', rating: 3, review: 'Not bad :)' },
   ];
   // console.log(course);
   return (
@@ -253,7 +287,7 @@ function CoursePreview({
                   new Date().getTime() && <s>{course.price} </s>}
               &nbsp;
               {course?.price === 0
-                ? "FREE"
+                ? 'FREE'
                 : course.currentDiscount &&
                   new Date(course.currentDiscount?.expiryDate) >
                     new Date().getTime()
@@ -263,7 +297,7 @@ function CoursePreview({
                     exRate
                   ).toFixed(2)
                 : (course?.price * exRate).toFixed(2)}
-              {" " + currency}
+              {' ' + currency}
             </h4>
           </div>
         </div>
@@ -272,16 +306,16 @@ function CoursePreview({
             <iframe
               width="800"
               height="500"
-              style={{ borderRadius: "10px" }}
+              style={{ borderRadius: '10px' }}
               src={
-                course.videoURL || "https://www.youtube.com/embed/mON4wycpawk"
+                course.videoURL || 'https://www.youtube.com/embed/mON4wycpawk'
               }
               title="YouTube video player"
               frameBorder="2px"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
-              srcDoc={"<p>Loading preview...</p>"}
-              onLoad={(e) => e.currentTarget.removeAttribute("srcdoc")}
+              srcDoc={'<p>Loading preview...</p>'}
+              onLoad={(e) => e.currentTarget.removeAttribute('srcdoc')}
             />
           </div>
           <div className="col-4">
@@ -292,14 +326,16 @@ function CoursePreview({
                   <button
                     className="btn btn-outline-primary mb-3 mx-auto"
                     data-bs-toggle="modal"
-                    data-bs-target={"#i" + instructor._id}
+                    data-bs-target={'#i' + instructor._id}
                   >
                     {/* {console.log(instructor)} */}
-                    {instructor.firstName + " " + instructor.lastName}
+                    {instructor.firstName
+                      ? instructor.firstName + ' ' + instructor.lastName
+                      : instructor.username}
                   </button>
                   <div
                     class="modal fade"
-                    id={"i" + instructor._id}
+                    id={'i' + instructor._id}
                     data-bs-backdrop="false"
                     data-bs-keyboard="false"
                     tabindex="-1"
@@ -310,7 +346,9 @@ function CoursePreview({
                       <div class="modal-content">
                         <div class="modal-header">
                           <h3 class="modal-title" id="staticBackdropLabel">
-                            {instructor.firstName + " " + instructor.lastName}
+                            {instructor.firstName
+                              ? instructor.firstName + ' ' + instructor.lastName
+                              : instructor.username}
                           </h3>
                           <button
                             type="button"
@@ -325,10 +363,10 @@ function CoursePreview({
                               <img
                                 src="https://img.huffingtonpost.com/asset/5bae32aa240000500054d79b.jpeg?ops=scalefit_720_noupscale"
                                 style={{
-                                  width: "90%",
-                                  height: "90%",
-                                  margin: "auto",
-                                  objectFit: "cover",
+                                  width: '90%',
+                                  height: '90%',
+                                  margin: 'auto',
+                                  objectFit: 'cover',
                                 }}
                               />
                             </div>
@@ -337,14 +375,14 @@ function CoursePreview({
 
                               <div
                                 className="row-6 ml-5"
-                                style={{ display: "flex", flexWrap: "nowrap" }}
+                                style={{ display: 'flex', flexWrap: 'nowrap' }}
                               >
                                 {[...Array(instructor.rating)].map((star) => (
                                   <>
                                     <h3>
                                       <FontAwesomeIcon
                                         icon={faStar}
-                                        style={{ color: "#FFD700" }}
+                                        style={{ color: '#FFD700' }}
                                       />
                                     </h3>
                                     &nbsp;
@@ -359,7 +397,7 @@ function CoursePreview({
                               <h3>Biography: </h3>
 
                               <p>{instructor.overview}</p>
-                              {type !== "instructor" && !guest && (
+                              {type !== 'instructor' && !guest && (
                                 <div class="accordion-item">
                                   <h2 class="accordion-header" id="headingOne">
                                     <button
@@ -384,7 +422,7 @@ function CoursePreview({
                                       <div className="row">
                                         <div
                                           className="col-6 mb-3"
-                                          style={{ margin: "auto" }}
+                                          style={{ margin: 'auto' }}
                                         >
                                           <div className="star-rating">
                                             {[...Array(5)].map(
@@ -395,8 +433,8 @@ function CoursePreview({
                                                     key={index + 1}
                                                     className={
                                                       index + 1 <= rating
-                                                        ? "on"
-                                                        : "off"
+                                                        ? 'on'
+                                                        : 'off'
                                                     }
                                                     onClick={() =>
                                                       setRating(index + 1)
@@ -485,15 +523,15 @@ function CoursePreview({
                         class="accordion-button"
                         type="button"
                         data-bs-toggle="collapse"
-                        data-bs-target={"#a" + subtitle._id}
+                        data-bs-target={'#a' + subtitle._id}
                       >
                         <h4>
-                          {subtitle.name}{" "}
-                          {subtitle.hours && "- " + subtitle.hours + " Hours"}
+                          {subtitle.name}{' '}
+                          {subtitle.hours && '- ' + subtitle.hours + ' Hours'}
                         </h4>
                       </button>
                       <div
-                        id={"a" + subtitle._id}
+                        id={'a' + subtitle._id}
                         class="accordion-collapse collapse "
                         data-bs-parent="#subtitleacc"
                       >
@@ -530,15 +568,16 @@ function CoursePreview({
               {/* {insert report button here if type is instructor and if instructor teaches this course} */}
 
               {canEnroll &&
-                type !== "instructor" &&
-                type == "individual" &&
+                type !== 'instructor' &&
+                type == 'individual' &&
                 !guest && (
                   <>
                     <button
                       type="button"
                       class="btn btn-md btn-primary ml-2 mt-2"
                       // onClick={() => handleRegistration()}
-                      onClick={() => setCreditCardOpen(true)}
+                      // onClick={() => setCreditCardOpen(true)}
+                      onClick={() => redirectToCheckout()}
                     >
                       <span className="content">
                         <FontAwesomeIcon icon={faPlus} className="icon" />
@@ -550,9 +589,9 @@ function CoursePreview({
                       onRequestClose={() => setCreditCardOpen(false)}
                       style={{
                         content: {
-                          width: "100vh",
-                          height: "70vh",
-                          margin: "auto",
+                          width: '100vh',
+                          height: '70vh',
+                          margin: 'auto',
                         },
                       }}
                     >
@@ -613,7 +652,7 @@ function CoursePreview({
                           </div>
                         </div>
 
-                        <h6 style={{ color: "red", fontStyle: "" }}>
+                        <h6 style={{ color: 'red', fontStyle: '' }}>
                           Warning: The price of the course will be deducted from
                           you credit card when pressing "Confirm Payment". Are
                           you sure you want to proceed?
@@ -636,8 +675,8 @@ function CoursePreview({
                 )}
               {canEnroll &&
                 !guest &&
-                type !== "instructor" &&
-                type == "corporate" && (
+                type !== 'instructor' &&
+                type == 'corporate' && (
                   <>
                     <button
                       type="button"
@@ -669,9 +708,9 @@ function CoursePreview({
                     }}
                     style={{
                       content: {
-                        margin: "auto",
-                        width: "60vw",
-                        height: "40vw",
+                        margin: 'auto',
+                        width: '60vw',
+                        height: '40vw',
                       },
                     }}
                   >
@@ -688,7 +727,7 @@ function CoursePreview({
                             id="inlineRadio1"
                             value="option1"
                             onClick={() => {
-                              setReportType("Technical");
+                              setReportType('Technical');
                             }}
                           />
                           <label class="form-check-label" for="inlineRadio1">
@@ -703,7 +742,7 @@ function CoursePreview({
                             id="inlineRadio2"
                             value="option2"
                             onClick={() => {
-                              setReportType("Financial");
+                              setReportType('Financial');
                             }}
                           />
                           <label class="form-check-label" for="inlineRadio2">
@@ -718,7 +757,7 @@ function CoursePreview({
                             id="inlineRadio3"
                             value="option3"
                             onClick={() => {
-                              setReportType("Other");
+                              setReportType('Other');
                             }}
                           />
                           <label class="form-check-label" for="inlineRadio3">
@@ -754,7 +793,7 @@ function CoursePreview({
                   </ReactModal>
                 </div>
               )}
-              {!canEnroll && type !== "instructor" && !guest && (
+              {!canEnroll && type !== 'instructor' && !guest && (
                 <>
                   <button
                     type="button"

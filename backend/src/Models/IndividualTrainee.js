@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const schema = mongoose.Schema;
-const Course = require('./Course');
 
 const IndividualTraineeSchema = new schema(
   {
@@ -25,18 +24,10 @@ const IndividualTraineeSchema = new schema(
         course: { type: schema.Types.ObjectId, ref: 'Course' },
         submissions: [{ type: schema.Types.ObjectId, ref: 'Submission' }],
         progress: { type: Number },
-        seen: { type: Object },
-        paid: {type: Number}
+        seen: { type: Object, default: {} },
+        paid: { type: Number },
       },
     ],
-
-    refundRequests: [
-      {
-        course: { type: schema.Types.ObjectId, ref: 'Course' },
-        requestedAt: { type: Date },
-      },
-    ],
-
     wallet: {
       type: Number,
       default: 0,
@@ -62,6 +53,3 @@ const IndividualTraineeSchema = new schema(
 );
 
 module.exports = mongoose.model('IndividualTrainee', IndividualTraineeSchema);
-
-//BIGGIE ID
-// 63a2eb4d7dcc2cec5b085060

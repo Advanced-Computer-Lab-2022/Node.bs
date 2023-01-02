@@ -1,26 +1,26 @@
-import React from "react";
-import { useParams } from "react-router-dom";
-import { useState } from "react";
-import * as courses from "./../../../services/CourseService";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faDoorOpen, faFlag } from "@fortawesome/free-solid-svg-icons";
-import { useEffect } from "react";
-import ReactLoading from "react-loading";
-import ReactModal from "react-modal";
-import "./ViewCourse.scss";
-import alert from "sweetalert2";
+import React from 'react';
+import { useParams } from 'react-router-dom';
+import { useState } from 'react';
+import * as courses from './../../../services/CourseService';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck, faDoorOpen, faFlag } from '@fortawesome/free-solid-svg-icons';
+import { useEffect } from 'react';
+import ReactLoading from 'react-loading';
+import ReactModal from 'react-modal';
+import './ViewCourse.scss';
+import alert from 'sweetalert2';
 import {
   getTrainee as getIndividualTrainee,
   requestRefund,
-} from "../../../services/IndividualTraineeService";
+} from '../../../services/IndividualTraineeService';
 import {
   getTrainee as getCorporateTrainee,
   markResourceAsSeen as markResourceSeenCorporate,
-} from "../../../services/CorporateTraineeService";
-import { markResourceAsSeen as markResourceSeenIndividual } from "../../../services/IndividualTraineeService";
-import jsPDF from "jspdf";
-import { useRef } from "react";
-import { sendCertificate } from "../../../services/AdminService";
+} from '../../../services/CorporateTraineeService';
+import { markResourceAsSeen as markResourceSeenIndividual } from '../../../services/IndividualTraineeService';
+import jsPDF from 'jspdf';
+import { useRef } from 'react';
+import { sendCertificate } from '../../../services/AdminService';
 const ViewCourse = () => {
   const { id, registeredCourseId, corporate } = useParams();
   const [loading, setLoading] = useState(false);
@@ -46,8 +46,8 @@ const ViewCourse = () => {
   };
   //REPORT
   const [reportOpen, setReportOpen] = useState(false);
-  const [reportType, setReportType] = useState("");
-  const [reportBody, setReportBody] = useState("");
+  const [reportType, setReportType] = useState('');
+  const [reportBody, setReportBody] = useState('');
 
   const checkCanTakeTest = (lesson) => {
     for (let submission in registeredCourse.submissions) {
@@ -68,7 +68,7 @@ const ViewCourse = () => {
     let complete = true;
     let grade = 0;
     let answers = viewedLesson.test.exercises.map((exercise) => {
-      let options = document.getElementsByName("answer" + exercise._id);
+      let options = document.getElementsByName('answer' + exercise._id);
       for (let i in options) {
         if (options[i].checked) {
           if (options[i].value === exercise.answer) {
@@ -98,16 +98,16 @@ const ViewCourse = () => {
     if (complete) {
       try {
         const response = await courses.submitTest(
-          corporate === "1" ? true : false,
+          corporate === '1' ? true : false,
           submission,
           id,
           course._id
         );
         if (response.status === 200) {
           alert.fire(
-            "Test submitted successfully",
-            "Congratulations! ",
-            "success"
+            'Test submitted successfully',
+            'Congratulations! ',
+            'success'
           );
         }
         setShowTest(false);
@@ -116,10 +116,10 @@ const ViewCourse = () => {
           window.location.reload();
         }, 3000);
       } catch (error) {
-        alert.fire("An error has occured", "try again later", "error");
+        alert.fire('An error has occured', 'try again later', 'error');
       }
     } else {
-      alert.fire("Bad input!", "Please answer all questions", "warning");
+      alert.fire('Bad input!', 'Please answer all questions', 'warning');
     }
   };
 
@@ -135,23 +135,23 @@ const ViewCourse = () => {
       reportType: reportType,
       reportBody: reportBody,
     };
-    if (reportBody === "") {
+    if (reportBody === '') {
       alert.fire(
-        "Bad Input!",
+        'Bad Input!',
         "Don't leave the body of the report blank.",
-        "warning"
+        'warning'
       );
     } else {
       const response = await courses.addReport(reportToBeAdded);
 
       if (response.status === 200) {
         alert.fire(
-          "Report Submitted",
-          "Your report has been submitted successfuly!",
-          "success"
+          'Report Submitted',
+          'Your report has been submitted successfuly!',
+          'success'
         );
       } else {
-        alert.fire("An error occurred", "Something went wrong...", "error");
+        alert.fire('An error occurred', 'Something went wrong...', 'error');
       }
     }
   };
@@ -159,7 +159,7 @@ const ViewCourse = () => {
     setLoading(true);
     try {
       const response = await courses.getMyCourses(
-        corporate === "1" ? true : false,
+        corporate === '1' ? true : false,
         id
       );
 
@@ -181,7 +181,7 @@ const ViewCourse = () => {
       let tempProgress = 0;
 
       Object.values(registeredCourse.seen).forEach((seen) =>
-        seen ? tempProgress++ : console.log("samo3leko")
+        seen ? tempProgress++ : console.log('samo3leko')
       );
       setProgress(tempProgress / Object.values(registeredCourse.seen).length);
     }
@@ -201,27 +201,27 @@ const ViewCourse = () => {
     // const courseId = "63a60dd0adbc47b995d31829";
     // console.log("hardcoded")
 
-    console.log("id -> " + individualTraineeId);
-    console.log("course -> " + courseId);
+    console.log('id -> ' + individualTraineeId);
+    console.log('course -> ' + courseId);
     const query = await requestRefund({
       individualTraineeId: individualTraineeId,
       courseId: courseId,
     });
     if (query.status == 200) {
       alert.fire(
-        "Success",
-        "You have successfully requested a refund",
-        "success"
+        'Success',
+        'You have successfully requested a refund',
+        'success'
       );
     } else {
-      alert.fire("Error", "error");
+      alert.fire('Error', 'error');
     }
   };
 
   ///////////////////MARK RESOURCE AS SEEN & PROGRESS///////////////////////
   const [progress, setProgress] = useState(0);
   const handleMarkResourceAsSeen = async (resourceId) => {
-    if (corporate == "1") {
+    if (corporate == '1') {
       //corporate
       const corporateUpdate = await markResourceSeenCorporate(
         resourceId,
@@ -229,7 +229,7 @@ const ViewCourse = () => {
         course._id
       );
       if (corporateUpdate) {
-        console.log("Corporate Resources updated");
+        console.log('Corporate Resources updated');
       }
     } else {
       //individual
@@ -239,23 +239,23 @@ const ViewCourse = () => {
         course._id
       );
       if (individualUpdate) {
-        console.log("Individual Resources updated");
+        console.log('Individual Resources updated');
       }
     }
   };
   /////////////////////////NOTES/////////////////////
-  const [notes, setNotes] = useState("");
+  const [notes, setNotes] = useState('');
   const notesRef = useRef(null);
   const handleGenerateNotesPdf = () => {
     const doc = new jsPDF({
-      orientation: "p",
-      format: "a3",
-      unit: "px",
+      orientation: 'p',
+      format: 'a3',
+      unit: 'px',
     });
 
     doc.html(notesRef.current, {
       async callback(doc) {
-        await doc.save("My Notes");
+        await doc.save('My Notes');
       },
     });
   };
@@ -264,24 +264,24 @@ const ViewCourse = () => {
   const [openCertificate, setOpenCertificate] = useState(false);
 
   var today = new Date();
-  var dd = String(today.getDate()).padStart(2, "0");
-  var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+  var dd = String(today.getDate()).padStart(2, '0');
+  var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
   var yyyy = today.getFullYear();
 
-  today = dd + "/" + mm + "/" + yyyy;
+  today = dd + '/' + mm + '/' + yyyy;
 
   const certificateRef = useRef(null);
 
   const handleCertificatePdf = () => {
     const doc = new jsPDF({
-      orientation: "landscape",
-      format: "a1",
-      unit: "px",
+      orientation: 'landscape',
+      format: 'a1',
+      unit: 'px',
     });
 
     doc.html(certificateRef.current, {
       async callback(doc) {
-        await doc.save("My Certificate");
+        await doc.save('My Certificate');
       },
     });
   };
@@ -322,19 +322,19 @@ const ViewCourse = () => {
                       class="accordion-button"
                       type="button"
                       data-bs-toggle="collapse"
-                      data-bs-target={"#a" + subtitle._id}
+                      data-bs-target={'#a' + subtitle._id}
                       onClick={() => {
                         setViewedSubtitle(subtitle);
                         setViewedLesson(null);
                       }}
                     >
                       <h4>
-                        {subtitle.name}{" "}
-                        {subtitle.hours && "- " + subtitle.hours + " Hours"}
+                        {subtitle.name}{' '}
+                        {subtitle.hours && '- ' + subtitle.hours + ' Hours'}
                       </h4>
                     </button>
                     <div
-                      id={"a" + subtitle._id}
+                      id={'a' + subtitle._id}
                       class="accordion-collapse collapse "
                       data-bs-parent="#subtitleacc"
                     >
@@ -379,9 +379,9 @@ const ViewCourse = () => {
                 }}
                 style={{
                   content: {
-                    margin: "auto",
-                    width: "60vw",
-                    height: "40vw",
+                    margin: 'auto',
+                    width: '60vw',
+                    height: '40vw',
                   },
                 }}
               >
@@ -398,7 +398,7 @@ const ViewCourse = () => {
                         id="inlineRadio1"
                         value="option1"
                         onClick={() => {
-                          setReportType("Technical");
+                          setReportType('Technical');
                         }}
                       />
                       <label class="form-check-label" for="inlineRadio1">
@@ -413,7 +413,7 @@ const ViewCourse = () => {
                         id="inlineRadio2"
                         value="option2"
                         onClick={() => {
-                          setReportType("Financial");
+                          setReportType('Financial');
                         }}
                       />
                       <label class="form-check-label" for="inlineRadio2">
@@ -428,7 +428,7 @@ const ViewCourse = () => {
                         id="inlineRadio3"
                         value="option3"
                         onClick={() => {
-                          setReportType("Other");
+                          setReportType('Other');
                         }}
                       />
                       <label class="form-check-label" for="inlineRadio3">
@@ -476,17 +476,17 @@ const ViewCourse = () => {
           </div>
           <div className="col-8">
             <h3 className="text-start">
-              {course.title + " "}{" "}
+              {course.title + ' '}{' '}
               <div class="progress m-2">
                 <div
                   class="progress-bar"
                   role="progressbar"
-                  style={{ width: progress * 1000, fontSize: "9px" }}
+                  style={{ width: progress * 1000, fontSize: '9px' }}
                   aria-valuenow={progress * 100}
                   aria-valuemin="0"
                   aria-valuemax="100"
                 >
-                  {(progress * 100).toFixed(0) + "%"}
+                  {(progress * 100).toFixed(0) + '%'}
                 </div>
               </div>
               {progress === 1 && (
@@ -510,7 +510,7 @@ const ViewCourse = () => {
                         <div className="row">
                           <div
                             className="container m-3"
-                            style={{ border: "solid 5px #D3D3D3" }}
+                            style={{ border: 'solid 5px #D3D3D3' }}
                             ref={certificateRef}
                           >
                             <div className="row m-3">
@@ -533,18 +533,18 @@ const ViewCourse = () => {
                                   </svg>
                                   CourseIndoors
                                 </h1>
-                                <p style={{ color: "darkgray" }}>{today}</p>
+                                <p style={{ color: 'darkgray' }}>{today}</p>
                                 <h2>
                                   {individualTrainee?.firstName +
-                                    " " +
+                                    ' ' +
                                     individualTrainee?.lastName}
-                                  {corporateTrainee?.firstName}{" "}
+                                  {corporateTrainee?.firstName}{' '}
                                   {corporateTrainee?.lastName}
                                 </h2>
-                                <p style={{ color: "darkgray" }}>
+                                <p style={{ color: 'darkgray' }}>
                                   has successfully completed the course
                                 </p>
-                                <h3 style={{ fontStyle: "italic" }}>
+                                <h3 style={{ fontStyle: 'italic' }}>
                                   {course.title}
                                 </h3>
                               </div>
@@ -553,13 +553,13 @@ const ViewCourse = () => {
                                   className="container"
                                   style={{
                                     // borderRadius: "50%",
-                                    border: "solid black 5px",
-                                    width: "100%",
-                                    padding: "auto",
+                                    border: 'solid black 5px',
+                                    width: '100%',
+                                    padding: 'auto',
                                   }}
                                 >
                                   <h1
-                                    style={{ fontFamily: "", margin: "auto" }}
+                                    style={{ fontFamily: '', margin: 'auto' }}
                                   >
                                     CERTIFICATE <br />
                                     {/* <span style={{ marginLeft: "35%" }}> */}
@@ -573,16 +573,16 @@ const ViewCourse = () => {
                             </div>
                             <div
                               className="row mt-5"
-                              style={{ color: "darkgray" }}
+                              style={{ color: 'darkgray' }}
                             >
                               <div className="col-8">
                                 <h3>Signatures of Instructor(s)</h3>
                                 {course.instructors.map((instructor) => (
-                                  <h6 style={{ color: "black" }}>
+                                  <h6 style={{ color: 'black' }}>
                                     {instructor.firstName +
-                                      " " +
+                                      ' ' +
                                       instructor.lastName}
-                                    {", "}
+                                    {', '}
                                   </h6>
                                 ))}
                               </div>
@@ -604,10 +604,10 @@ const ViewCourse = () => {
                                 course.title,
                                 individualTrainee
                                   ? individualTrainee.firstName +
-                                      " " +
+                                      ' ' +
                                       individualTrainee.lastName
                                   : corporateTrainee?.firstName +
-                                      " " +
+                                      ' ' +
                                       corporateTrainee?.lastName,
                                 course.instructors,
                                 individualTrainee
@@ -645,17 +645,17 @@ const ViewCourse = () => {
                   <iframe
                     width="800"
                     height="500"
-                    style={{ borderRadius: "10px" }}
+                    style={{ borderRadius: '10px' }}
                     src={
                       viewedSubtitle.videoURL ||
-                      "https://www.youtube.com/embed/mON4wycpawk"
+                      'https://www.youtube.com/embed/mON4wycpawk'
                     }
                     title="YouTube video player"
                     frameBorder="2px"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
-                    srcDoc={"<p>Loading preview...</p>"}
-                    onLoad={(e) => e.currentTarget.removeAttribute("srcdoc")}
+                    srcDoc={'<p>Loading preview...</p>'}
+                    onLoad={(e) => e.currentTarget.removeAttribute('srcdoc')}
                   />
                   <p>{viewedSubtitle.description}</p>
                   <div className="row">
@@ -674,8 +674,8 @@ const ViewCourse = () => {
                       <div
                         className="container"
                         style={{
-                          wordBreak: "break-word",
-                          wordSpacing: "1.5px",
+                          wordBreak: 'break-word',
+                          wordSpacing: '1.5px',
                           // maxWidth: "70%",
                           // fontSize: "13px",
                           // margin: "auto",
@@ -704,19 +704,19 @@ const ViewCourse = () => {
                   <h5>Lesson - {viewedLesson.name}</h5>
                   {console.log(viewedLesson)}
                   {viewedLesson.learningResources.map((resource) => {
-                    if (resource.type === "video") {
+                    if (resource.type === 'video') {
                       return (
                         <div
                           onClick={() => handleMarkResourceAsSeen(resource._id)}
                         >
                           <h6>
-                            {resource.title}{" "}
+                            {resource.title}{' '}
                             <FontAwesomeIcon
                               style={{
-                                color: "green",
+                                color: 'green',
                                 display: registeredCourse.seen[resource._id]
-                                  ? "inline"
-                                  : "none",
+                                  ? 'inline'
+                                  : 'none',
                               }}
                               icon={faCheck}
                             />
@@ -725,18 +725,18 @@ const ViewCourse = () => {
                           <iframe
                             width="800"
                             height="500"
-                            style={{ borderRadius: "10px" }}
+                            style={{ borderRadius: '10px' }}
                             src={
                               resource.URL ||
-                              "https://www.youtube.com/embed/mON4wycpawk"
+                              'https://www.youtube.com/embed/mON4wycpawk'
                             }
                             title="YouTube video player"
                             frameBorder="2px"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowFullScreen
-                            srcDoc={"<p>Loading preview...</p>"}
+                            srcDoc={'<p>Loading preview...</p>'}
                             onLoad={(e) =>
-                              e.currentTarget.removeAttribute("srcdoc")
+                              e.currentTarget.removeAttribute('srcdoc')
                             }
                           />
                         </div>
@@ -747,13 +747,13 @@ const ViewCourse = () => {
                           onClick={() => handleMarkResourceAsSeen(resource._id)}
                         >
                           <h6>
-                            {resource.title}{" "}
+                            {resource.title}{' '}
                             <FontAwesomeIcon
                               style={{
-                                color: "green",
+                                color: 'green',
                                 display: registeredCourse.seen[resource._id]
-                                  ? "inline"
-                                  : "none",
+                                  ? 'inline'
+                                  : 'none',
                               }}
                               icon={faCheck}
                             />
@@ -785,64 +785,64 @@ const ViewCourse = () => {
                                       color:
                                         finishedSubmission.answers[
                                           exerciseIndex
-                                        ] === "A"
+                                        ] === 'A'
                                           ? finishedSubmission.answers[
                                               exerciseIndex
                                             ] === exercise.answer
-                                            ? "green"
-                                            : "red"
-                                          : "#545454",
+                                            ? 'green'
+                                            : 'red'
+                                          : '#545454',
                                     }}
                                   >
-                                    A: {exercise.options["A"]}
+                                    A: {exercise.options['A']}
                                   </li>
                                   <li
                                     style={{
                                       color:
                                         finishedSubmission.answers[
                                           exerciseIndex
-                                        ] === "B"
+                                        ] === 'B'
                                           ? finishedSubmission.answers[
                                               exerciseIndex
                                             ] === exercise.answer
-                                            ? "green"
-                                            : "red"
-                                          : "#545454",
+                                            ? 'green'
+                                            : 'red'
+                                          : '#545454',
                                     }}
                                   >
-                                    B: {exercise.options["B"]}
+                                    B: {exercise.options['B']}
                                   </li>
                                   <li
                                     style={{
                                       color:
                                         finishedSubmission.answers[
                                           exerciseIndex
-                                        ] === "C"
+                                        ] === 'C'
                                           ? finishedSubmission.answers[
                                               exerciseIndex
                                             ] === exercise.answer
-                                            ? "green"
-                                            : "red"
-                                          : "#545454",
+                                            ? 'green'
+                                            : 'red'
+                                          : '#545454',
                                     }}
                                   >
-                                    C: {exercise.options["C"]}
+                                    C: {exercise.options['C']}
                                   </li>
                                   <li
                                     style={{
                                       color:
                                         finishedSubmission.answers[
                                           exerciseIndex
-                                        ] === "D"
+                                        ] === 'D'
                                           ? finishedSubmission.answers[
                                               exerciseIndex
                                             ] === exercise.answer
-                                            ? "green"
-                                            : "red"
-                                          : "#545454",
+                                            ? 'green'
+                                            : 'red'
+                                          : '#545454',
                                     }}
                                   >
-                                    D: {exercise.options["D"]}
+                                    D: {exercise.options['D']}
                                   </li>
                                 </ul>
                                 <li>
@@ -872,9 +872,9 @@ const ViewCourse = () => {
                       <ReactModal
                         style={{
                           content: {
-                            width: "28vw",
-                            height: "45vh",
-                            margin: "auto",
+                            width: '28vw',
+                            height: '45vh',
+                            margin: 'auto',
                           },
                         }}
                         isOpen={showTest}
@@ -891,8 +891,8 @@ const ViewCourse = () => {
 
                                 <input
                                   type="radio"
-                                  name={"answer" + exercise._id}
-                                  id={"exercise" + exercise._id}
+                                  name={'answer' + exercise._id}
+                                  id={'exercise' + exercise._id}
                                   value="A"
                                 />
                                 <label htmlFor="">
@@ -901,8 +901,8 @@ const ViewCourse = () => {
                                 <br />
                                 <input
                                   type="radio"
-                                  name={"answer" + exercise._id}
-                                  id={"exercise" + exercise._id}
+                                  name={'answer' + exercise._id}
+                                  id={'exercise' + exercise._id}
                                   value="B"
                                 />
                                 <label htmlFor="">
@@ -911,8 +911,8 @@ const ViewCourse = () => {
                                 <br />
                                 <input
                                   type="radio"
-                                  name={"answer" + exercise._id}
-                                  id={"exercise" + exercise._id}
+                                  name={'answer' + exercise._id}
+                                  id={'exercise' + exercise._id}
                                   value="C"
                                 />
                                 <label htmlFor="">
@@ -921,8 +921,8 @@ const ViewCourse = () => {
                                 <br />
                                 <input
                                   type="radio"
-                                  name={"answer" + exercise._id}
-                                  id={"exercise" + exercise._id}
+                                  name={'answer' + exercise._id}
+                                  id={'exercise' + exercise._id}
                                   value="D"
                                 />
                                 <label htmlFor="">

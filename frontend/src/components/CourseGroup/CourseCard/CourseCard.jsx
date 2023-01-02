@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import "./CourseCard.scss";
 import AvatarGrouping from "../../util/AvatarGroup/AvatarGroup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,6 +9,21 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import CoursePreview from "../../CoursePreview/CoursePreview";
 import { incrementViews } from "../../../services/CourseService";
+=======
+import './CourseCard.scss';
+import AvatarGrouping from '../../util/AvatarGroup/AvatarGroup';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { useSelector } from 'react-redux';
+import Rating from 'react-star-rating-lite';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import CoursePreview from '../../CoursePreview/CoursePreview';
+<<<<<<< Updated upstream
+=======
+import { incrementViews } from '../../../services/CourseService';
+>>>>>>> Stashed changes
+>>>>>>> old-state
 
 const CourseCard = ({ course, editable, accessCourse, type, id, guest }) => {
   const userInfo = useSelector((state) => state.user);
@@ -82,9 +98,21 @@ const CourseCard = ({ course, editable, accessCourse, type, id, guest }) => {
           {userInfo.type !== "corporate" ? (
             <div className="col-7 text-end p-0">
               <p id="currency">
+<<<<<<< HEAD
                 {course?.price === 0
                   ? "FREE"
                   : course?.currentDiscount &&
+=======
+<<<<<<< Updated upstream
+                {course.price === 0
+                  ? 'FREE'
+                  : course.currentDiscount &&
+=======
+                {course?.price === 0
+                  ? 'FREE'
+                  : course?.currentDiscount &&
+>>>>>>> Stashed changes
+>>>>>>> old-state
                     new Date(course.currentDiscount?.expiryDate) >
                       new Date().getTime()
                   ? (
@@ -92,15 +120,32 @@ const CourseCard = ({ course, editable, accessCourse, type, id, guest }) => {
                       (1 - course?.currentDiscount?.percentage) *
                       exRate
                     ).toFixed(2)
+<<<<<<< HEAD
                   : (course?.price * exRate).toFixed(2)}
                 {" " + currency}
+=======
+<<<<<<< Updated upstream
+                  : (course.price * exRate).toFixed(2)}
+=======
+                  : (course?.price * exRate).toFixed(2)}
+>>>>>>> Stashed changes
+                {' ' + currency}
+>>>>>>> old-state
               </p>
             </div>
           ) : (
             <></>
           )}
           <div className="col-12 text-center">
+<<<<<<< HEAD
             <Rating readonly value={course?.rating} weight={"22"} />
+=======
+<<<<<<< Updated upstream
+            <Rating readonly value={course.rating} weight={'22'} />
+=======
+            <Rating readonly value={course?.rating} weight={'22'} />
+>>>>>>> Stashed changes
+>>>>>>> old-state
           </div>
         </div>
         {/* <br /> */}
@@ -136,7 +181,14 @@ const CourseCard = ({ course, editable, accessCourse, type, id, guest }) => {
         editable={editable}
         type={type}
         id={id}
+<<<<<<< HEAD
         guest = {guest}
+=======
+<<<<<<< Updated upstream
+=======
+        guest={guest}
+>>>>>>> Stashed changes
+>>>>>>> old-state
       />
     </div>
   );

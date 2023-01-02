@@ -2,7 +2,6 @@ const Admin = require('../Models/Adminstrator');
 const Instructor = require('../Models/Instructor');
 const CorporateTrainee = require('../Models/CorporateTrainee');
 const IndividualTrainee = require('../Models/IndividualTrainee');
-const { sendEmail } = require('./../NodeMailer/main');
 const bcrypt = require('bcrypt');
 const { sendEmail, sendCertificateInEmail } = require('./../NodeMailer/main');
 const Report = require('../Models/Report');

@@ -5,6 +5,7 @@ const Report = require('../Models/Report');
 const Exercise = require('../Models/Exercise');
 const mongoose = require('mongoose');
 const Test = require('../Models/Test');
+const bcrypt = require('bcrypt');
 
 const createTest = async (req, res) => {
   // const instructorId = req.body.instructorId;
@@ -182,6 +183,35 @@ const getMoneyOwedPerMonth = async (req, res) => {
   }
 };
 
+const updateOverview = async (req, res) => {
+  const updateOverview = await Instructor.findOneAndUpdate(
+    { _id: req.body.instructorId },
+    { overview: req.body.overview }
+  );
+  if (updateOverview) {
+    return res.status(200).json(updateOverview);
+  } else {
+    res.status(400).json('Something went wrong');
+  }
+};
+
+const updatePassword = async (req, res) => {
+  try {
+    const updatePassword = await Instructor.findOneAndUpdate(
+      { _id: req.body.instructorId },
+      { password: await bcrypt.hash(req.body.password, 10) }
+    );
+    return res.status(200).json(updatePassword);
+  } catch (e) {
+    res.status(400).json('an error has occurred');
+    console.log(e);
+  }
+  // if (updatePassword) {
+  //   return res.status(200).json(updatePassword);
+  // } else {
+  //   res.status(400).json('an error has occurred');
+  // }
+};
 module.exports = {
   getReviews,
   createTest,
@@ -191,6 +221,8 @@ module.exports = {
   getInstructorById,
   getInstructorReportsIssued,
   getMoneyOwedPerMonth,
+  updateOverview,
+  updatePassword,
 };
 
 // Rami Younes ID

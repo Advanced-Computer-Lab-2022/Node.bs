@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 // import { useState } from 'react';
 import alert from 'sweetalert2';
+import { updatePassword as updatePasswordInstructor } from '../../services/InstructorService';
 const PasswordForm = ({ id, type }) => {
   // const [formOldPassword, setFormOldPassword] = useState('');
   // const [newPassword, setNewPassword] = useState('');
@@ -29,8 +30,21 @@ const PasswordForm = ({ id, type }) => {
     }
   };
 
+  const handleUpdatePassword = async () => {
+    const updatePassword = await updatePasswordInstructor({
+      id: id,
+      password: passwordRef.current.value,
+    });
+
+    if (updatePassword.status == 200) {
+      alert.fire('Success', '', 'success');
+    } else {
+      alert.fire('An error has occurred', '', 'error');
+    }
+  };
+
   return (
-    <form className="passwordForm" onSubmit={handleFormSubmit}>
+    <>
       <h1> Update Password</h1>
       {/* <label htmlFor="input">Old Password: </label>
       <input
@@ -49,8 +63,13 @@ const PasswordForm = ({ id, type }) => {
         // value={newPassword}
         placeholder="New Password"
       />
-      <button className="btn btn-outline-primary">Change Password</button>
-    </form>
+      <button
+        className="btn btn-outline-primary"
+        onClick={() => handleUpdatePassword()}
+      >
+        Change Password
+      </button>
+    </>
   );
 };
 
