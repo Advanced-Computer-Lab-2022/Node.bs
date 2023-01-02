@@ -24,6 +24,11 @@ const IndividualTraineeSchema = new schema(
         course: { type: schema.Types.ObjectId, ref: 'Course' },
         submissions: [{ type: schema.Types.ObjectId, ref: 'Submission' }],
         progress: { type: Number },
+<<<<<<< Updated upstream
+=======
+        seen: { type: Object, default: {} },
+        paid: { type: Number },
+>>>>>>> Stashed changes
       },
     ],
     wallet: {

@@ -16,6 +16,21 @@ import SignUp from '../SignUp/SignUp';
 import SignIn from '../SignIn/SignIn';
 
 import RequireAuth from '../RequireAuth/RequireAuth';
+<<<<<<< Updated upstream
+=======
+
+// import { BrowserRouter, Route, Routes, useParams } from 'react-router-dom';
+// import Dashboard from './../../components/Dashboard/Dashboard';
+// import Sidebar from './../../components/Sidebar/Sidebar';
+import './Homepage.scss';
+// import Trainee from '../Trainee/Trainee';
+// import PasswordForm from '../../components/PasswordForm/PasswordForm';
+// import PasswordReset from '../../components/PasswordReset/PasswordReset';
+import LandingPage from '../../components/LandingPage/LandingPage';
+import Guest from '../../components/Guest/Guest';
+import Enrollin from '../../components/Enrollin/Enrollin';
+
+>>>>>>> Stashed changes
 const Homepage = () => {
   // const { auth, updateAuth } = useContext(AuthContext);
 
@@ -23,6 +38,13 @@ const Homepage = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/signin" element={<SignIn />} />
+<<<<<<< Updated upstream
+=======
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/guest/*" element={<Guest />} />
+        <Route path="/change-password/:id/:type" element={<PasswordReset />} />
+        <Route path="/enroll/:cid/:id/:type" element={<Enrollin />} />
+>>>>>>> Stashed changes
 
         <Route path="/signup" element={<SignUp />} />
 
@@ -64,6 +86,7 @@ const Homepage = () => {
         <Route element={<RequireAuth allowedTypes={['corporate']} />}>
           <Route path="/corporate/*" element={<Trainee corporate={true} />} />
         </Route>
+        <Route path="*" element={<h1>404 Page not found</h1>} />
       </Routes>
     </BrowserRouter>
   );

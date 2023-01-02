@@ -7,7 +7,23 @@ import ReactModal from 'react-modal';
 import OverviewForm from '../OverviewForm/OverviewForm';
 import PasswordForm from '../PasswordForm/PasswordForm';
 import { logOut } from '../../services/GuestService';
+import './../ProfileCard/ProfileCard.scss';
+import {
+  faMoneyBillTrendUp,
+  faWallet,
+} from '@fortawesome/free-solid-svg-icons';
 
+<<<<<<< Updated upstream
+=======
+import { getWalletAmount } from '../../services/IndividualTraineeService';
+import { useEffect } from 'react';
+import { getMoneyOwedPerMonth } from '../../services/InstructorService';
+const logOutHandler = async () => {
+  await logOut();
+  window.location.href = '/signin';
+};
+
+>>>>>>> Stashed changes
 function ProfileCard({ id, type }) {
   const [viewEditProfile, setViewEditProfile] = useState(false);
   const logOutHandler = async () => {

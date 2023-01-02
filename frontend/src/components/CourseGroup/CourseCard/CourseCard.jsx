@@ -7,6 +7,10 @@ import Rating from 'react-star-rating-lite';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import CoursePreview from '../../CoursePreview/CoursePreview';
+<<<<<<< Updated upstream
+=======
+import { incrementViews } from '../../../services/CourseService';
+>>>>>>> Stashed changes
 
 const CourseCard = ({ course, editable, accessCourse, type, id }) => {
   const userInfo = useSelector((state) => state.user);
@@ -76,9 +80,15 @@ const CourseCard = ({ course, editable, accessCourse, type, id }) => {
           {userInfo.type !== 'corporate' ? (
             <div className="col-7 text-end p-0">
               <p id="currency">
+<<<<<<< Updated upstream
                 {course.price === 0
                   ? 'FREE'
                   : course.currentDiscount &&
+=======
+                {course?.price === 0
+                  ? 'FREE'
+                  : course?.currentDiscount &&
+>>>>>>> Stashed changes
                     new Date(course.currentDiscount?.expiryDate) >
                       new Date().getTime()
                   ? (
@@ -86,7 +96,11 @@ const CourseCard = ({ course, editable, accessCourse, type, id }) => {
                       (1 - course?.currentDiscount?.percentage) *
                       exRate
                     ).toFixed(2)
+<<<<<<< Updated upstream
                   : (course.price * exRate).toFixed(2)}
+=======
+                  : (course?.price * exRate).toFixed(2)}
+>>>>>>> Stashed changes
                 {' ' + currency}
               </p>
             </div>
@@ -94,7 +108,11 @@ const CourseCard = ({ course, editable, accessCourse, type, id }) => {
             <></>
           )}
           <div className="col-12 text-center">
+<<<<<<< Updated upstream
             <Rating readonly value={course.rating} weight={'22'} />
+=======
+            <Rating readonly value={course?.rating} weight={'22'} />
+>>>>>>> Stashed changes
           </div>
         </div>
         {/* <br /> */}
@@ -126,6 +144,10 @@ const CourseCard = ({ course, editable, accessCourse, type, id }) => {
         editable={editable}
         type={type}
         id={id}
+<<<<<<< Updated upstream
+=======
+        guest={guest}
+>>>>>>> Stashed changes
       />
     </div>
   );

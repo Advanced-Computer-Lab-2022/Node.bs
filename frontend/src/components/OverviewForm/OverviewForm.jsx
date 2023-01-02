@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { useState } from 'react';
 import alert from 'sweetalert2';
+import { updateOverview } from '../../services/InstructorService';
 const OverviewForm = ({ id }) => {
   // const [newOverview, setNewOverview] = useState('');
   const overviewInput = useRef();
@@ -28,9 +29,24 @@ const OverviewForm = ({ id }) => {
     }
   };
 
+  const handleUpdateOverview = async () => {
+    const query = await updateOverview({
+      instructorId: id,
+      overview: overviewInput.current.value,
+    });
+    console.log('id: ' + id);
+    console.log('overview: ' + overviewInput.current.value);
+    if (query.status == 200) {
+      alert.fire('Overview updated successfully', '', 'success');
+    } else {
+      alert.fire('An error has occurred', '', 'error');
+    }
+  };
+
   return (
-    <form className="overviewForm" onSubmit={handleFormSubmit}>
-      <h1> Update Biography</h1>
+    // <form className="overviewForm">
+    <div>
+      <h1>Update Biography</h1>
       <label htmlFor="input">New Biography: </label>
       <input
         type="text"
@@ -40,8 +56,13 @@ const OverviewForm = ({ id }) => {
         // value={newOverview}
         placeholder="i teach maths.."
       />
-      <button className="btn btn-outline-primary">Save</button>
-    </form>
+      <button
+        className="btn btn-outline-primary"
+        onClick={() => handleUpdateOverview()}
+      >
+        Save
+      </button>
+    </div>
   );
 };
 

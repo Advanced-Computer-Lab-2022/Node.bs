@@ -10,6 +10,8 @@ const authMiddleware = (type) => {
     const token = req.cookies.jwt;
     const actualType = req.cookies.type;
     const refreshToken = req.cookies.refresh;
+    // console.log({ token, actualType, refreshToken });
+    // console.log(req);
 
     if (type && actualType && type === actualType) {
       // check json web token exists & is verified
@@ -18,17 +20,18 @@ const authMiddleware = (type) => {
           if (err) {
             // console.log('You are not logged in.');
             // res send status 401 you are not logged in
-
+            // console.log(decodedToken);
             jwt.verify(
               refreshToken,
               process.env.REFRESH_TOKEN_SECRET,
               (err, decodedRefreshToken) => {
                 if (err) {
-                  res.redirect('/unauthorized');
+                  // res.redirect('/unauthorized');
+                  console.log('refresh failed');
                   res.status(401).json({ message: 'You are not logged in.' });
                 } else {
-                  res.cookie('jwt', createToken(decodedToken.name));
-                  console.log(decodedRefreshToken);
+                  res.cookie('jwt', createToken(actualType));
+                  // console.log(decodedRefreshToken);
                   next();
                 }
               }
@@ -40,11 +43,13 @@ const authMiddleware = (type) => {
           }
         });
       } else {
-        res.redirect('/unauthorized');
+        // res.redirect('/unauthorized');
+        console.log('no token found aslan');
         res.status(401).json({ message: 'You are not logged in.' });
       }
     } else {
-      res.redirect('/unauthorized');
+      console.log('msh hetetak di ya basha');
+      // res.redirect('/unauthorized');
       res.status(401).json({ message: 'You are not logged in.' });
     }
   };

@@ -1,10 +1,22 @@
 import React from 'react';
 import './CoursePreview.scss';
 import ReactModal from 'react-modal';
+<<<<<<< Updated upstream
 import { faPencil, faPlus, faStar } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Swal from 'sweetalert2';
 
+=======
+import {
+  faPencil,
+  faPlus,
+  faStar,
+  faFlag,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Swal from 'sweetalert2';
+import * as courses from './../../services/CourseService';
+>>>>>>> Stashed changes
 import AddReviewForm from '../AddReviewForm/AddReviewForm';
 import CourseReviews from '../CourseReviews/CourseReviews';
 import { useState } from 'react';
@@ -20,6 +32,22 @@ import { getCourseReviews } from '../../services/CourseService';
 
 import { reviewInstructorIndividual } from '../../services/IndividualTraineeService';
 import { useEffect } from 'react';
+<<<<<<< Updated upstream
+=======
+import { loadStripe } from '@stripe/stripe-js';
+
+let stripePromise;
+
+const getStripe = () => {
+  if (!stripePromise) {
+    stripePromise = loadStripe(
+      'pk_test_51MJgDSB83C7nM6cpUcvMU0emvlX5JWBD4ejCvUTgYSGjj49qdaDJSiSYv77yOMnK807yV7t0qMH7ZyQd18tF13BO00PUT2lVNv'
+    );
+  }
+
+  return stripePromise;
+};
+>>>>>>> Stashed changes
 
 function CoursePreview({
   course,
@@ -35,11 +63,39 @@ function CoursePreview({
   const [review, setReview] = useState('');
   const [canEnroll, setCanEnroll] = useState(true);
 
+  const item = {
+    price: course.priceId,
+    quantity: 1,
+  };
+
+  const checkoutOptions = {
+    lineItems: [item],
+    mode: 'payment',
+    successUrl: `${window.location.origin}/enroll/${course._id}/${id}/${
+      type === 'individual' ? 1 : 0
+    }`,
+    cancelUrl: `${window.location.origin}/${type}`,
+  };
+
+  const redirectToCheckout = async () => {
+    console.log('redirectToCheckout');
+    const stripe = await getStripe();
+    const { err } = await stripe.redirectToCheckout(checkoutOptions);
+    console.log('stripe checkout error: ', err);
+  };
+
   useEffect(() => {
+<<<<<<< Updated upstream
     if (type !== 'instructor') {
       const checkEnrolled = async () => {
         const myCourses = await getMyCourses(type === 'corporate', id);
         console.log(myCourses.data);
+=======
+    if (type !== 'instructor' && id) {
+      const checkEnrolled = async () => {
+        const myCourses = await getMyCourses(type === 'corporate', id);
+        // console.log(myCourses.data)
+>>>>>>> Stashed changes
         myCourses.data.forEach((registeration) => {
           if (registeration.course._id === course._id) {
             setCanEnroll(false);
@@ -100,6 +156,48 @@ function CoursePreview({
     });
   };
 
+<<<<<<< Updated upstream
+=======
+  //CREDIT CARD
+  const [creditCardOpen, setCreditCardOpen] = useState(false);
+
+  //REPORT
+
+  const [reportBody, setReportBody] = useState('');
+  const [reportType, setReportType] = useState('');
+  const [reportOpen, setReportOpen] = useState(false);
+
+  const handleAddReport = async () => {
+    const instructorId = id;
+
+    const reportToBeAdded = {
+      instructorId: instructorId,
+      courseId: id,
+      reportType: reportType,
+      reportBody: reportBody,
+    };
+    if (reportBody === '') {
+      Swal.fire(
+        'Bad Input!',
+        "Don't leave the body of the report blank.",
+        'warning'
+      );
+    } else {
+      const response = await courses.addReport(reportToBeAdded);
+
+      if (response.status === 200) {
+        Swal.fire(
+          'Report Submitted',
+          'Your report has been submitted successfuly!',
+          'success'
+        );
+      } else {
+        Swal.fire('An error occurred', 'Something went wrong...', 'error');
+      }
+    }
+  };
+
+>>>>>>> Stashed changes
   const [allReviews, setAllReviews] = useState('');
 
   const getReviews = async () => {
@@ -135,6 +233,31 @@ function CoursePreview({
       }
     } else {
       Swal.fire('Bad input!', "please don't leave any blanks", 'warning');
+<<<<<<< Updated upstream
+=======
+    }
+  };
+
+  const handleRequestAccessToCourse = async (course) => {
+    const corporateTraineeId = id;
+    const courseId = course;
+
+    console.log('CORPT : ' + corporateTraineeId);
+    console.log('course: ' + courseId);
+    const functionCall = await requestAccessToCourse({
+      corporateTraineeId: corporateTraineeId,
+      courseId: courseId,
+    });
+
+    if (functionCall.status == 200) {
+      Swal.fire(
+        'Your request has been submitted!',
+        'Our adminstators will look into you request..',
+        'success'
+      );
+    } else {
+      Swal.fire('Error', 'Something went wrong!', 'erro');
+>>>>>>> Stashed changes
     }
   };
 
@@ -183,7 +306,11 @@ function CoursePreview({
                 new Date(course.currentDiscount?.expiryDate) >
                   new Date().getTime() && <s>{course.price} </s>}
               &nbsp;
+<<<<<<< Updated upstream
               {course.price === 0
+=======
+              {course?.price === 0
+>>>>>>> Stashed changes
                 ? 'FREE'
                 : course.currentDiscount &&
                   new Date(course.currentDiscount?.expiryDate) >
@@ -193,7 +320,11 @@ function CoursePreview({
                     (1 - course?.currentDiscount?.percentage) *
                     exRate
                   ).toFixed(2)
+<<<<<<< Updated upstream
                 : (course.price * exRate).toFixed(2)}
+=======
+                : (course?.price * exRate).toFixed(2)}
+>>>>>>> Stashed changes
               {' ' + currency}
             </h4>
           </div>
@@ -226,7 +357,13 @@ function CoursePreview({
                     data-bs-target={'#i' + instructor._id}
                   >
                     {/* {console.log(instructor)} */}
+<<<<<<< Updated upstream
                     {instructor.firstName + ' ' + instructor.lastName}
+=======
+                    {instructor.firstName
+                      ? instructor.firstName + ' ' + instructor.lastName
+                      : instructor.username}
+>>>>>>> Stashed changes
                   </button>
                   <div
                     class="modal fade"
@@ -241,7 +378,13 @@ function CoursePreview({
                       <div class="modal-content">
                         <div class="modal-header">
                           <h3 class="modal-title" id="staticBackdropLabel">
+<<<<<<< Updated upstream
                             {instructor.firstName + ' ' + instructor.lastName}
+=======
+                            {instructor.firstName
+                              ? instructor.firstName + ' ' + instructor.lastName
+                              : instructor.username}
+>>>>>>> Stashed changes
                           </h3>
                           <button
                             type="button"
@@ -290,7 +433,11 @@ function CoursePreview({
                               <h3>Biography: </h3>
 
                               <p>{instructor.overview}</p>
+<<<<<<< Updated upstream
                               {type !== 'instructor' && (
+=======
+                              {type !== 'instructor' && !guest && (
+>>>>>>> Stashed changes
                                 <div class="accordion-item">
                                   <h2 class="accordion-header" id="headingOne">
                                     <button
@@ -459,6 +606,7 @@ function CoursePreview({
               </button>
               <CourseReviews reviews={allReviews} />
 
+<<<<<<< Updated upstream
               {canEnroll && type !== 'instructor' && (
                 <button
                   type="button"
@@ -472,6 +620,235 @@ function CoursePreview({
                 </button>
               )}
               {!canEnroll && type !== 'instructor' && (
+=======
+              {canEnroll &&
+                type !== 'instructor' &&
+                type == 'individual' &&
+                !guest && (
+                  <>
+                    <button
+                      type="button"
+                      class="btn btn-md btn-primary ml-2 mt-2"
+                      // onClick={() => handleRegistration()}
+                      // onClick={() => setCreditCardOpen(true)}
+                      onClick={() => redirectToCheckout()}
+                    >
+                      <span className="content">
+                        <FontAwesomeIcon icon={faPlus} className="icon" />
+                        Enroll in Course?
+                      </span>
+                    </button>
+                    <ReactModal
+                      isOpen={creditCardOpen}
+                      onRequestClose={() => setCreditCardOpen(false)}
+                      style={{
+                        content: {
+                          width: '100vh',
+                          height: '70vh',
+                          margin: 'auto',
+                        },
+                      }}
+                    >
+                      <h1>Credit Card details:</h1>
+                      <hr />
+                      <form>
+                        <div class="row mb-4">
+                          <div class="col">
+                            <div class="form-outline">
+                              <label class="form-label" for="formNameOnCard">
+                                Name on card
+                              </label>
+                              <input
+                                type="text"
+                                id="formNameOnCard"
+                                class="form-control"
+                              />
+                            </div>
+                          </div>
+                          <div class="col">
+                            <div class="form-outline">
+                              <label class="form-label" for="formCardNumber">
+                                Credit card number
+                              </label>
+                              <input
+                                type="text"
+                                id="formCardNumber"
+                                class="form-control"
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="row mb-4">
+                          <div class="col-3">
+                            <div class="form-outline">
+                              <label class="form-label" for="formExpiration">
+                                Expiration
+                              </label>
+                              <input
+                                type="text"
+                                id="formExpiration"
+                                class="form-control"
+                              />
+                            </div>
+                          </div>
+                          <div class="col-3">
+                            <div class="form-outline">
+                              <label class="form-label" for="formCVV">
+                                CVV
+                              </label>
+                              <input
+                                type="text"
+                                id="formCVV"
+                                class="form-control"
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        <h6 style={{ color: 'red', fontStyle: '' }}>
+                          Warning: The price of the course will be deducted from
+                          you credit card when pressing "Confirm Payment". Are
+                          you sure you want to proceed?
+                        </h6>
+                        <div className="row">
+                          <div className="col-9"> </div>
+                          <div class="col-3">
+                            <button
+                              class="btn btn-outline-primary btn-md mt-5 ml-5"
+                              type="button"
+                              onClick={() => handleRegistration()}
+                            >
+                              Confirm Payment
+                            </button>
+                          </div>
+                        </div>
+                      </form>
+                    </ReactModal>
+                  </>
+                )}
+              {canEnroll &&
+                !guest &&
+                type !== 'instructor' &&
+                type == 'corporate' && (
+                  <>
+                    <button
+                      type="button"
+                      class="btn btn-md btn-primary ml-2 mt-2"
+                      onClick={() => handleRequestAccessToCourse(course._id)}
+                      // onClick={() => setCreditCardOpen(true)}
+                    >
+                      <span className="content">
+                        <FontAwesomeIcon icon={faPlus} className="icon" />
+                        Request acces to this course
+                      </span>
+                    </button>
+                  </>
+                )}
+              {!guest && (
+                <div className="row">
+                  <button
+                    className="btn btn-outline-danger btn-md mt-2"
+                    onClick={() => {
+                      setReportOpen(true);
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faFlag} /> Report
+                  </button>
+                  <ReactModal
+                    isOpen={reportOpen}
+                    onRequestClose={() => {
+                      setReportOpen(false);
+                    }}
+                    style={{
+                      content: {
+                        margin: 'auto',
+                        width: '60vw',
+                        height: '40vw',
+                      },
+                    }}
+                  >
+                    <div className="container">
+                      <h1>Report a problem</h1>
+                      <hr />
+                      <h3>Type of problem</h3>
+                      <div className="container mt-2">
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="inlineRadioOptions"
+                            id="inlineRadio1"
+                            value="option1"
+                            onClick={() => {
+                              setReportType('Technical');
+                            }}
+                          />
+                          <label class="form-check-label" for="inlineRadio1">
+                            Technical
+                          </label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="inlineRadioOptions"
+                            id="inlineRadio2"
+                            value="option2"
+                            onClick={() => {
+                              setReportType('Financial');
+                            }}
+                          />
+                          <label class="form-check-label" for="inlineRadio2">
+                            Financial
+                          </label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="inlineRadioOptions"
+                            id="inlineRadio3"
+                            value="option3"
+                            onClick={() => {
+                              setReportType('Other');
+                            }}
+                          />
+                          <label class="form-check-label" for="inlineRadio3">
+                            Other
+                          </label>
+                        </div>
+                      </div>
+                      <div className="container mt-5">
+                        <div class="mb-3">
+                          <label
+                            for="exampleFormControlTextarea1"
+                            class="form-label"
+                          >
+                            <h3>Explain your problem</h3>
+                          </label>
+                          <textarea
+                            class="form-control"
+                            id="exampleFormControlTextarea1"
+                            rows="9"
+                            onChange={(e) => setReportBody(e.target.value)}
+                          ></textarea>
+                        </div>
+                      </div>
+                      <div className="row mt-5 p-3">
+                        <button
+                          className="btn btn-outline-primary"
+                          onClick={() => handleAddReport()}
+                        >
+                          Submit Report
+                        </button>
+                      </div>
+                    </div>
+                  </ReactModal>
+                </div>
+              )}
+              {!canEnroll && type !== 'instructor' && !guest && (
+>>>>>>> Stashed changes
                 <>
                   <button
                     type="button"

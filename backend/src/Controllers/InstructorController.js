@@ -4,6 +4,7 @@ const Subtitle = require('../Models/Subtitle');
 const Exercise = require('../Models/Exercise');
 const mongoose = require('mongoose');
 const Test = require('../Models/Test');
+const bcrypt = require('bcrypt');
 
 const createTest = async (req, res) => {
   // const instructorId = req.body.instructorId;
@@ -143,6 +144,76 @@ const getInstructorById = async (req, res) => {
   }
 };
 
+<<<<<<< Updated upstream
+=======
+//////////////////////////REPORTS////////////////////////
+const getInstructorReportsIssued = async (req, res) => {
+  const instructorId = req.body.instructorId;
+  console.log('instructorId: ' + instructorId);
+
+  const returnedQuery = await Report.find({
+    instructor: instructorId,
+  });
+
+  if (returnedQuery) {
+    return res.status(200).json(returnedQuery);
+  } else {
+    res.status(400).json();
+  }
+};
+
+//////////////////////MONEY OWED/////////////////////
+const getMoneyOwedPerMonth = async (req, res) => {
+  const instructorId = req.body.instructorId;
+  const instructor = await Instructor.findOne({ _id: instructorId }).populate({
+    path: 'courses',
+  });
+
+  let totalRevenue = 0;
+  instructor?.courses.map((course) => {
+    totalRevenue += course.numberOfRegisteredTrainees * course.price * 0.9;
+  });
+
+  console.log('Total Revenue: ' + totalRevenue);
+  if (instructor) {
+    return res.status(200).json(totalRevenue);
+  } else {
+    res
+      .status(400)
+      .json('An error has occured, you may be in the IndividualTrainee page');
+  }
+};
+
+const updateOverview = async (req, res) => {
+  const updateOverview = await Instructor.findOneAndUpdate(
+    { _id: req.body.instructorId },
+    { overview: req.body.overview }
+  );
+  if (updateOverview) {
+    return res.status(200).json(updateOverview);
+  } else {
+    res.status(400).json('Something went wrong');
+  }
+};
+
+const updatePassword = async (req, res) => {
+  try {
+    const updatePassword = await Instructor.findOneAndUpdate(
+      { _id: req.body.instructorId },
+      { password: await bcrypt.hash(req.body.password, 10) }
+    );
+    return res.status(200).json(updatePassword);
+  } catch (e) {
+    res.status(400).json('an error has occurred');
+    console.log(e);
+  }
+  // if (updatePassword) {
+  //   return res.status(200).json(updatePassword);
+  // } else {
+  //   res.status(400).json('an error has occurred');
+  // }
+};
+>>>>>>> Stashed changes
 module.exports = {
   getReviews,
   createTest,
@@ -150,6 +221,13 @@ module.exports = {
   updateInstructorPassword,
   updateInstructorTerms,
   getInstructorById,
+<<<<<<< Updated upstream
+=======
+  getInstructorReportsIssued,
+  getMoneyOwedPerMonth,
+  updateOverview,
+  updatePassword,
+>>>>>>> Stashed changes
 };
 
 // Rami Younes ID
