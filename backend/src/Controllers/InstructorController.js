@@ -144,8 +144,6 @@ const getInstructorById = async (req, res) => {
   }
 };
 
-<<<<<<< Updated upstream
-=======
 //////////////////////////REPORTS////////////////////////
 const getInstructorReportsIssued = async (req, res) => {
   const instructorId = req.body.instructorId;
@@ -213,7 +211,6 @@ const updatePassword = async (req, res) => {
   //   res.status(400).json('an error has occurred');
   // }
 };
->>>>>>> Stashed changes
 module.exports = {
   getReviews,
   createTest,
@@ -221,13 +218,10 @@ module.exports = {
   updateInstructorPassword,
   updateInstructorTerms,
   getInstructorById,
-<<<<<<< Updated upstream
-=======
   getInstructorReportsIssued,
   getMoneyOwedPerMonth,
   updateOverview,
   updatePassword,
->>>>>>> Stashed changes
 };
 
 // Rami Younes ID

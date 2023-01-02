@@ -1,12 +1,6 @@
 import React from 'react';
 import './CoursePreview.scss';
 import ReactModal from 'react-modal';
-<<<<<<< Updated upstream
-import { faPencil, faPlus, faStar } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Swal from 'sweetalert2';
-
-=======
 import {
   faPencil,
   faPlus,
@@ -16,7 +10,6 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Swal from 'sweetalert2';
 import * as courses from './../../services/CourseService';
->>>>>>> Stashed changes
 import AddReviewForm from '../AddReviewForm/AddReviewForm';
 import CourseReviews from '../CourseReviews/CourseReviews';
 import { useState } from 'react';
@@ -32,8 +25,6 @@ import { getCourseReviews } from '../../services/CourseService';
 
 import { reviewInstructorIndividual } from '../../services/IndividualTraineeService';
 import { useEffect } from 'react';
-<<<<<<< Updated upstream
-=======
 import { loadStripe } from '@stripe/stripe-js';
 
 let stripePromise;
@@ -47,7 +38,6 @@ const getStripe = () => {
 
   return stripePromise;
 };
->>>>>>> Stashed changes
 
 function CoursePreview({
   course,
@@ -85,17 +75,10 @@ function CoursePreview({
   };
 
   useEffect(() => {
-<<<<<<< Updated upstream
-    if (type !== 'instructor') {
-      const checkEnrolled = async () => {
-        const myCourses = await getMyCourses(type === 'corporate', id);
-        console.log(myCourses.data);
-=======
     if (type !== 'instructor' && id) {
       const checkEnrolled = async () => {
         const myCourses = await getMyCourses(type === 'corporate', id);
         // console.log(myCourses.data)
->>>>>>> Stashed changes
         myCourses.data.forEach((registeration) => {
           if (registeration.course._id === course._id) {
             setCanEnroll(false);
@@ -156,8 +139,6 @@ function CoursePreview({
     });
   };
 
-<<<<<<< Updated upstream
-=======
   //CREDIT CARD
   const [creditCardOpen, setCreditCardOpen] = useState(false);
 
@@ -197,7 +178,6 @@ function CoursePreview({
     }
   };
 
->>>>>>> Stashed changes
   const [allReviews, setAllReviews] = useState('');
 
   const getReviews = async () => {
@@ -233,8 +213,6 @@ function CoursePreview({
       }
     } else {
       Swal.fire('Bad input!', "please don't leave any blanks", 'warning');
-<<<<<<< Updated upstream
-=======
     }
   };
 
@@ -257,7 +235,6 @@ function CoursePreview({
       );
     } else {
       Swal.fire('Error', 'Something went wrong!', 'erro');
->>>>>>> Stashed changes
     }
   };
 
@@ -306,11 +283,7 @@ function CoursePreview({
                 new Date(course.currentDiscount?.expiryDate) >
                   new Date().getTime() && <s>{course.price} </s>}
               &nbsp;
-<<<<<<< Updated upstream
-              {course.price === 0
-=======
               {course?.price === 0
->>>>>>> Stashed changes
                 ? 'FREE'
                 : course.currentDiscount &&
                   new Date(course.currentDiscount?.expiryDate) >
@@ -320,11 +293,7 @@ function CoursePreview({
                     (1 - course?.currentDiscount?.percentage) *
                     exRate
                   ).toFixed(2)
-<<<<<<< Updated upstream
-                : (course.price * exRate).toFixed(2)}
-=======
                 : (course?.price * exRate).toFixed(2)}
->>>>>>> Stashed changes
               {' ' + currency}
             </h4>
           </div>
@@ -357,13 +326,9 @@ function CoursePreview({
                     data-bs-target={'#i' + instructor._id}
                   >
                     {/* {console.log(instructor)} */}
-<<<<<<< Updated upstream
-                    {instructor.firstName + ' ' + instructor.lastName}
-=======
                     {instructor.firstName
                       ? instructor.firstName + ' ' + instructor.lastName
                       : instructor.username}
->>>>>>> Stashed changes
                   </button>
                   <div
                     class="modal fade"
@@ -378,13 +343,9 @@ function CoursePreview({
                       <div class="modal-content">
                         <div class="modal-header">
                           <h3 class="modal-title" id="staticBackdropLabel">
-<<<<<<< Updated upstream
-                            {instructor.firstName + ' ' + instructor.lastName}
-=======
                             {instructor.firstName
                               ? instructor.firstName + ' ' + instructor.lastName
                               : instructor.username}
->>>>>>> Stashed changes
                           </h3>
                           <button
                             type="button"
@@ -433,11 +394,7 @@ function CoursePreview({
                               <h3>Biography: </h3>
 
                               <p>{instructor.overview}</p>
-<<<<<<< Updated upstream
-                              {type !== 'instructor' && (
-=======
                               {type !== 'instructor' && !guest && (
->>>>>>> Stashed changes
                                 <div class="accordion-item">
                                   <h2 class="accordion-header" id="headingOne">
                                     <button
@@ -606,21 +563,6 @@ function CoursePreview({
               </button>
               <CourseReviews reviews={allReviews} />
 
-<<<<<<< Updated upstream
-              {canEnroll && type !== 'instructor' && (
-                <button
-                  type="button"
-                  class="btn btn-md btn-primary ml-2 mt-2"
-                  onClick={() => handleRegistration()}
-                >
-                  <span className="content">
-                    <FontAwesomeIcon icon={faPlus} className="icon" />
-                    Enroll in Course?
-                  </span>
-                </button>
-              )}
-              {!canEnroll && type !== 'instructor' && (
-=======
               {canEnroll &&
                 type !== 'instructor' &&
                 type == 'individual' &&
@@ -848,7 +790,6 @@ function CoursePreview({
                 </div>
               )}
               {!canEnroll && type !== 'instructor' && !guest && (
->>>>>>> Stashed changes
                 <>
                   <button
                     type="button"

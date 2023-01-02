@@ -3,19 +3,12 @@ import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 import * as courses from './../../../services/CourseService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-<<<<<<< Updated upstream
-import { faDoorOpen } from '@fortawesome/free-solid-svg-icons';
-=======
 import { faCheck, faDoorOpen, faFlag } from '@fortawesome/free-solid-svg-icons';
->>>>>>> Stashed changes
 import { useEffect } from 'react';
 import ReactLoading from 'react-loading';
 import ReactModal from 'react-modal';
 import './ViewCourse.scss';
 import alert from 'sweetalert2';
-<<<<<<< Updated upstream
-
-=======
 import {
   getTrainee as getIndividualTrainee,
   requestRefund,
@@ -28,7 +21,6 @@ import { markResourceAsSeen as markResourceSeenIndividual } from '../../../servi
 import jsPDF from 'jspdf';
 import { useRef } from 'react';
 import { sendCertificate } from '../../../services/AdminService';
->>>>>>> Stashed changes
 const ViewCourse = () => {
   const { id, registeredCourseId, corporate } = useParams();
   const [loading, setLoading] = useState(false);
@@ -39,8 +31,6 @@ const ViewCourse = () => {
   const [showTest, setShowTest] = useState(false);
   const [finishedSubmission, setFinishedSubmission] = useState(null);
   const [canTakeTest, setCanTakeTest] = useState(false);
-<<<<<<< Updated upstream
-=======
   const [individualTrainee, setIndividualTrainee] = useState(null);
   const [corporateTrainee, setCorporateTrainee] = useState(null);
 
@@ -58,7 +48,6 @@ const ViewCourse = () => {
   const [reportOpen, setReportOpen] = useState(false);
   const [reportType, setReportType] = useState('');
   const [reportBody, setReportBody] = useState('');
->>>>>>> Stashed changes
 
   const checkCanTakeTest = (lesson) => {
     for (let submission in registeredCourse.submissions) {
@@ -130,8 +119,6 @@ const ViewCourse = () => {
       }
     } else {
       alert.fire('Bad input!', 'Please answer all questions', 'warning');
-<<<<<<< Updated upstream
-=======
     }
   };
 
@@ -165,7 +152,6 @@ const ViewCourse = () => {
       } else {
         alert.fire('An error occurred', 'Something went wrong...', 'error');
       }
->>>>>>> Stashed changes
     }
   };
   const getMyCourses = async () => {
@@ -188,8 +174,6 @@ const ViewCourse = () => {
     getMyCourses();
   }, []);
 
-<<<<<<< Updated upstream
-=======
   useEffect(() => {
     if (registeredCourse) {
       let tempProgress = 0;
@@ -315,7 +299,6 @@ const ViewCourse = () => {
       date: date,
     });
   };
->>>>>>> Stashed changes
   return (
     <div className="container-fluid row main px-0 h-100 ">
       <div className="row">
@@ -378,11 +361,6 @@ const ViewCourse = () => {
                 );
               })}
             </div>
-<<<<<<< Updated upstream
-          </div>
-          <div className="col-8">
-            <h3 className="text-start">{course.title}</h3>
-=======
             <div className="row mt-3">
               <button
                 className="btn btn-outline-danger"
@@ -656,7 +634,6 @@ const ViewCourse = () => {
               )}
             </h3>
 
->>>>>>> Stashed changes
             <hr />
             {viewedSubtitle && (
               <div className="container-fluid">
@@ -679,8 +656,6 @@ const ViewCourse = () => {
                     onLoad={(e) => e.currentTarget.removeAttribute('srcdoc')}
                   />
                   <p>{viewedSubtitle.description}</p>
-<<<<<<< Updated upstream
-=======
                   <div className="row">
                     <div className="col-8">
                       <p>NOTES</p>
@@ -718,7 +693,6 @@ const ViewCourse = () => {
                       </button>
                     </div>
                   </div>
->>>>>>> Stashed changes
                 </div>
               </div>
             )}
@@ -730,10 +704,6 @@ const ViewCourse = () => {
                   {viewedLesson.learningResources.map((resource) => {
                     if (resource.type === 'video') {
                       return (
-<<<<<<< Updated upstream
-                        <div>
-                          <h6>{resource.title}</h6>
-=======
                         <div
                           onClick={() => handleMarkResourceAsSeen(resource._id)}
                         >
@@ -750,7 +720,6 @@ const ViewCourse = () => {
                             />
                           </h6>
 
->>>>>>> Stashed changes
                           <iframe
                             width="800"
                             height="500"
@@ -772,10 +741,6 @@ const ViewCourse = () => {
                       );
                     } else {
                       return (
-<<<<<<< Updated upstream
-                        <div>
-                          <h6>{resource.title}</h6>
-=======
                         <div
                           onClick={() => handleMarkResourceAsSeen(resource._id)}
                         >
@@ -791,7 +756,6 @@ const ViewCourse = () => {
                               icon={faCheck}
                             />
                           </h6>
->>>>>>> Stashed changes
                           <a className="lesson-hover" href={resource.URL}>
                             Read More!
                           </a>

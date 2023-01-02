@@ -75,11 +75,8 @@ const CourseSchema = new schema(
     releaseDate: {
       type: Date,
     },
-<<<<<<< Updated upstream
-=======
     reports: { type: schema.Types.ObjectId, ref: 'Report' },
     priceId: { type: String },
->>>>>>> Stashed changes
   },
   { timestamps: true }
 );
