@@ -16,7 +16,7 @@ import { signUp } from '../../services/GuestService';
 import alert from 'sweetalert2';
 import Modal from 'react-modal';
 import Loading from 'react-loading';
-
+import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 function Copyright(props) {
   return (
     <Typography
@@ -57,6 +57,7 @@ export default function SignUp() {
     acceptTerms: false,
   });
   const [showTerms, setShowTerms] = useState(false);
+  const [gender, setGender] = useState('Male');
 
   const onChange = (event) => {
     const newData = data;
@@ -133,6 +134,7 @@ export default function SignUp() {
             username,
             firstName,
             lastName,
+            gender,
           });
 
           if (response.status === 400) {
@@ -272,6 +274,20 @@ export default function SignUp() {
                     helperText={passwordValid}
                   />
                 </Grid>
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <InputLabel>Gender</InputLabel>
+                    <Select
+                      value={gender}
+                      // label="Register Number"
+                      onChange={(e) => setGender(e.target.value)}
+                    >
+                      <MenuItem value={'Male'}>Male</MenuItem>
+                      <MenuItem value={'Female'}>Female</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+
                 <Grid item xs={12}>
                   <FormControlLabel
                     control={

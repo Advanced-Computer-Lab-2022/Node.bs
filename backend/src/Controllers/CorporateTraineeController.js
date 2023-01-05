@@ -5,6 +5,7 @@ const Submission = require('./../Models/Submission');
 const LearningResource = require('./../Models/LearningResource');
 const Instructor = require('./../Models/Instructor');
 const Report = require('./../Models/Report');
+
 const reviewInstructorCorporate = async (req, res) => {
   const instructorId = req.body.instructorId;
 
@@ -22,9 +23,23 @@ const reviewInstructorCorporate = async (req, res) => {
 
   instructorOldReviews.push(newReviewFinalForm);
 
+  let newRating = 0;
+  instructorOldReviews.forEach((review) => {
+    newRating += review.rating;
+  });
+  instructorReturned.individualReviews.forEach((review) => {
+    newRating += review.rating;
+  });
+
+  newRating = Math.floor(
+    newRating /
+      (instructorOldReviews.length +
+        instructorReturned.individualReviews.length)
+  );
+
   const updatedInstrcutor = await Instructor.findByIdAndUpdate(
     { _id: instructorId },
-    { corporateReviews: instructorOldReviews }
+    { corporateReviews: instructorOldReviews, rating: newRating }
   );
 
   res.status(200).json(updatedInstrcutor);
@@ -59,10 +74,22 @@ const reviewCourseCorporate = async (req, res) => {
   const courseOldReviews = courseReturned.corporateReviews;
 
   courseOldReviews.push(newReviewFinalForm);
+  let newRating = 0;
+  courseOldReviews.forEach((review) => {
+    newRating += review.rating;
+  });
+  courseReturned.individualReviews.forEach((review) => {
+    newRating += review.rating;
+  });
+
+  newRating = Math.floor(
+    newRating /
+      (courseOldReviews.length + courseReturned.individualReviews.length)
+  );
 
   const updatedCourse = await Course.findByIdAndUpdate(
     { _id: courseId },
-    { corporateReviews: courseOldReviews }
+    { corporateReviews: courseOldReviews, rating: newRating }
   );
 
   res.status(200).json(updatedCourse);
@@ -85,6 +112,10 @@ const registerToCourse = async (req, res) => {
     { _id: corpoateTraineeId },
     { registeredCourses: coursesOfTrainee }
   );
+
+  await Course.findByIdAndUpdate(courseId, {
+    $inc: { numberOfRegisteredTrainees: 1 },
+  });
 
   return res.status(200).json(returnedQuery);
 };
@@ -302,5 +333,5 @@ module.exports = {
   getCorporateTraineeReportsIssued,
   requestAccessToCourse,
   markResourceAsSeen,
-  getTrainee
+  getTrainee,
 };

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import Searchbar from './../../Searchbar/Searchbar';
 import CourseGroup from './../../CourseGroup/CourseGroup';
 import ProfileCard from '../../ProfileCard/ProfileCard';
-import ProgressCard from '../../ProgressCard/ProgressCard';
 import Filter from '../../Filter/Filter';
 import { Routes, Route } from 'react-router-dom';
 import EditCourse from '../EditCourse/EditCourse';

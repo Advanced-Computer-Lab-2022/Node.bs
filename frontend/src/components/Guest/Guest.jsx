@@ -1,21 +1,24 @@
-import React from "react";
-import { useState } from "react";
-import * as courses from "./../../services/CourseService";
+import React from 'react';
+import { useState } from 'react';
+import * as courses from './../../services/CourseService';
 
-import { useEffect } from "react";
-import GuestDashboard from "../GuestDashboard/GuestDashboard";
-import CountryDropdown from "../util/CountryDropdown/CountryDropdown";
+import { useEffect } from 'react';
+import GuestDashboard from '../GuestDashboard/GuestDashboard';
+import CountryDropdown from '../util/CountryDropdown/CountryDropdown';
+import SidebarButton from '../Sidebar/SidebarButton/SidebarButton';
+import { faThumbsUp } from '@fortawesome/free-solid-svg-icons';
 
 const Guest = () => {
   const [viewedCourses, setViewedCourses] = useState([]);
-  const [viewTitle, setViewTitle] = useState("");
+  const [viewTitle, setViewTitle] = useState('');
   const [loading, setLoading] = useState(false);
   const [viewingEnrolled, setViewingEnrolled] = useState(false);
+  const [buttonPressed, setButtonPressed] = useState('');
 
   const getAllCourses = async (sortByPopularity) => {
     //get all courses
-    setViewingEnrolled(false);
-    setViewTitle("Course Catalog");
+
+    setViewTitle('Course Catalog');
     setViewedCourses([]);
     setLoading(true);
     try {
@@ -34,13 +37,18 @@ const Guest = () => {
     }
     setLoading(false);
   };
+  const popularCoursesButtonHandler = () => {
+    setButtonPressed('Popular');
+    getAllCourses(true);
+  };
+
   const filterCourses = async (rating, subjects, maxPrice, minPrice) => {
-    if (viewTitle === "Enrolled Courses") {
+    if (viewTitle === 'Enrolled Courses') {
       setViewingEnrolled(true);
     } else {
       setViewingEnrolled(false);
     }
-    setViewTitle("Filter Results");
+    setViewTitle('Filter Results');
     setLoading(true);
     setViewedCourses([]);
     try {
@@ -61,7 +69,7 @@ const Guest = () => {
     setLoading(false);
   };
   const searchCourses = async (body) => {
-    setViewTitle("Search Results");
+    setViewTitle('Search Results');
     setLoading(true);
     setViewedCourses([]);
     setViewingEnrolled(false);
@@ -92,11 +100,17 @@ const Guest = () => {
 
   return (
     <div>
-      {" "}
+      {' '}
       <div>
         <div className="container-fluid row main px-0" id="traineeMainPage">
           <div className="col-2">
-            {" "}
+            {' '}
+            <SidebarButton
+              icon={faThumbsUp}
+              label="Popular Courses"
+              primary={buttonPressed === 'Popular' ? true : false}
+              click={() => popularCoursesButtonHandler()}
+            />
             <CountryDropdown />
           </div>
           <div className="col-10">

@@ -275,7 +275,10 @@ const EditCourse = () => {
                           <div className="">
                             <p className="mx-2">{lesson.name}</p>
                             {!lesson.test && <AddTest lesson={lesson} />}
-                            <AddResource lesson={lesson} />
+                            <AddResource
+                              lesson={lesson}
+                              courseId={course._id}
+                            />
                             <hr />
                           </div>
                         );

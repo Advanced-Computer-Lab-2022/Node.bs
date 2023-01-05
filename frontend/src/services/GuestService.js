@@ -10,5 +10,7 @@ export const signIn = (userInfo) => {
 export const logOut = () => {
   sessionStorage.setItem('id', '');
   sessionStorage.setItem('type', '');
+  localStorage.setItem('id', '');
+  localStorage.setItem('type', '');
   return BaseAxios.post('/guest/logout');
 };

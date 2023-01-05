@@ -15,6 +15,9 @@ const IndividualTraineeSchema = new schema(
     username: {
       type: String,
     },
+    gender: {
+      type: String,
+    },
 
     password: {
       type: String,
@@ -46,6 +49,12 @@ const IndividualTraineeSchema = new schema(
     notebook: [
       {
         type: String,
+      },
+    ],
+    refundRequests: [
+      {
+        course: { type: schema.Types.ObjectId, ref: 'Course' },
+        requestedAt: { type: Date },
       },
     ],
   },

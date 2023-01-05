@@ -7,6 +7,8 @@ const mongoose = require('mongoose');
 const LearningResource = require('../Models/LearningResource');
 const Report = require('../Models/Report');
 const { findOne } = require('../Models/LearningResource');
+const Instructor = require('../Models/Instructor');
+const CorporateTrainee = require('../Models/CorporateTrainee');
 
 // //optimized with extra projection parameter to reduce response size
 // const oSearchCourses = async (req, res) => {
@@ -195,8 +197,14 @@ const createCourse = async (req, res) => {
       subtitles: subtitleIDArray,
       priceId: price.id,
     };
-    // console.log(course);
+
     const result = await Course.create(course);
+    const instructor = await Instructor.findById(course.instructors[0]);
+    let tmpCourses = instructor.courses;
+    tmpCourses.push(result._id);
+    await Instructor.findByIdAndUpdate(instructor._id, { courses: tmpCourses });
+    // console.log(course);
+
     res.status(203).json(result);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -273,15 +281,63 @@ const createResource = async (req, res) => {
   try {
     const lessonId = req.body.lessonId;
     const resource = req.body.resource;
+    const courseId = req.body.courseId;
     const createdResource = await LearningResource.create(resource);
     const lesson = await Lesson.findById(lessonId);
-    console.log(lesson);
     let updatedResources = lesson.learningResources;
     updatedResources.push(createdResource._id);
     const response = await Lesson.findByIdAndUpdate(lessonId, {
       learningResources: updatedResources,
     });
     if (response) {
+      // //update individuals
+      // const individuals = await IndividualTrainee.find({});
+
+      // for (let individual in individuals) {
+      //   // individuals.forEach((individual) => {
+
+      //   individuals[individual].registeredCourses.map(
+      //     async (registeredCourse, index) => {
+      //       if (registeredCourse.course === courseId) {
+      //         let tmpRegisteredCourses =
+      //           individuals[individual].registeredCourses;
+      //         tmpRegisteredCourses[index].seen[createdResource._id] = false;
+      //         console.log(tmpRegisteredCourses[index]);
+      //         await IndividualTrainee.findByIdAndUpdate(
+      //           individuals[individual]._id,
+      //           {
+      //             registeredCourses: tmpRegisteredCourses,
+      //           }
+      //         );
+      //       }
+      //     }
+      //   );
+      // }
+      // // });
+
+      // //update corporates
+
+      // const corporates = await CorporateTrainee.find({});
+
+      // for (let individual in corporates) {
+      //   corporates[individual].registeredCourses.map(
+      //     async (registeredCourse, index) => {
+      //       if (registeredCourse.course === courseId) {
+      //         let tmpRegisteredCourses =
+      //           corporates[individual].registeredCourses;
+      //         tmpRegisteredCourses[index].seen[createdResource._id] = false;
+      //         console.log(tmpRegisteredCourses[index]);
+      //         await CorporateTrainee.findByIdAndUpdate(
+      //           corporates[individual]._id,
+      //           {
+      //             registeredCourses: tmpRegisteredCourses,
+      //           }
+      //         );
+      //       }
+      //     }
+      //   );
+      // }
+
       res.status(200).json(response);
     } else [res.status(404).json({ message: 'no such lesson' })];
   } catch (error) {

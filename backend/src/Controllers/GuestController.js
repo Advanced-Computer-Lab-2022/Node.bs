@@ -17,7 +17,7 @@ const createToken = (name) => {
 const signup = async (req, res) => {
   try {
     // Extract the email and password from the request body
-    const { email, password, username, firstName, lastName } = req.body;
+    const { email, password, username, firstName, lastName, gender } = req.body;
 
     // Check if the email already exists in the database
     const emailSuspect = await IndividualTrainee.findOne({ email });
@@ -55,6 +55,7 @@ const signup = async (req, res) => {
       username,
       email,
       password: hashedPassword,
+      gender,
     });
 
     // Save the new user to the database
@@ -104,11 +105,11 @@ const signIn = async (req, res) => {
         const token = createToken(user.username);
 
         res.cookie('jwt', token, {
-          httpOnly: true,
+          httpOnly: false,
           maxAge: 24 * 60 * 60 * 1000,
         });
         res.cookie('refresh', refreshToken, {
-          httpOnly: true,
+          httpOnly: false,
           maxAge: maxAge * 2000,
         });
         res.status(200).json({ _id: user._id, type, token });
@@ -136,11 +137,11 @@ const signIn = async (req, res) => {
       const token = createToken(user.username);
 
       res.cookie('jwt', token, {
-        httpOnly: true,
+        httpOnly: false,
         maxAge: 24 * 60 * 60 * 1000,
       });
       res.cookie('refresh', refreshToken, {
-        httpOnly: true,
+        httpOnly: false,
         maxAge: maxAge * 2000,
       });
       res.status(200).json({ _id: user._id, type, token });

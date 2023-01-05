@@ -13,7 +13,7 @@ const Enrollin = () => {
           await indi({ individualTraineeId: id, courseId: cid });
           alert.fire('You have registered successfully!', '', 'success');
 
-          window.redirect('/individual');
+          window.location.href = '/individual';
         } catch (e) {
           console.log('ma3lesh');
         }
@@ -22,7 +22,7 @@ const Enrollin = () => {
           await corpo({ corporateTraineeId: id, courseId: cid });
           alert.fire('You have registered successfully!', '', 'success');
 
-          window.redirect('/corporate');
+          window.location.href = '/corporate';
         } catch (e) {
           console.log('ma3lesh');
         }

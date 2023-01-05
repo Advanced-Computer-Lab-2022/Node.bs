@@ -1,11 +1,12 @@
-import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash, faStar } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
-import ReactModal from "react-modal";
-import { addFollowupToReport } from "../../services/CourseService";
+import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash, faStar } from '@fortawesome/free-solid-svg-icons';
+import { useState } from 'react';
+import ReactModal from 'react-modal';
+import Swal from 'sweetalert2';
+import { addFollowupToReport } from '../../services/CourseService';
 const ReportsIssued = (reports) => {
-  const [followupBody, setFollowupBody] = useState("");
+  const [followupBody, setFollowupBody] = useState('');
 
   const handleAddFollowup = async (reportId) => {
     // console.log(reportId);
@@ -15,6 +16,10 @@ const ReportsIssued = (reports) => {
       reportId: reportId,
       followupBody: body,
     });
+
+    if (addFollowUpQuery.status === 200) {
+      Swal.fire('Followup added successfully', '', 'success');
+    }
   };
   return (
     <div
@@ -50,13 +55,13 @@ const ReportsIssued = (reports) => {
                       <p>{report.body}</p>
                     </div>
                     <div className="col-3">
-                      <div className="row mb-3">
+                      {/* <div className="row mb-3">
                         {!report.seen ? (
                           <FontAwesomeIcon icon={faEyeSlash} />
                         ) : (
                           <FontAwesomeIcon icon={faEye} />
                         )}
-                      </div>
+                      </div> */}
                       <div className="row">
                         <h6>Status: {report.status}</h6>
                       </div>
@@ -78,7 +83,7 @@ const ReportsIssued = (reports) => {
                               class="accordion-button collapsed mb-3"
                               type="button"
                               data-bs-toggle="collapse"
-                              data-bs-target={"#flush-collapseOne" + index}
+                              data-bs-target={'#flush-collapseOne' + index}
                               aria-expanded="false"
                               aria-controls="flush-collapseOne"
                             >
@@ -86,7 +91,7 @@ const ReportsIssued = (reports) => {
                             </button>
                           </h2>
                           <div
-                            id={"flush-collapseOne" + index}
+                            id={'flush-collapseOne' + index}
                             class="accordion-collapse collapse"
                             aria-labelledby="flush-headingOne"
                             data-bs-parent="#accordionFlushExample"
@@ -101,7 +106,7 @@ const ReportsIssued = (reports) => {
                                 </label>
                                 <textarea
                                   class="form-control"
-                                  id={"followUpTextArea" + index}
+                                  id={'followUpTextArea' + index}
                                   rows="2"
                                   onChange={(e) => {
                                     setFollowupBody(e.target.value);

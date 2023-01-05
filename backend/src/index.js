@@ -55,7 +55,7 @@ app.use((req, res, next) => {
 //Register API Routes , need to protect endpoints later
 app.use('/guest', guestRoutes);
 app.use('/course', courseRoutes);
-app.use('/admin', authMiddleware('admin'), adminRoutes);
+app.use('/admin', adminRoutes);
 app.use('/instructor', authMiddleware('instructor'), instructorRoutes);
 app.use('/individual', authMiddleware('individual'), individualTraineeRoutes);
 app.use('/corporate', authMiddleware('corporate'), corporateTraineeRoutes);

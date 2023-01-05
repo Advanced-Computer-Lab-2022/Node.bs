@@ -15,10 +15,10 @@ import {
   faPlusCircle,
   faMoneyBill1Wave,
   faMoneyBillTransfer,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import SidebarButton from "../../Sidebar/SidebarButton/SidebarButton";
-import AddForm from "../../AddForm/AddForm";
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import SidebarButton from '../../Sidebar/SidebarButton/SidebarButton';
+import AddForm from '../../AddForm/AddForm';
 import {
   createCorporateTrainee,
   createInstructor,
@@ -31,12 +31,12 @@ import {
   applyPromotionOnCourses,
   getRefundRequests,
   grantRefund,
-} from "../../../services/AdminService";
-import "./AdminSidebar.scss";
-import { useState } from "react";
-import Swal from "sweetalert2";
-import { getAllReports } from "./../../../services/CourseService";
-import ReactModal from "react-modal";
+} from '../../../services/AdminService';
+import './AdminSidebar.scss';
+import { useState } from 'react';
+import Swal from 'sweetalert2';
+import { getAllReports } from './../../../services/CourseService';
+import ReactModal from 'react-modal';
 const AdminSidebar = () => {
   const addInstructor = async (body) => {
     await createInstructor(body);
@@ -62,9 +62,9 @@ const AdminSidebar = () => {
       reportId: reportId,
     });
     if (reportToBeResolved) {
-      Swal.fire("Success", "Report has been markes as resolved", "success");
+      Swal.fire('Success', 'Report has been markes as resolved', 'success');
     } else {
-      Swal.fire("Error", "Something went wrong", "error");
+      Swal.fire('Error', 'Something went wrong', 'error');
     }
   };
   const handleMarkReportAsPending = async (reportId) => {
@@ -72,9 +72,9 @@ const AdminSidebar = () => {
       reportId: reportId,
     });
     if (reportToBeResolved) {
-      Swal.fire("Success", "Report has been markes as resolved", "success");
+      Swal.fire('Success', 'Report has been markes as resolved', 'success');
     } else {
-      Swal.fire("Error", "Something went wrong", "error");
+      Swal.fire('Error', 'Something went wrong', 'error');
     }
   };
 
@@ -95,20 +95,21 @@ const AdminSidebar = () => {
 
     if (callFunction.status == 200) {
       Swal.fire(
-        "Success",
-        "Course has been granted to corporate trainee",
-        "success"
+        'Success',
+        'Course has been granted to corporate trainee',
+        'success'
       );
     } else {
-      Swal.fire("An error has occurred", "Something went wrong", "error");
+      Swal.fire('An error has occurred', 'Something went wrong', 'error');
     }
   };
 
   ////////////////////PROMOTIONS////////////////////////
 
   const [openPromotion, setOpenPromotion] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const [courseSearchResult, setCourseSearchResult] = useState([]);
+  const [courseNames, setCourseNames] = useState([]);
   const handleSearchCourses = async () => {
     const result = await returnCoursesFromSearch({ query: searchQuery });
     setCourseSearchResult(result.data);
@@ -117,7 +118,7 @@ const AdminSidebar = () => {
 
   const [coursesToApplyPromotion, setCoursesToApplyPromotion] = useState([]);
   const [promotion, setPromotion] = useState(0.0);
-  const [promotionDate, setPromotionDate] = useState("12/12/2030");
+  const [promotionDate, setPromotionDate] = useState('12/12/2030');
 
   const handleApplyPromotion = async () => {
     const apply = await applyPromotionOnCourses({
@@ -127,12 +128,12 @@ const AdminSidebar = () => {
     });
     if (apply) {
       Swal.fire(
-        "Promotion Applied",
-        "Promotion has been applied on courses in list",
-        "success"
+        'Promotion Applied',
+        'Promotion has been applied on courses in list',
+        'success'
       );
     } else {
-      Swal.fire("Error occurred", "Something went wrong", "error");
+      Swal.fire('Error occurred', 'Something went wrong', 'error');
     }
   };
 
@@ -155,13 +156,12 @@ const AdminSidebar = () => {
       courseId: courseId,
     });
     if (query.status === 200) {
-      Swal.fire("Success", "Trainee has been refunded", "success");
+      Swal.fire('Success', 'Trainee has been refunded', 'success');
     } else {
-      Swal.fire("Error", "", "error");
+      Swal.fire('Error', '', 'error');
     }
   };
 
- 
   return (
     <div class="container-fluid sidebar-container">
       <div class="logo">
@@ -226,18 +226,15 @@ const AdminSidebar = () => {
                 </h3>
 
                 <h3>
-                  {report.individualTrainee?.firstName}{" "}
+                  {report.individualTrainee?.firstName}{' '}
                   {report.individualTrainee?.lastName}
                 </h3>
 
-                <h3>
-                  {report.corporateTrainee?.firstName}{" "}
-                  {report.corporateTrainee?.lastName}
-                </h3>
+                <h3>{report.corporateTrainee?.username} </h3>
               </div>
               {/* <div className="col-4"> </div> */}
               <div className="col-6">
-                <h6 style={{ fontStyle: "bold" }}>
+                <h6 style={{ fontStyle: 'bold' }}>
                   Report Status: {report.status}
                 </h6>
                 <button
@@ -245,7 +242,7 @@ const AdminSidebar = () => {
                   onClick={() => handleMarkReportAsResolved(report._id)}
                 >
                   Mark as Resolved
-                </button>{" "}
+                </button>{' '}
                 <button
                   className="btn btn-outline-secondary"
                   onClick={() => handleMarkReportAsPending(report._id)}
@@ -253,21 +250,21 @@ const AdminSidebar = () => {
                   Mark as Pending
                 </button>
               </div>
-              {!report.seen ? (
+              {/* {!report.seen ? (
                 <>
                   <FontAwesomeIcon
                     icon={faEyeSlash}
-                    style={{ marginLeft: "15%", textAlign: "right" }}
+                    style={{ marginLeft: '15%', textAlign: 'right' }}
                   />
                 </>
               ) : (
                 <></>
-              )}
+              )} */}
 
               <br />
               <h5>Report concerning the course: {report?.course?.title}</h5>
               <p>Type: {report.type}</p>
-              <p style={{ fontStyle: "italic", color: "black" }}>
+              <p style={{ fontStyle: 'italic', color: 'black' }}>
                 {report.body}
               </p>
               <div className="container m-3">
@@ -277,9 +274,9 @@ const AdminSidebar = () => {
                     <h6> @ {followup?.dateAdded}</h6>
                     <h6
                       style={{
-                        paddingLeft: "2%",
-                        fontStyle: "italic",
-                        color: "#5A5A5A.",
+                        paddingLeft: '2%',
+                        fontStyle: 'italic',
+                        color: '#5A5A5A.',
                       }}
                     >
                       {followup?.followupBody}
@@ -314,14 +311,14 @@ const AdminSidebar = () => {
               CT.requestedCourses.length > 0 && (
                 <div className="row">
                   <h3>username: {CT.username}</h3>
-                  <p style={{ fontStyle: "italic" }}>
-                    pending requests to courses:{" "}
+                  <p style={{ fontStyle: 'italic' }}>
+                    pending requests to courses:{' '}
                   </p>
 
                   {CT.requestedCourses.map((requestedCourse) => (
                     <div className="row m-3">
                       <div className="col-8">
-                        <h4 style={{ fontStyle: "italic" }}>
+                        <h4 style={{ fontStyle: 'italic' }}>
                           {requestedCourse.title}
                         </h4>
                       </div>
@@ -362,7 +359,7 @@ const AdminSidebar = () => {
           <hr />
           <div className="row">
             <div className="col-8">
-              {" "}
+              {' '}
               <input
                 placeholder="Promotion percentage"
                 type="number"
@@ -392,19 +389,26 @@ const AdminSidebar = () => {
                 }}
               />
             </div>
+            <div className="col-12" style={{ maxHeight: 200 }}>
+              {courseNames.map((course) => (
+                <div className="col-2">
+                  <h3>{course}</h3>
+                </div>
+              ))}
+            </div>
             <hr />
           </div>
           {courseSearchResult.map((course) => (
             <div className="row m-2">
               <div className="col-4">
-                {" "}
+                {' '}
                 <h3>{course.title}</h3>
               </div>
               <div className="col-5"></div>
               <div className="col-3">
                 <button
                   className="btn btn-outline-success m-2"
-                  style={{ border: "none" }}
+                  style={{ border: 'none' }}
                   onClick={() => {
                     {
                       !coursesToApplyPromotion.includes(course._id) &&
@@ -412,18 +416,20 @@ const AdminSidebar = () => {
                           ...coursesToApplyPromotion,
                           course._id,
                         ]);
+                      !coursesToApplyPromotion.includes(course._id) &&
+                        setCourseNames([...courseNames, course.title]);
                       Swal.fire(
-                        "Added Course!",
-                        "Course has been added to the promotion list",
-                        "success"
+                        'Added Course!',
+                        'Course has been added to the promotion list',
+                        'success'
                       );
                     }
                     {
                       coursesToApplyPromotion.includes(course._id) &&
                         Swal.fire(
-                          "Course Included",
-                          "Course already included in promotion list",
-                          "info"
+                          'Course Included',
+                          'Course already included in promotion list',
+                          'info'
                         );
                     }
                     console.log(coursesToApplyPromotion);
@@ -464,17 +470,17 @@ const AdminSidebar = () => {
           {traineesRequesting.map((trainee) => (
             <div className="row">
               <div className="">
-                <h3> {trainee.firstName + " " + trainee.lastName}</h3>
+                <h3> {trainee.firstName + ' ' + trainee.lastName}</h3>
                 <div className="row m-2">
                   {trainee.refundRequests.map((request) => (
                     <>
                       <div className="col-10">
                         <h6>
-                          On the course: {request.course?.title}{" "}
+                          On the course: {request.course?.title}{' '}
                           {console.log(request)}
                         </h6>
                         <h6>@ {request.requestedAt}</h6>
-                        <h6 style={{ color: "green", fontWeight: "bolder" }}>
+                        <h6 style={{ color: 'green', fontWeight: 'bolder' }}>
                           refund value: {request.course?.price}
                         </h6>
                       </div>

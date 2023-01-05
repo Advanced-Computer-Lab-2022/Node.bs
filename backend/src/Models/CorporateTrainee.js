@@ -8,6 +8,7 @@ const CorporateTraineeSchema = new schema(
     },
     email: {
       type: String,
+      default: 'okmelouk@gmail.com',
     },
     firstName: {
       type: String,

@@ -103,10 +103,7 @@ const sendCertificate = async (req, res) => {
 
   const doc = new PDFDocument();
   const certificateName = 'certificate.pdf';
-  const certificatePath = path.join(
-    '/Users/omarmelouk/Trashy',
-    certificateName
-  );
+  const certificatePath = path.join('/Users/mezmez/desktop', certificateName);
 
   var filepath = await doc.pipe(fs.createWriteStream(certificatePath));
   doc.pipe(res);
@@ -117,9 +114,7 @@ const sendCertificate = async (req, res) => {
   doc.fontSize(20).text(courseName, 100, 210);
   doc.fontSize(20).text('Signature(s) of Instructor(s)', 100, 260);
   doc.fontSize(20).text(
-    instructors.map(
-      (instructor) => instructor.firstName + ' ' + instructor.lastName + ', '
-    ),
+    instructors.map((instructor) => instructor.username + ', '),
     100,
     290
   );
@@ -278,13 +273,14 @@ const applyPromotionOnCourses = async (req, res) => {
 
 const getRefundRequests = async (req, res) => {
   try {
-    const trainees = await IndividualTrainee.find().populate(
-      'refundRequests.course'
-    );
+    const trainees = await IndividualTrainee.find().populate({
+      path: 'refundRequests.course',
+      strictPopulate: false,
+    });
     let traineesRequestingRefund = [];
 
     trainees.map((trainee) => {
-      if (trainee.refundRequests.length > 0) {
+      if (trainee.refundRequests && trainee.refundRequests.length > 0) {
         // trainee.refundRequests.map( async (request, index)=>{
         //   const populatedCourse = await Course.findOne({_id: (request.course)});
         //   console.log(request.course)
@@ -347,7 +343,16 @@ const grantRefundToIndividualTrainee = async (req, res) => {
         registeredCourses: oldRegisteredCourses,
         refundRequests: oldRefundRequests,
       },
-      $inc: { wallet: course.price },
+      $inc: {
+        wallet:
+          (course.currentDiscount &&
+            new Date(course.currentDiscount.expiryDate)) > new Date().getTime()
+            ? parseInt(
+                course.price *
+                  (1 - parseFloat(course.currentDiscount.percentage))
+              )
+            : parseInt(course.price),
+      },
     }
   );
 

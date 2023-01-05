@@ -1,21 +1,21 @@
-import BaseAxios from "../Requester/BaseAxios";
+import BaseAxios from '../Requester/BaseAxios';
 
 export const createNewIndividualTrainee = (newIndividualTrainee) => {
   return BaseAxios.post(
-    "/individual/newIndividualTrainee",
+    '/individual/newIndividualTrainee',
     newIndividualTrainee
   );
 };
 
 export const viewRegisteredCourse = (individualTraineeId) => {
   return BaseAxios.get(
-    "individual/registeredCoursesIndividual",
+    'individual/registeredCoursesIndividual',
     individualTraineeId
   );
 };
 export const registerToCourse = (individualTraineeId, courseId) => {
   return BaseAxios.post(
-    "/individual/registerToCourseIndividual",
+    '/individual/registerToCourseIndividual',
     individualTraineeId,
     courseId
   );
@@ -27,11 +27,15 @@ export const reviewCourseIndividual = (
   review
 ) => {
   return BaseAxios.post(
-    "/individual/addCourseReviewIndividual",
+    '/individual/addCourseReviewIndividual',
     individualTraineeId,
     courseId,
     review
   );
+};
+
+export const updateIndividual = (individualId, updateBody) => {
+  return BaseAxios.post('/individual/' + individualId, updateBody);
 };
 
 export const reviewInstructorIndividual = (
@@ -40,7 +44,7 @@ export const reviewInstructorIndividual = (
   review
 ) => {
   return BaseAxios.post(
-    "/individual/addInstructorReviewIndividual",
+    '/individual/addInstructorReviewIndividual',
     individualTraineeId,
     instructorId,
     review
@@ -48,23 +52,23 @@ export const reviewInstructorIndividual = (
 };
 
 export const getIndividualTraineeReportsIssued = (individualTraineeId) => {
-  return BaseAxios.post("/individual/reportsIssued", individualTraineeId);
+  return BaseAxios.post('/individual/reportsIssued', individualTraineeId);
 };
 
 export const requestRefund = (individualTraineeId, courseId) => {
   return BaseAxios.post(
-    "/individual/requestRefund",
+    '/individual/requestRefund',
     individualTraineeId,
     courseId
   );
 };
 
 export const getWalletAmount = (individualTraineeId) => {
-  return BaseAxios.post("/individual/wallet", individualTraineeId);
+  return BaseAxios.post('/individual/wallet', individualTraineeId);
 };
 
 export const markResourceAsSeen = (resourceId, traineeId, courseId) => {
-  return BaseAxios.post("/individual/markResourceAsSeen", {
+  return BaseAxios.post('/individual/markResourceAsSeen', {
     resourceId,
     traineeId,
     courseId,
@@ -72,5 +76,5 @@ export const markResourceAsSeen = (resourceId, traineeId, courseId) => {
 };
 
 export const getTrainee = (individualTraineeId) => {
-  return BaseAxios.post("/individual/getTrainee", individualTraineeId);
+  return BaseAxios.post('/individual/getTrainee', individualTraineeId);
 };

@@ -48,6 +48,8 @@ const authMiddleware = (type) => {
         res.status(401).json({ message: 'You are not logged in.' });
       }
     } else {
+      console.log(type);
+      console.log(actualType);
       console.log('msh hetetak di ya basha');
       // res.redirect('/unauthorized');
       res.status(401).json({ message: 'You are not logged in.' });

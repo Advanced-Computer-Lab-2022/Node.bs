@@ -22,9 +22,22 @@ const reviewInstructorIndividual = async (req, res) => {
 
   instructorOldReviews.push(newReviewFinalForm);
 
+  let newRating = 0;
+  instructorOldReviews.forEach((review) => {
+    newRating += review.rating;
+  });
+  instructorReturned.corporateReviews.forEach((review) => {
+    newRating += review.rating;
+  });
+
+  newRating = Math.floor(
+    newRating /
+      (instructorOldReviews.length + instructorReturned.corporateReviews.length)
+  );
+
   const updatedInstrcutor = await Instructor.findByIdAndUpdate(
     { _id: instructorId },
-    { individualReviews: instructorOldReviews }
+    { individualReviews: instructorOldReviews, rating: newRating }
   );
 
   res.status(200).json(updatedInstrcutor);
@@ -49,9 +62,22 @@ const reviewCourseIndividual = async (req, res) => {
 
   courseOldReviews.push(newReviewFinalForm);
 
+  let newRating = 0;
+  courseOldReviews.forEach((review) => {
+    newRating += review.rating;
+  });
+  courseReturned.corporateReviews.forEach((review) => {
+    newRating += review.rating;
+  });
+
+  newRating = Math.floor(
+    newRating /
+      (courseOldReviews.length + courseReturned.corporateReviews.length)
+  );
+
   const updatedCourse = await Course.findByIdAndUpdate(
     { _id: courseId },
-    { individualReviews: courseOldReviews }
+    { individualReviews: courseOldReviews, rating: newRating }
   );
 
   res.status(200).json(updatedCourse);
@@ -88,6 +114,11 @@ const registerToCourse = async (req, res) => {
       path: 'lessons',
     },
   });
+
+  await Course.findByIdAndUpdate(courseId, {
+    $inc: { numberOfRegisteredTrainees: 1 },
+  });
+
   let seen = {};
   course.subtitles.forEach((subtitle) => {
     subtitle.lessons.forEach((lesson) => {
@@ -253,12 +284,15 @@ const requestRefund = async (req, res) => {
     const requester = await IndividualTrainee.findById(individualTraineeId);
     // console.log(requester)
     let refundRequestsTemp = requester.refundRequests;
+    if (!refundRequestsTemp) {
+      refundRequestsTemp = [];
+    }
     refundRequestsTemp.push({ course: courseId, requestedAt: new Date() });
     console.log(refundRequestsTemp);
     const updatedQuery = await IndividualTrainee.findOneAndUpdate(
       { _id: individualTraineeId },
       { refundRequests: refundRequestsTemp }
-    ).populate('refundRequests.course');
+    ).populate({ path: 'refundRequests.course', strictPopulate: false });
     // console.log(updatedQuery.refundRequests)
 
     return res.status(200).json(updatedQuery);
@@ -322,6 +356,7 @@ const getTrainee = async (req, res) => {
   const trainee = await IndividualTrainee.findById(
     req.body.individualTraineeId
   );
+  console.log('dakhalt getTrainee');
 
   if (trainee) {
     return res.status(200).json(trainee);

@@ -7,14 +7,6 @@ import * as courses from './../../services/CourseService';
 import { Route, Routes } from 'react-router-dom';
 import ViewCourse from './../../components/TraineeSpecific/ViewCourse/ViewCourse';
 import AuthContext from '../../Context/AuthProvider';
-import React from 'react';
-import TraineeDashboard from './../../components/TraineeSpecific/TraineeDashboard/TraineeDashboard';
-import TraineeSidebar from '../../components/TraineeSpecific/TraineeSidebar/TraineeSidebar';
-import './Trainee.scss';
-import { useState, useEffect } from 'react';
-import * as courses from './../../services/CourseService';
-import { Route, Routes } from 'react-router-dom';
-import ViewCourse from './../../components/TraineeSpecific/ViewCourse/ViewCourse';
 
 const Trainee = ({ corporate }) => {
   const [viewedCourses, setViewedCourses] = useState([]);
@@ -22,7 +14,7 @@ const Trainee = ({ corporate }) => {
   const [loading, setLoading] = useState(false);
   const [viewingEnrolled, setViewingEnrolled] = useState(false);
   const { auth } = useContext(AuthContext);
-  const [id, setId] = useState(sessionStorage['id']);
+  const [id, setId] = useState(localStorage['id']);
 
   // const [currentlyViewedCourse, setCurrentlyViewedCourse] = useState({});
   useEffect(() => {

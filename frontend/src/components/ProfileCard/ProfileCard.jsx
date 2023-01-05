@@ -11,7 +11,6 @@ import './../ProfileCard/ProfileCard.scss';
 import {
   faMoneyBillTrendUp,
   faWallet,
-  faPencil,
 } from '@fortawesome/free-solid-svg-icons';
 
 import { getWalletAmount } from '../../services/IndividualTraineeService';
@@ -42,8 +41,13 @@ function ProfileCard({ id, type }) {
   const [viewEditProfile, setViewEditProfile] = useState(false);
 
   useEffect(() => {
-    handleGetWalletAmount();
-    handleGetMoneyOwedPerMonth();
+    // console.log(type);
+    if (type === 'individual') {
+      handleGetWalletAmount();
+    }
+    if (type === 'instructor') {
+      handleGetMoneyOwedPerMonth();
+    }
   }, []);
 
   const [wallet, setWallet] = useState(0);
@@ -87,11 +91,16 @@ function ProfileCard({ id, type }) {
         </div>
       </div>
       <div className="profile-picture">
-        <img src="https://www.ambal.ru/96227118551.jpg" alt="ronnie coleman" />
+        <img
+          src="https://external-preview.redd.it/vHK-C-Wx28llvnpcqe-H3CHbjxywA347arliw31bBSM.png?format=pjpg&auto=webp&s=1597553082499b2a5fb9beb0b795f1729dcc391c"
+          alt="ronnie coleman"
+        />
       </div>
       <div className="user-details">
-        <h4>Ronnie Coleman</h4>
-        <h6 className="font-secondary">Individual Trainee</h6>
+        <h4>{localStorage['name']}</h4>
+        <h6 className="font-secondary">
+          {type.charAt(0).toUpperCase() + type.slice(1)}
+        </h6>
       </div>
       <div className="row">
         <div className="col-12">
