@@ -72,13 +72,31 @@ const Trainee = ({ corporate }) => {
       // const response = await courses.getAll();
       // const data = response.data;
       // console.log(data);
-      const filteredCourses = viewedCourses.filter(
-        (course) =>
-          (rating.includes(course.rating?.toString()) || rating.length === 0) &&
-          (subjects.length === 0 || subjects.includes(course.subject)) &&
-          ((course.price <= maxPrice && course.price >= minPrice) ||
-            (minPrice === 0 && maxPrice === 0))
-      );
+      const filteredCourses = viewedCourses.filter((course) => {
+        let x =
+          rating.includes(course.rating?.toString()) || rating.length === 0;
+
+        let y = subjects.length === 0 || subjects.includes(course.subject);
+
+        let z =
+          (maxPrice === 0 && minPrice === 0) ||
+          (minPrice === 0 &&
+            (course.currentDiscount
+              ? course.price * (1 - course.currentDiscount.percentage)
+              : course.price) <= maxPrice) ||
+          (maxPrice == 0 &&
+            (course.currentDiscount
+              ? course.price * (1 - course.currentDiscount.percentage)
+              : course.price) >= minPrice) ||
+          ((course.currentDiscount
+            ? course.price * (1 - course.currentDiscount.percentage)
+            : course.price) >= minPrice &&
+            (course.currentDiscount
+              ? course.price * (1 - course.currentDiscount.percentage)
+              : course.price) <= maxPrice);
+
+        return x && y && z;
+      });
       setViewedCourses(filteredCourses);
     } catch (e) {
       console.log(e);

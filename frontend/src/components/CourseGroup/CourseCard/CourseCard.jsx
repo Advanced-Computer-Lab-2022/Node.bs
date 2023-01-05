@@ -1,7 +1,7 @@
 import './CourseCard.scss';
 import AvatarGrouping from '../../util/AvatarGroup/AvatarGroup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faChevronRight, faStar } from '@fortawesome/free-solid-svg-icons';
 import { useSelector } from 'react-redux';
 import Rating from 'react-star-rating-lite';
 import axios from 'axios';
@@ -100,7 +100,24 @@ const CourseCard = ({ course, editable, accessCourse, type, id, guest }) => {
             <></>
           )}
           <div className="col-12 text-center">
-            <Rating readonly value={course?.rating} weight={'22'} />
+            {/* {console.log('Rating ->>>>> ' + course?.rating)} */}
+            {/* <Rating readonly value={course?.rating} weight={'22'} /> */}
+            <div
+              className="row-6 ml-5"
+              style={{ display: 'flex', flexWrap: 'nowrap' }}
+            >
+              {[...Array(course.rating ? course.rating : 0)].map((star) => (
+                <>
+                  <h3>
+                    <FontAwesomeIcon
+                      icon={faStar}
+                      style={{ color: '#FFD700' }}
+                    />
+                  </h3>
+                  {/* &nbsp; */}
+                </>
+              ))}
+            </div>
           </div>
         </div>
         {/* <br /> */}
