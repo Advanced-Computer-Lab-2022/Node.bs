@@ -14,7 +14,7 @@ const Trainee = ({ corporate }) => {
   const [loading, setLoading] = useState(false);
   const [viewingEnrolled, setViewingEnrolled] = useState(false);
   const { auth } = useContext(AuthContext);
-  const [id, setId] = useState(sessionStorage['id']);
+  const [id, setId] = useState(localStorage['id']);
 
   // const [currentlyViewedCourse, setCurrentlyViewedCourse] = useState({});
   useEffect(() => {
@@ -28,6 +28,7 @@ const Trainee = ({ corporate }) => {
     try {
       const response = await courses.getMyCourses(corporate, id);
       console.log(response.data);
+
       setViewedCourses(response.data);
     } catch (e) {
       console.log(e);
@@ -35,7 +36,7 @@ const Trainee = ({ corporate }) => {
     setLoading(false);
   };
 
-  const getAllCourses = async () => {
+  const getAllCourses = async (sortByPopularity) => {
     //get all courses
     setViewingEnrolled(false);
     setViewTitle('Course Catalog');
@@ -43,7 +44,15 @@ const Trainee = ({ corporate }) => {
     setLoading(true);
     try {
       const response = await courses.getAll();
-      setViewedCourses(response.data);
+      if (sortByPopularity) {
+        const sortedCourses = response.data.sort(
+          (c1, c2) => c2.courseViews - c1.courseViews
+        );
+        console.log(sortedCourses);
+        setViewedCourses(sortedCourses);
+      } else {
+        setViewedCourses(response.data);
+      }
     } catch (e) {
       console.log(e);
     }
@@ -63,13 +72,31 @@ const Trainee = ({ corporate }) => {
       // const response = await courses.getAll();
       // const data = response.data;
       // console.log(data);
-      const filteredCourses = viewedCourses.filter(
-        (course) =>
-          (rating.includes(course.rating?.toString()) || rating.length === 0) &&
-          (subjects.length === 0 || subjects.includes(course.subject)) &&
-          ((course.price <= maxPrice && course.price >= minPrice) ||
-            (minPrice === 0 && maxPrice === 0))
-      );
+      const filteredCourses = viewedCourses.filter((course) => {
+        let x =
+          rating.includes(course.rating?.toString()) || rating.length === 0;
+
+        let y = subjects.length === 0 || subjects.includes(course.subject);
+
+        let z =
+          (maxPrice === 0 && minPrice === 0) ||
+          (minPrice === 0 &&
+            (course.currentDiscount
+              ? course.price * (1 - course.currentDiscount.percentage)
+              : course.price) <= maxPrice) ||
+          (maxPrice == 0 &&
+            (course.currentDiscount
+              ? course.price * (1 - course.currentDiscount.percentage)
+              : course.price) >= minPrice) ||
+          ((course.currentDiscount
+            ? course.price * (1 - course.currentDiscount.percentage)
+            : course.price) >= minPrice &&
+            (course.currentDiscount
+              ? course.price * (1 - course.currentDiscount.percentage)
+              : course.price) <= maxPrice);
+
+        return x && y && z;
+      });
       setViewedCourses(filteredCourses);
     } catch (e) {
       console.log(e);
@@ -124,6 +151,7 @@ const Trainee = ({ corporate }) => {
                   getCourseCatalog={getAllCourses}
                   getMyCourses={getMyCourses}
                   id={id}
+                  corporate={corporate}
                 />
               </div>
               <div className="col-10">
@@ -155,7 +183,7 @@ const Trainee = ({ corporate }) => {
           <ViewCourse
             // registeredCourse={currentlyViewedCourse}
             corporate={corporate}
-            // id={id}
+            id={id}
           />
         }
       />

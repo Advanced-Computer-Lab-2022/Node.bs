@@ -94,6 +94,7 @@ const ViewCourse = () => {
         complete = false;
       }
     }
+
     if (complete) {
       try {
         const response = await courses.submitTest(
@@ -162,6 +163,7 @@ const ViewCourse = () => {
         id
       );
 
+      console.log(response.data[parseInt(registeredCourseId)].course._id);
       setRegisteredCourse(response.data[parseInt(registeredCourseId)]);
       setCourse(response.data[parseInt(registeredCourseId)].course);
     } catch (e) {
@@ -177,11 +179,14 @@ const ViewCourse = () => {
   useEffect(() => {
     if (registeredCourse) {
       let tempProgress = 0;
-      console.log(registeredCourse);
-      Object.values(registeredCourse.seen).forEach((seen) =>
-        seen ? tempProgress++ : console.log('samo3leko')
-      );
-      setProgress(tempProgress / Object.values(registeredCourse.seen).length);
+      if (registeredCourse.seen) {
+        Object.values(registeredCourse.seen).forEach((seen) =>
+          seen ? tempProgress++ : console.log('samo3leko')
+        );
+        setProgress(tempProgress / Object.values(registeredCourse.seen).length);
+      } else {
+        setProgress(0);
+      }
     }
   }, [registeredCourse]);
 
@@ -470,6 +475,15 @@ const ViewCourse = () => {
                   Feeling you don't like the course? Request a refund!
                 </button>
               )}
+              <button
+                className="btn btn-outline-secondary"
+                onClick={() =>
+                  (window.location.href =
+                    '/' + (corporate === '1' ? 'corporate' : 'individual'))
+                }
+              >
+                Back to home!
+              </button>
             </div>
           </div>
           <div className="col-8">
@@ -533,11 +547,13 @@ const ViewCourse = () => {
                                 </h1>
                                 <p style={{ color: 'darkgray' }}>{today}</p>
                                 <h2>
-                                  {individualTrainee?.firstName +
-                                    ' ' +
-                                    individualTrainee?.lastName}
-                                  {corporateTrainee?.firstName}{' '}
-                                  {corporateTrainee?.lastName}
+                                  {individualTrainee &&
+                                    individualTrainee?.firstName +
+                                      ' ' +
+                                      individualTrainee?.lastName}
+                                  {corporateTrainee &&
+                                    corporateTrainee?.username}{' '}
+                                  {/* {corporateTrainee?.lastName} */}
                                 </h2>
                                 <p style={{ color: 'darkgray' }}>
                                   has successfully completed the course
@@ -576,12 +592,11 @@ const ViewCourse = () => {
                               <div className="col-8">
                                 <h3>Signatures of Instructor(s)</h3>
                                 {course.instructors.map((instructor) => (
-                                  <h6 style={{ color: 'black' }}>
-                                    {instructor.firstName +
-                                      ' ' +
-                                      instructor.lastName}
+                                  <h5 style={{ color: 'black' }}>
+                                    {instructor.username}
+
                                     {', '}
-                                  </h6>
+                                  </h5>
                                 ))}
                               </div>
 
@@ -656,43 +671,6 @@ const ViewCourse = () => {
                     onLoad={(e) => e.currentTarget.removeAttribute('srcdoc')}
                   />
                   <p>{viewedSubtitle.description}</p>
-                  <div className="row">
-                    <div className="col-8">
-                      <p>NOTES</p>
-                      <textarea
-                        name="notes"
-                        className="form-control"
-                        cols="30"
-                        rows="10"
-                        // ref={notesRef}
-                        onChange={(e) => setNotes(e.target.value)}
-                      ></textarea>
-                      <h6 className="mt-2">Notes preview:</h6>
-                      <hr />
-                      <div
-                        className="container"
-                        style={{
-                          wordBreak: 'break-word',
-                          wordSpacing: '1.5px',
-                          // maxWidth: "70%",
-                          // fontSize: "13px",
-                          // margin: "auto",
-                          // // float: "left",
-                        }}
-                        ref={notesRef}
-                      >
-                        <p>{notes}</p>
-                      </div>
-                    </div>
-                    <div className="col-4">
-                      <button
-                        className="btn btn-outline-secondary mt-5"
-                        onClick={() => handleGenerateNotesPdf()}
-                      >
-                        Save your notes
-                      </button>
-                    </div>
-                  </div>
                 </div>
               </div>
             )}
@@ -763,7 +741,43 @@ const ViewCourse = () => {
                       );
                     }
                   })}
-
+                  <div className="row">
+                    <div className="col-8">
+                      <p>NOTES</p>
+                      <textarea
+                        name="notes"
+                        className="form-control"
+                        cols="30"
+                        rows="10"
+                        // ref={notesRef}
+                        onChange={(e) => setNotes(e.target.value)}
+                      ></textarea>
+                      <h6 className="mt-2">Notes preview:</h6>
+                      <hr />
+                      <div
+                        className="container"
+                        style={{
+                          wordBreak: 'break-word',
+                          wordSpacing: '1.5px',
+                          // maxWidth: "70%",
+                          // fontSize: "13px",
+                          // margin: "auto",
+                          // // float: "left",
+                        }}
+                        ref={notesRef}
+                      >
+                        <p>{notes}</p>
+                      </div>
+                    </div>
+                    <div className="col-4">
+                      <button
+                        className="btn btn-outline-secondary mt-5"
+                        onClick={() => handleGenerateNotesPdf()}
+                      >
+                        Save your notes
+                      </button>
+                    </div>
+                  </div>
                   {!canTakeTest && (
                     <div>
                       <hr />

@@ -40,6 +40,7 @@ const CourseSchema = new schema(
     },
     numberOfRegisteredTrainees: {
       type: Number,
+      default: 0,
     },
     individualReviews: [
       {

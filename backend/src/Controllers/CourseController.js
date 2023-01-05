@@ -5,6 +5,10 @@ const Test = require('./../Models/Test');
 const IndividualTrainee = require('./../Models/IndividualTrainee');
 const mongoose = require('mongoose');
 const LearningResource = require('../Models/LearningResource');
+const Report = require('../Models/Report');
+const { findOne } = require('../Models/LearningResource');
+const Instructor = require('../Models/Instructor');
+const CorporateTrainee = require('../Models/CorporateTrainee');
 
 // //optimized with extra projection parameter to reduce response size
 // const oSearchCourses = async (req, res) => {
@@ -193,8 +197,14 @@ const createCourse = async (req, res) => {
       subtitles: subtitleIDArray,
       priceId: price.id,
     };
-    // console.log(course);
+
     const result = await Course.create(course);
+    const instructor = await Instructor.findById(course.instructors[0]);
+    let tmpCourses = instructor.courses;
+    tmpCourses.push(result._id);
+    await Instructor.findByIdAndUpdate(instructor._id, { courses: tmpCourses });
+    // console.log(course);
+
     res.status(203).json(result);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -271,15 +281,63 @@ const createResource = async (req, res) => {
   try {
     const lessonId = req.body.lessonId;
     const resource = req.body.resource;
+    const courseId = req.body.courseId;
     const createdResource = await LearningResource.create(resource);
     const lesson = await Lesson.findById(lessonId);
-    console.log(lesson);
     let updatedResources = lesson.learningResources;
     updatedResources.push(createdResource._id);
     const response = await Lesson.findByIdAndUpdate(lessonId, {
       learningResources: updatedResources,
     });
     if (response) {
+      // //update individuals
+      // const individuals = await IndividualTrainee.find({});
+
+      // for (let individual in individuals) {
+      //   // individuals.forEach((individual) => {
+
+      //   individuals[individual].registeredCourses.map(
+      //     async (registeredCourse, index) => {
+      //       if (registeredCourse.course === courseId) {
+      //         let tmpRegisteredCourses =
+      //           individuals[individual].registeredCourses;
+      //         tmpRegisteredCourses[index].seen[createdResource._id] = false;
+      //         console.log(tmpRegisteredCourses[index]);
+      //         await IndividualTrainee.findByIdAndUpdate(
+      //           individuals[individual]._id,
+      //           {
+      //             registeredCourses: tmpRegisteredCourses,
+      //           }
+      //         );
+      //       }
+      //     }
+      //   );
+      // }
+      // // });
+
+      // //update corporates
+
+      // const corporates = await CorporateTrainee.find({});
+
+      // for (let individual in corporates) {
+      //   corporates[individual].registeredCourses.map(
+      //     async (registeredCourse, index) => {
+      //       if (registeredCourse.course === courseId) {
+      //         let tmpRegisteredCourses =
+      //           corporates[individual].registeredCourses;
+      //         tmpRegisteredCourses[index].seen[createdResource._id] = false;
+      //         console.log(tmpRegisteredCourses[index]);
+      //         await CorporateTrainee.findByIdAndUpdate(
+      //           corporates[individual]._id,
+      //           {
+      //             registeredCourses: tmpRegisteredCourses,
+      //           }
+      //         );
+      //       }
+      //     }
+      //   );
+      // }
+
       res.status(200).json(response);
     } else [res.status(404).json({ message: 'no such lesson' })];
   } catch (error) {
@@ -314,6 +372,127 @@ const getReviews = async (req, res) => {
   // res.status(404).json({ message: "Couldn't find any reviews" });
 };
 
+//////////////////////////////REPORTS///////////////////////////////////////
+const addReport = async (req, res) => {
+  const courseId = req.body.courseId;
+  const traineeId = req.body.traineeId;
+  const traineeType = req.body.traineeType;
+  const reportType = req.body.reportType;
+  const reportBody = req.body.reportBody;
+  const instructorId = req.body.instructorId;
+  console.log(req.body);
+  console.log('instructorId: ' + instructorId);
+  if (traineeType === '0') {
+    const reportToBeAdded = {
+      course: courseId,
+      individualTrainee: traineeId,
+      type: reportType,
+      body: reportBody,
+      status: 'unseen',
+      seen: false,
+      followups: [],
+    };
+    const newReport = await Report.create(reportToBeAdded);
+    if (newReport) {
+      return res.status(200).json(newReport);
+    } else {
+      return res.status(400).json('No report submitted');
+    }
+  } else if (traineeType === '1') {
+    const reportToBeAdded = {
+      course: courseId,
+      corporateTrainee: traineeId,
+      type: reportType,
+      body: reportBody,
+      status: 'unseen',
+      seen: false,
+      followups: [],
+    };
+    const newReport = await Report.create(reportToBeAdded);
+    if (newReport) {
+      return res.status(200).json(newReport);
+    } else {
+      return res.status(400).json('No report submitted');
+    }
+  } else if (instructorId) {
+    console.log(courseId);
+    const reportToBeAdded = {
+      course: courseId,
+      instructor: instructorId,
+      type: reportType,
+      body: reportBody,
+      status: 'unseen',
+      seen: false,
+      followups: [],
+    };
+    const newReport = await Report.create(reportToBeAdded);
+    if (newReport) {
+      return res.status(200).json(newReport);
+    } else {
+      return res.status(400).json('No report submitted');
+    }
+  }
+};
+
+const addFollowupToReport = async (req, res) => {
+  const reportId = req.body.reportId;
+  const newFollowupBody = req.body.followupBody;
+
+  console.log('bodyyy: ' + newFollowupBody);
+
+  const newFollowupRecord = {
+    followupBody: newFollowupBody,
+    dateAdded: new Date(),
+  };
+
+  let query = await Report.findById(reportId);
+  let oldFollowups = query.followups;
+  console.log(oldFollowups);
+
+  oldFollowups.push(newFollowupRecord);
+
+  const updatedRecord = await Report.findByIdAndUpdate(reportId, {
+    followups: oldFollowups,
+  });
+
+  if (updatedRecord) {
+    return res.status(200).json(updatedRecord);
+  } else {
+    res.status(400).json('Something went wrong');
+  }
+};
+
+const getAllReports = async (req, res) => {
+  const returnedQuery = await Report.find()
+    .populate('instructor')
+    .populate('course')
+    .populate('individualTrainee')
+    .populate('corporateTrainee');
+
+  console.log(returnedQuery);
+  console.log('haga');
+  if (returnedQuery) {
+    return res.status(200).json(returnedQuery);
+  } else {
+    res.status(400).json('Something went wrong');
+  }
+};
+
+const incrementViews = async (req, res) => {
+  const courseId = req.body.courseId;
+  const query = await Course.findOneAndUpdate(
+    { _id: courseId },
+    { $inc: { courseViews: 1 } }
+  );
+
+  if (query) {
+    console.log('views: ' + query.courseViews);
+    return res.status(200).json(query);
+  } else {
+    res.status(400).json('An error has occured');
+  }
+};
+
 module.exports = {
   // oSearchCourses,
   // oFilterCourses,
@@ -327,4 +506,8 @@ module.exports = {
   getReviews,
   createLesson,
   createResource,
+  addReport,
+  addFollowupToReport,
+  getAllReports,
+  incrementViews,
 };

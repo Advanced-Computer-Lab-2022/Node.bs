@@ -15,6 +15,9 @@ const IndividualTraineeSchema = new schema(
     username: {
       type: String,
     },
+    gender: {
+      type: String,
+    },
 
     password: {
       type: String,
@@ -24,11 +27,8 @@ const IndividualTraineeSchema = new schema(
         course: { type: schema.Types.ObjectId, ref: 'Course' },
         submissions: [{ type: schema.Types.ObjectId, ref: 'Submission' }],
         progress: { type: Number },
-<<<<<<< Updated upstream
-=======
         seen: { type: Object, default: {} },
         paid: { type: Number },
->>>>>>> Stashed changes
       },
     ],
     wallet: {
@@ -49,6 +49,12 @@ const IndividualTraineeSchema = new schema(
     notebook: [
       {
         type: String,
+      },
+    ],
+    refundRequests: [
+      {
+        course: { type: schema.Types.ObjectId, ref: 'Course' },
+        requestedAt: { type: Date },
       },
     ],
   },

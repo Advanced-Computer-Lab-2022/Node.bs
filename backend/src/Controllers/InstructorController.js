@@ -1,6 +1,7 @@
 const Instructor = require('../Models/Instructor');
 const Lesson = require('../Models/Lesson');
 const Subtitle = require('../Models/Subtitle');
+const Report = require('../Models/Report');
 const Exercise = require('../Models/Exercise');
 const mongoose = require('mongoose');
 const Test = require('../Models/Test');

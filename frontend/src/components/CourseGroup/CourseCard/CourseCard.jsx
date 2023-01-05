@@ -1,18 +1,15 @@
 import './CourseCard.scss';
 import AvatarGrouping from '../../util/AvatarGroup/AvatarGroup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faChevronRight, faStar } from '@fortawesome/free-solid-svg-icons';
 import { useSelector } from 'react-redux';
 import Rating from 'react-star-rating-lite';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import CoursePreview from '../../CoursePreview/CoursePreview';
-<<<<<<< Updated upstream
-=======
 import { incrementViews } from '../../../services/CourseService';
->>>>>>> Stashed changes
 
-const CourseCard = ({ course, editable, accessCourse, type, id }) => {
+const CourseCard = ({ course, editable, accessCourse, type, id, guest }) => {
   const userInfo = useSelector((state) => state.user);
   const currency = useSelector(
     (state) => state.region.selectedRegion.currencyCodes[0]
@@ -47,6 +44,11 @@ const CourseCard = ({ course, editable, accessCourse, type, id }) => {
     }
   }, [currency, exRate]);
 
+  ///////////////COURSE VIEWS////////////////
+  const handleIncrementCourseViews = async () => {
+    const query = await incrementViews({ courseId: course?._id });
+  };
+
   // https://picsum.photos/160/100/
   return (
     <div className="card my-1" id="course-card">
@@ -80,27 +82,17 @@ const CourseCard = ({ course, editable, accessCourse, type, id }) => {
           {userInfo.type !== 'corporate' ? (
             <div className="col-7 text-end p-0">
               <p id="currency">
-<<<<<<< Updated upstream
-                {course.price === 0
-                  ? 'FREE'
-                  : course.currentDiscount &&
-=======
                 {course?.price === 0
                   ? 'FREE'
                   : course?.currentDiscount &&
->>>>>>> Stashed changes
                     new Date(course.currentDiscount?.expiryDate) >
                       new Date().getTime()
                   ? (
-                      course.price *
+                      course?.price *
                       (1 - course?.currentDiscount?.percentage) *
                       exRate
                     ).toFixed(2)
-<<<<<<< Updated upstream
-                  : (course.price * exRate).toFixed(2)}
-=======
                   : (course?.price * exRate).toFixed(2)}
->>>>>>> Stashed changes
                 {' ' + currency}
               </p>
             </div>
@@ -108,11 +100,24 @@ const CourseCard = ({ course, editable, accessCourse, type, id }) => {
             <></>
           )}
           <div className="col-12 text-center">
-<<<<<<< Updated upstream
-            <Rating readonly value={course.rating} weight={'22'} />
-=======
-            <Rating readonly value={course?.rating} weight={'22'} />
->>>>>>> Stashed changes
+            {/* {console.log('Rating ->>>>> ' + course?.rating)} */}
+            {/* <Rating readonly value={course?.rating} weight={'22'} /> */}
+            <div
+              className="row-6 ml-5"
+              style={{ display: 'flex', flexWrap: 'nowrap' }}
+            >
+              {[...Array(course.rating ? course.rating : 0)].map((star) => (
+                <>
+                  <h3>
+                    <FontAwesomeIcon
+                      icon={faStar}
+                      style={{ color: '#FFD700' }}
+                    />
+                  </h3>
+                  {/* &nbsp; */}
+                </>
+              ))}
+            </div>
           </div>
         </div>
         {/* <br /> */}
@@ -125,7 +130,11 @@ const CourseCard = ({ course, editable, accessCourse, type, id }) => {
               type="button"
               className="btn btn-primary"
               id="card-button"
-              onClick={() => setIsOpen(true)}
+              onClick={() => {
+                setIsOpen(true);
+                handleIncrementCourseViews();
+                console.log(course);
+              }}
               // data-bs-toggle="modal"
               // data-bs-target={'#' + course.title.split(' ').join('')}
             >
@@ -144,10 +153,7 @@ const CourseCard = ({ course, editable, accessCourse, type, id }) => {
         editable={editable}
         type={type}
         id={id}
-<<<<<<< Updated upstream
-=======
         guest={guest}
->>>>>>> Stashed changes
       />
     </div>
   );

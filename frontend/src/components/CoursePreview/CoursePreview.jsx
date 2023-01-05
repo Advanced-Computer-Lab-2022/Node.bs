@@ -13,9 +13,13 @@ import * as courses from './../../services/CourseService';
 import AddReviewForm from '../AddReviewForm/AddReviewForm';
 import CourseReviews from '../CourseReviews/CourseReviews';
 import { useState } from 'react';
-import { registerToCourse as registerToCourseIndividual } from '../../services/IndividualTraineeService';
+import {
+  registerToCourse as registerToCourseIndividual,
+  updateIndividual,
+} from '../../services/IndividualTraineeService';
 import {
   registerToCourse as registerToCourseCorporate,
+  requestAccessToCourse,
   reviewInstructorCorporate,
 } from '../../services/CorporateTraineeService';
 
@@ -26,6 +30,8 @@ import { getCourseReviews } from '../../services/CourseService';
 import { reviewInstructorIndividual } from '../../services/IndividualTraineeService';
 import { useEffect } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
+import { getTrainee } from '../../services/IndividualTraineeService';
+import { registerToCourse as indi } from '../../services/IndividualTraineeService';
 
 let stripePromise;
 
@@ -48,6 +54,7 @@ function CoursePreview({
   editable,
   type,
   id,
+  guest,
 }) {
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState('');
@@ -74,12 +81,46 @@ function CoursePreview({
     console.log('stripe checkout error: ', err);
   };
 
+  const enrollWithWallet = async () => {
+    const myFunds = await getTrainee({ individualTraineeId: id });
+    if (myFunds.data.wallet < course.price) {
+      Swal.fire('Insufficient funds!', '', 'error');
+    } else {
+      //update funds
+
+      const update = updateIndividual(id, {
+        wallet:
+          myFunds.data.wallet -
+          ((course.currentDiscount &&
+            new Date(course.currentDiscount.expiryDate)) > new Date().getTime()
+            ? parseInt(
+                course.price *
+                  (1 - parseFloat(course.currentDiscount.percentage))
+              )
+            : parseInt(course.price)),
+      });
+
+      //register in course
+      const response = await indi({
+        individualTraineeId: id,
+        courseId: course._id,
+      });
+
+      if (response.status == 200) {
+        Swal.fire('Registered in course successfully!', '', 'success');
+      } else {
+        Swal.fire('An Error has occured, please try again later', '', 'error');
+      }
+    }
+  };
+
   useEffect(() => {
     if (type !== 'instructor' && id) {
       const checkEnrolled = async () => {
         const myCourses = await getMyCourses(type === 'corporate', id);
         // console.log(myCourses.data)
         myCourses.data.forEach((registeration) => {
+          // console.log(registeration)
           if (registeration.course._id === course._id) {
             setCanEnroll(false);
           }
@@ -156,6 +197,7 @@ function CoursePreview({
       courseId: id,
       reportType: reportType,
       reportBody: reportBody,
+      // (type === 'individual'?individualTrainee:)
     };
     if (reportBody === '') {
       Swal.fire(
@@ -279,7 +321,7 @@ function CoursePreview({
           </div>
           <div className="col-2 text-end p-2">
             <h4 id="currency">
-              {course.currentDiscount &&
+              {course?.currentDiscount &&
                 new Date(course.currentDiscount?.expiryDate) >
                   new Date().getTime() && <s>{course.price} </s>}
               &nbsp;
@@ -289,7 +331,7 @@ function CoursePreview({
                   new Date(course.currentDiscount?.expiryDate) >
                     new Date().getTime()
                 ? (
-                    course.price *
+                    course?.price *
                     (1 - course?.currentDiscount?.percentage) *
                     exRate
                   ).toFixed(2)
@@ -534,7 +576,7 @@ function CoursePreview({
                       >
                         <div class="accordion-body">
                           <h5>Lessons and exercises</h5>
-                          {subtitle.lessons.map((lesson) => {
+                          {subtitle?.lessons?.map((lesson) => {
                             return (
                               <p>
                                 {lesson.name} - {lesson.hours} Hours
@@ -562,6 +604,7 @@ function CoursePreview({
                 See what students think of this course
               </button>
               <CourseReviews reviews={allReviews} />
+              {/* {insert report button here if type is instructor and if instructor teaches this course} */}
 
               {canEnroll &&
                 type !== 'instructor' &&
@@ -577,10 +620,22 @@ function CoursePreview({
                     >
                       <span className="content">
                         <FontAwesomeIcon icon={faPlus} className="icon" />
-                        Enroll in Course?
+                        Enroll in Course using credit card?
                       </span>
                     </button>
-                    <ReactModal
+                    <button
+                      type="button"
+                      class="btn btn-md btn-primary ml-2 mt-2"
+                      // onClick={() => handleRegistration()}
+                      // onClick={() => setCreditCardOpen(true)}
+                      onClick={() => enrollWithWallet()}
+                    >
+                      <span className="content">
+                        <FontAwesomeIcon icon={faPlus} className="icon" />
+                        Enroll in Course using wallet?
+                      </span>
+                    </button>
+                    {/* <ReactModal
                       isOpen={creditCardOpen}
                       onRequestClose={() => setCreditCardOpen(false)}
                       style={{
@@ -666,7 +721,7 @@ function CoursePreview({
                           </div>
                         </div>
                       </form>
-                    </ReactModal>
+                    </ReactModal> */}
                   </>
                 )}
               {canEnroll &&
@@ -682,12 +737,12 @@ function CoursePreview({
                     >
                       <span className="content">
                         <FontAwesomeIcon icon={faPlus} className="icon" />
-                        Request acces to this course
+                        Request access to this course
                       </span>
                     </button>
                   </>
                 )}
-              {!guest && (
+              {!guest && type === 'instructor' && (
                 <div className="row">
                   <button
                     className="btn btn-outline-danger btn-md mt-2"
@@ -778,12 +833,14 @@ function CoursePreview({
                         </div>
                       </div>
                       <div className="row mt-5 p-3">
-                        <button
-                          className="btn btn-outline-primary"
-                          onClick={() => handleAddReport()}
-                        >
-                          Submit Report
-                        </button>
+                        {type === 'instructor' && (
+                          <button
+                            className="btn btn-outline-primary"
+                            onClick={() => handleAddReport()}
+                          >
+                            Submit Report
+                          </button>
+                        )}
                       </div>
                     </div>
                   </ReactModal>
@@ -793,7 +850,7 @@ function CoursePreview({
                 <>
                   <button
                     type="button"
-                    class="btn btn-md btn-dark ml-2 mt-3"
+                    class="btn btn-md btn-dark ml-2 mt-2"
                     data-bs-toggle="modal"
                     data-bs-target="#addReviewModal"
                   >

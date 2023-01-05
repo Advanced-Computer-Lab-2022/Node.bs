@@ -2,6 +2,7 @@ const express = require('express');
 const Router = express.Router();
 const individualTraineeController = require('./../Controllers/IndividualTraineeContoller');
 
+Router.post('/getTrainee', individualTraineeController.getTrainee);
 Router.post(
   '/newIndividualTrainee',
   individualTraineeController.createNewIndividualTrainee
@@ -26,5 +27,20 @@ Router.post(
 Router.get('/courses', individualTraineeController.getMyCourses);
 Router.post('/test/submit', individualTraineeController.submitTest);
 Router.patch('/:id', individualTraineeController.updateIndividualPassword);
+
+Router.post(
+  '/reportsIssued',
+  individualTraineeController.getIndividualTraineeReportsIssued
+);
+Router.post('/requestRefund', individualTraineeController.requestRefund);
+
+Router.post('/wallet', individualTraineeController.getWalletAmount);
+
+Router.post(
+  '/markResourceAsSeen',
+  individualTraineeController.markResourceAsSeen
+);
+
+Router.post('/:id', individualTraineeController.updateIndividualPassword);
 
 module.exports = Router;

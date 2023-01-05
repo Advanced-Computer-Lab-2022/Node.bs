@@ -34,6 +34,10 @@ export const reviewCourseIndividual = (
   );
 };
 
+export const updateIndividual = (individualId, updateBody) => {
+  return BaseAxios.post('/individual/' + individualId, updateBody);
+};
+
 export const reviewInstructorIndividual = (
   individualTraineeId,
   instructorId,
@@ -45,4 +49,32 @@ export const reviewInstructorIndividual = (
     instructorId,
     review
   );
+};
+
+export const getIndividualTraineeReportsIssued = (individualTraineeId) => {
+  return BaseAxios.post('/individual/reportsIssued', individualTraineeId);
+};
+
+export const requestRefund = (individualTraineeId, courseId) => {
+  return BaseAxios.post(
+    '/individual/requestRefund',
+    individualTraineeId,
+    courseId
+  );
+};
+
+export const getWalletAmount = (individualTraineeId) => {
+  return BaseAxios.post('/individual/wallet', individualTraineeId);
+};
+
+export const markResourceAsSeen = (resourceId, traineeId, courseId) => {
+  return BaseAxios.post('/individual/markResourceAsSeen', {
+    resourceId,
+    traineeId,
+    courseId,
+  });
+};
+
+export const getTrainee = (individualTraineeId) => {
+  return BaseAxios.post('/individual/getTrainee', individualTraineeId);
 };

@@ -15,6 +15,7 @@ import alert from 'sweetalert2';
 import { signIn } from '../../services/GuestService';
 import { redirect } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { Select } from '@mui/material';
 
 function Copyright(props) {
   return (
@@ -80,12 +81,19 @@ export default function SignIn() {
       !passwordValid &&
       password.length > 0
     ) {
-      const response = await signIn({ username, password });
+      try {
+        const response = await signIn({ username, password });
+        sessionStorage['id'] = response.data._id;
+        sessionStorage['type'] = response.data.type;
+        localStorage['id'] = response.data._id;
+        localStorage['type'] = response.data.type;
+        localStorage['name'] = username;
+        Cookies.set('type', response.data.type);
+        window.location.href = '/' + response.data.type;
+      } catch (e) {
+        alert.fire('Incorrect username or password!', '', 'error');
+      }
       // updateAuth(response.data._id, response.data.type);
-      sessionStorage['id'] = response.data._id;
-      sessionStorage['type'] = response.data.type;
-      Cookies.set('type', response.data.type);
-      window.location.href = '/' + response.data.type;
     }
   };
 
