@@ -15,6 +15,9 @@ const IndividualTraineeSchema = new schema(
     username: {
       type: String,
     },
+    gender: {
+      type: String,
+    },
 
     password: {
       type: String,
@@ -24,10 +27,13 @@ const IndividualTraineeSchema = new schema(
         course: { type: schema.Types.ObjectId, ref: 'Course' },
         submissions: [{ type: schema.Types.ObjectId, ref: 'Submission' }],
         progress: { type: Number },
+        seen: { type: Object, default: {} },
+        paid: { type: Number },
       },
     ],
     wallet: {
       type: Number,
+      default: 0,
     },
     verified: {
       type: Boolean,
@@ -43,6 +49,12 @@ const IndividualTraineeSchema = new schema(
     notebook: [
       {
         type: String,
+      },
+    ],
+    refundRequests: [
+      {
+        course: { type: schema.Types.ObjectId, ref: 'Course' },
+        requestedAt: { type: Date },
       },
     ],
   },

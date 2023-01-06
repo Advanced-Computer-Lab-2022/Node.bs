@@ -8,6 +8,7 @@ const CorporateTraineeSchema = new schema(
     },
     email: {
       type: String,
+      default: 'okmelouk@gmail.com',
     },
     firstName: {
       type: String,
@@ -26,6 +27,7 @@ const CorporateTraineeSchema = new schema(
         course: { type: schema.Types.ObjectId, ref: 'Course' },
         submissions: [{ type: schema.Types.ObjectId, ref: 'Submission' }],
         progress: { type: Number },
+        seen: { type: Object },
       },
     ],
     pathToCertificate: {

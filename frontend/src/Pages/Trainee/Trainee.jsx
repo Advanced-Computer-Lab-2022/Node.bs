@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import TraineeDashboard from './../../components/TraineeSpecific/TraineeDashboard/TraineeDashboard';
 import TraineeSidebar from '../../components/TraineeSpecific/TraineeSidebar/TraineeSidebar';
 import './Trainee.scss';
@@ -6,14 +6,20 @@ import { useState, useEffect } from 'react';
 import * as courses from './../../services/CourseService';
 import { Route, Routes } from 'react-router-dom';
 import ViewCourse from './../../components/TraineeSpecific/ViewCourse/ViewCourse';
+import AuthContext from '../../Context/AuthProvider';
 
-const Trainee = ({ corporate, id }) => {
+const Trainee = ({ corporate }) => {
   const [viewedCourses, setViewedCourses] = useState([]);
   const [viewTitle, setViewTitle] = useState('');
   const [loading, setLoading] = useState(false);
   const [viewingEnrolled, setViewingEnrolled] = useState(false);
-  // const [currentlyViewedCourse, setCurrentlyViewedCourse] = useState({});
+  const { auth } = useContext(AuthContext);
+  const [id, setId] = useState(localStorage['id']);
 
+  // const [currentlyViewedCourse, setCurrentlyViewedCourse] = useState({});
+  useEffect(() => {
+    console.log(auth);
+  });
   const getMyCourses = async () => {
     setViewTitle('Enrolled Courses');
     setViewingEnrolled(true);
@@ -22,6 +28,7 @@ const Trainee = ({ corporate, id }) => {
     try {
       const response = await courses.getMyCourses(corporate, id);
       console.log(response.data);
+
       setViewedCourses(response.data);
     } catch (e) {
       console.log(e);
@@ -29,7 +36,7 @@ const Trainee = ({ corporate, id }) => {
     setLoading(false);
   };
 
-  const getAllCourses = async () => {
+  const getAllCourses = async (sortByPopularity) => {
     //get all courses
     setViewingEnrolled(false);
     setViewTitle('Course Catalog');
@@ -37,7 +44,15 @@ const Trainee = ({ corporate, id }) => {
     setLoading(true);
     try {
       const response = await courses.getAll();
-      setViewedCourses(response.data);
+      if (sortByPopularity) {
+        const sortedCourses = response.data.sort(
+          (c1, c2) => c2.courseViews - c1.courseViews
+        );
+        console.log(sortedCourses);
+        setViewedCourses(sortedCourses);
+      } else {
+        setViewedCourses(response.data);
+      }
     } catch (e) {
       console.log(e);
     }
@@ -57,13 +72,31 @@ const Trainee = ({ corporate, id }) => {
       // const response = await courses.getAll();
       // const data = response.data;
       // console.log(data);
-      const filteredCourses = viewedCourses.filter(
-        (course) =>
-          (rating.includes(course.rating?.toString()) || rating.length === 0) &&
-          (subjects.length === 0 || subjects.includes(course.subject)) &&
-          ((course.price <= maxPrice && course.price >= minPrice) ||
-            (minPrice === 0 && maxPrice === 0))
-      );
+      const filteredCourses = viewedCourses.filter((course) => {
+        let x =
+          rating.includes(course.rating?.toString()) || rating.length === 0;
+
+        let y = subjects.length === 0 || subjects.includes(course.subject);
+
+        let z =
+          (maxPrice === 0 && minPrice === 0) ||
+          (minPrice === 0 &&
+            (course.currentDiscount
+              ? course.price * (1 - course.currentDiscount.percentage)
+              : course.price) <= maxPrice) ||
+          (maxPrice == 0 &&
+            (course.currentDiscount
+              ? course.price * (1 - course.currentDiscount.percentage)
+              : course.price) >= minPrice) ||
+          ((course.currentDiscount
+            ? course.price * (1 - course.currentDiscount.percentage)
+            : course.price) >= minPrice &&
+            (course.currentDiscount
+              ? course.price * (1 - course.currentDiscount.percentage)
+              : course.price) <= maxPrice);
+
+        return x && y && z;
+      });
       setViewedCourses(filteredCourses);
     } catch (e) {
       console.log(e);
@@ -118,6 +151,7 @@ const Trainee = ({ corporate, id }) => {
                   getCourseCatalog={getAllCourses}
                   getMyCourses={getMyCourses}
                   id={id}
+                  corporate={corporate}
                 />
               </div>
               <div className="col-10">
@@ -149,7 +183,7 @@ const Trainee = ({ corporate, id }) => {
           <ViewCourse
             // registeredCourse={currentlyViewedCourse}
             corporate={corporate}
-            // id={id}
+            id={id}
           />
         }
       />

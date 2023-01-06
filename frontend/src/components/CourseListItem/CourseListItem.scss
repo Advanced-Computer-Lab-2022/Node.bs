@@ -1,4 +1,4 @@
-@use "./../scss/variables" as *;
+@use './../scss/variables' as *;
 
 // .col{
 //     border: solid 10px;
@@ -45,7 +45,7 @@
   float: inline-start;
   color: $primary;
   font-size: x-small;
-  font-weight: 100;
+  // font-weight: 100;
   //   margin-right: 5%;
   &.subtitle {
     color: $secondary;

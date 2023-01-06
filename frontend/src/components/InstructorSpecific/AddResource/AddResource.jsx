@@ -4,7 +4,7 @@ import { createResource } from './../../../services/CourseService';
 import Modal from 'react-modal';
 import alert from 'sweetalert2';
 
-const AddResource = ({ lesson }) => {
+const AddResource = ({ lesson, courseId }) => {
   const ResourceTitleRef = useRef();
   const ResourceURLRef = useRef();
   const ResourceTypeRef = useRef();
@@ -18,6 +18,7 @@ const AddResource = ({ lesson }) => {
         URL: ResourceURLRef.current.value,
         type: ResourceTypeRef.current.value,
       },
+      courseId,
     };
     if (
       body.resource.title === '' ||

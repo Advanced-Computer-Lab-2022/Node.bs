@@ -40,6 +40,7 @@ const CourseSchema = new schema(
     },
     numberOfRegisteredTrainees: {
       type: Number,
+      default: 0,
     },
     individualReviews: [
       {
@@ -75,6 +76,8 @@ const CourseSchema = new schema(
     releaseDate: {
       type: Date,
     },
+    reports: { type: schema.Types.ObjectId, ref: 'Report' },
+    priceId: { type: String },
   },
   { timestamps: true }
 );

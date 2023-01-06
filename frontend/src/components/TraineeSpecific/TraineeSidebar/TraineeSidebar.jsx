@@ -9,12 +9,19 @@ import {
   faMedal,
   faBookOpen,
   faArrowTurnDown,
+  faFlag,
+  faArrowUp,
+  faSortUp,
+  faLevelUp,
+  faThumbsUp,
 } from '@fortawesome/free-solid-svg-icons';
 import SidebarButton from '../../Sidebar/SidebarButton/SidebarButton';
 import CountryDropdown from '../../util/CountryDropdown/CountryDropdown';
 import { resetPassword } from '../../../services/AdminService';
-
-const TraineeSidebar = ({ getCourseCatalog, getMyCourses, id }) => {
+import { getIndividualTraineeReportsIssued } from '../../../services/IndividualTraineeService';
+import ReportsIssued from '../../ReportsIssued/ReportsIssued';
+import { getCorporateTraineeReportsIssued } from '../../../services/CorporateTraineeService';
+const TraineeSidebar = ({ getCourseCatalog, getMyCourses, id, corporate }) => {
   const sendMeAnEmail = async () => {
     // console.log(instructorId);
     const returned = await resetPassword(id);
@@ -22,12 +29,34 @@ const TraineeSidebar = ({ getCourseCatalog, getMyCourses, id }) => {
   };
   const [buttonPressed, setButtonPressed] = useState('Dashboard');
   const dashboardButtonHandler = () => {
-    getCourseCatalog();
+    getCourseCatalog(false);
     setButtonPressed('Dashboard');
   };
   const enrolledCoursesButtonHandler = () => {
     setButtonPressed('Enrolled');
     getMyCourses();
+  };
+
+  const popularCoursesButtonHandler = () => {
+    setButtonPressed('Popular');
+    getCourseCatalog(true);
+  };
+
+  const [allReports, setAllReports] = useState({});
+  const getIndividualTraineeReports = async () => {
+    console.log('individualTraineeId: ' + id);
+    const returnedReports = await getIndividualTraineeReportsIssued({
+      individualTraineeId: id,
+    });
+    console.log(returnedReports);
+    setAllReports(returnedReports);
+  };
+  const getCorporateTraineeReports = async () => {
+    console.log('corporateTraineeId: ' + id);
+    const returnedReports = await getCorporateTraineeReportsIssued({
+      corporateTraineeId: id,
+    });
+    setAllReports(returnedReports);
   };
   return (
     <div class="container-fluid sidebar-container">
@@ -62,6 +91,12 @@ const TraineeSidebar = ({ getCourseCatalog, getMyCourses, id }) => {
           click={() => setButtonPressed('Settings')}
         />
         <SidebarButton
+          icon={faThumbsUp}
+          label="Popular Courses"
+          primary={buttonPressed === 'Popular' ? true : false}
+          click={() => popularCoursesButtonHandler()}
+        />
+        <SidebarButton
           icon={faBookOpen}
           label="Enrolled Courses"
           primary={buttonPressed === 'Enrolled' ? true : false}
@@ -72,6 +107,19 @@ const TraineeSidebar = ({ getCourseCatalog, getMyCourses, id }) => {
           click={() => sendMeAnEmail()}
           label="Reset Password"
         />
+        <SidebarButton
+          primary={buttonPressed === 'Reports Issued' ? true : false}
+          icon={faFlag}
+          label="Reports Issued"
+          toBeViewed={'ReportsIssued'}
+          click={
+            !corporate
+              ? getIndividualTraineeReports
+              : getCorporateTraineeReports
+          }
+        />
+        <ReportsIssued reports={allReports} />
+
         <CountryDropdown />
       </div>
     </div>
